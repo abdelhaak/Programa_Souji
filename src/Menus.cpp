@@ -599,7 +599,6 @@ void Menus::inicializarEEPROM() {
     }
 }
 
-
 void Menus::iniciarCaliBascula()
 {
   Serial.println("estoy en iniciarCaliBascula ");
