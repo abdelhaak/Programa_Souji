@@ -3,10 +3,9 @@
 #include "Reloj_RTC.h"
 #include "Boton.h"
 #include "EEPROM.h"
-#include "Bascula.h"
+//#include "Bascula.h"
 
 Menus::Menus(LiquidCrystal &display) : lcd(display) {
-  cargarFecha();
   misPantallas = 20;
   lcd_init();
 }
@@ -66,6 +65,7 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
   // El Menu de la FECHA
   if (pantalla == 3)
   {
+    
     lcd.clear();
     lcd.setCursor(0,0);
     lcd.print("LA FECHA ES :");
@@ -151,7 +151,11 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
   // El SubMenu de Fecha
   if (pantalla == 11)
   {
+    dia =  EEPROM.get(DAY_ADDRESS, dia);
+    mes =  EEPROM.get(MONTH_ADDRESS, mes);
+    anio = EEPROM.get(YEAR_ADDRESS, anio);
     definirFecha = true;
+    editIndex = -1 ;
     Serial.println("Estoy en pantalla 11 ");
     lcd.clear();
     lcd.setCursor(2,0);
@@ -176,7 +180,7 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     lcd.print("INICIAR");
     lcd.setCursor(5,1);
     lcd.print("VACIO");
-    mostrarPeso = true;
+    //mostrarPeso = true;
   }
   // El SubMenu de Calibracion
   if (pantalla == 14)
@@ -186,11 +190,13 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     lcd.print("INICIAR CALIB.");
     lcd.setCursor(3,1);
     lcd.print("PULSA SEL");
-    iniciarCalibracion = true;
+    
+    /*iniciarCalibracion = true;
     Serial.println("iniciarCalibracion y espero el SEL para pasar a iniciarCaliBascula()");
     Serial.println("Peso: ");
     Serial.print(PesoActual());
     Serial.println(" g");
+    */
   }
 
   // El SubMenu de lenguaje
@@ -216,7 +222,7 @@ void Menus::decrementandoIndex()
       IndexCantidad--; 
       updateCantidadSouji();
     }
-    else if(inSubMenu && definirFecha && bascularFecha)
+    else if(definirFecha)
     {
       bajaFecha();
       displayFecha(); 
@@ -236,7 +242,7 @@ void Menus::incrementandoIndex()
       IndexCantidad++;
       updateCantidadSouji();
     }
-    else if(inSubMenu && definirFecha  && bascularFecha)
+    else if(definirFecha)
     {
       subeFecha();
       displayFecha();
@@ -323,17 +329,17 @@ void Menus::modificarBotonSet()
 void Menus::modificarBotonSel()
 {
   Serial.println(" BOTON SEL pulsado ");
-
   if(definirFecha)
   {
-    Serial.println("definirFecha esta en true ");
+    bascularFecha = true;
     ajustarFecha();
-  }
-  else if(bascularFecha)
+  } 
+  if(bascularFecha)
   {
     Serial.println("bascularFecha esta en true ");
     pasarFecha();
   }
+  /*
   else if(iniciarCalibracion)
   {
     Serial.println("iniciarCalibracion esta en true ");
@@ -354,6 +360,7 @@ void Menus::modificarBotonSel()
     Serial.println("mostrarPeso esta en true ");
     mostrarElPeso();
   }
+  */
   else
   {
     validarMezca();
@@ -447,9 +454,14 @@ void Menus::mezcla_25_Litros()
 
 void Menus::displayFecha()
 {
-  cargarFecha();
   Serial.println("estoy en displayFecha");
-  Serial.println(Fecha_actual(dia,mes,anio));
+  Serial.print("La fecha es : ");
+  Serial.print(dia);
+  Serial.print("/");
+  Serial.print(mes);
+  Serial.print("/");
+  Serial.println(anio);
+  
   lcd.clear();
   lcd.setCursor(0,0);
   lcd.print("LA FECHA ES:");
@@ -471,18 +483,24 @@ void Menus::ajustarFecha()
 void Menus::validarFecha()
 {
   Serial.println("estoy en validarFecha ");
-  rtc.adjust(DateTime(anio, mes, dia, Tiempo.hour(), Tiempo.minute(), Tiempo.second()));  // Ajusta el RTC
-  escribirFecha();
+  EEPROM.put(DAY_ADDRESS, dia);
+  EEPROM.put(MONTH_ADDRESS, mes);
+  EEPROM.put(YEAR_ADDRESS, anio);
+  rtc.adjust(DateTime(anio, mes, dia, Tiempo.hour(), Tiempo.minute(), Tiempo.second())); 
   lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print("Fecha ajustada a");
   lcd.setCursor(0, 1);
-  lcd.print(Fecha_actual(dia, mes, anio));
+  lcd.print(dia); 
+  lcd.print("/"); 
+  lcd.print(mes); 
+  lcd.print("/"); 
+  lcd.print(anio);
   delay(2000);
   bascularFecha = false;
   definirFecha = false;
   inSubMenu = false;
-  editIndex = -1;
+  editIndex = 0;
   PantallaSeleccionada(3);
 }
 
@@ -497,10 +515,6 @@ void Menus::pasarFecha()
   {
     editIndex=0;
   } 
-  if (!definirFecha && !bascularFecha) 
-  {
-    editIndex = 0; // Reset editIndex if leaving date adjustment
-  }
 }
 
 void Menus::validarMezca()
@@ -535,6 +549,9 @@ void Menus::subeFecha()
     {anio = 2024;}
     break;
   }
+  EEPROM.put(DAY_ADDRESS, dia);
+  EEPROM.put(MONTH_ADDRESS, mes);
+  EEPROM.put(YEAR_ADDRESS, anio);
   displayFecha();
 }
 
@@ -559,6 +576,9 @@ void Menus::bajaFecha()
     anio--;
     break;
   }
+  EEPROM.put(DAY_ADDRESS, dia);
+  EEPROM.put(MONTH_ADDRESS, mes);
+  EEPROM.put(YEAR_ADDRESS, anio);
   displayFecha();
 }
  
@@ -587,6 +607,7 @@ void Menus::inicializarEEPROM() {
     }
 }
 
+/*
 void Menus::iniciarCaliBascula()
 {
   Serial.println("estoy en iniciarCaliBascula ");
@@ -640,3 +661,4 @@ void Menus::mostrarElPeso()
   Serial.print(PesoActual());
   Serial.println(" g");
 }
+*/

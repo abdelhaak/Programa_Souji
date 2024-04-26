@@ -17,7 +17,7 @@ extern long anio;
 extern String La_fecha;
 extern String La_hora;
 
-void relojBegin();
+ 
 
 String Fecha_actual(uint8_t dia, int8_t mes, long anio);
 String Hora_actual();

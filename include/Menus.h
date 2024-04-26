@@ -26,7 +26,7 @@ class Menus
         bool variarCantidad = false;
         bool definirFecha = false;
         bool bascularFecha = false;
-        int editIndex = -1;
+        int editIndex = 0;
         int dia = 01, mes=01, anio=2024;
 
         
@@ -63,10 +63,12 @@ class Menus
         void cargarFecha();
         void escribirFecha();
         void inicializarEEPROM();
+        /*
         void iniciarCaliBascula(); 
         void talarBascula();  
         void calibrarEscala();   
         void mostrarElPeso();   
+        */
 };
 
 #endif

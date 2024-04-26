@@ -4,15 +4,7 @@
 
 RTC_DS1307 rtc;
 DateTime Tiempo;
-
-void relojBegin()
-{
-  rtc.begin();
-  if (!rtc.isrunning()) {
-    Serial.println("RTC no está funcionando. Ajustando fecha y hora...");
-    rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
-  }
-} 
+ 
 String Fecha_actual(uint8_t dia, int8_t mes, long anio)
 {
   Tiempo = rtc.now();
