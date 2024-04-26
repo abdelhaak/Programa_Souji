@@ -6,7 +6,7 @@
 #include "Menus.h"
 #include "Boton.h"
 #include "EEPROM.h"
-//#include "Bascula.h"
+#include "Bascula.h"
 
 #define SCALE_BALANZA -220
 #define VALUE_TARA 20
@@ -41,8 +41,7 @@ void setup()
   Serial.println("Programa iniciado");
   menu.lcd_init();
   rtc.begin();
-  //menu.cargarFecha();
-  //balanza_Setup();
+  balanza_Setup();
 }
 
 void loop()

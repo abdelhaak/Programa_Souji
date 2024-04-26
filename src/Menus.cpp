@@ -3,7 +3,7 @@
 #include "Reloj_RTC.h"
 #include "Boton.h"
 #include "EEPROM.h"
-//#include "Bascula.h"
+#include "Bascula.h"
 
 Menus::Menus(LiquidCrystal &display) : lcd(display) {
   misPantallas = 20;
@@ -180,7 +180,7 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     lcd.print("INICIAR");
     lcd.setCursor(5,1);
     lcd.print("VACIO");
-    //mostrarPeso = true;
+    mostrarPeso = true;
   }
   // El SubMenu de Calibracion
   if (pantalla == 14)
@@ -190,13 +190,8 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     lcd.print("INICIAR CALIB.");
     lcd.setCursor(3,1);
     lcd.print("PULSA SEL");
-    
-    /*iniciarCalibracion = true;
-    Serial.println("iniciarCalibracion y espero el SEL para pasar a iniciarCaliBascula()");
-    Serial.println("Peso: ");
-    Serial.print(PesoActual());
-    Serial.println(" g");
-    */
+    Serial.print("Estamos en la pantalla 14 de Calibre : ");
+    iniciarCalibracion = true;
   }
 
   // El SubMenu de lenguaje
@@ -256,7 +251,6 @@ void Menus::updateMenuDisplay()
 
 void Menus::updateCantidadSouji()
 {
-  //Cantidad_Souji[IndexCantidad];
   lcd.clear();
   lcd.setCursor(3,0);
   lcd.print("AJUSTAR:");
@@ -339,8 +333,7 @@ void Menus::modificarBotonSel()
     Serial.println("bascularFecha esta en true ");
     pasarFecha();
   }
-  /*
-  else if(iniciarCalibracion)
+  if(iniciarCalibracion)
   {
     Serial.println("iniciarCalibracion esta en true ");
     iniciarCaliBascula();
@@ -360,7 +353,6 @@ void Menus::modificarBotonSel()
     Serial.println("mostrarPeso esta en true ");
     mostrarElPeso();
   }
-  */
   else
   {
     validarMezca();
@@ -607,7 +599,7 @@ void Menus::inicializarEEPROM() {
     }
 }
 
-/*
+
 void Menus::iniciarCaliBascula()
 {
   Serial.println("estoy en iniciarCaliBascula ");
@@ -618,8 +610,7 @@ void Menus::iniciarCaliBascula()
   lcd.print("PARA INICIAR");
   iniciarCalibracion = false;
   calibrarPeso = true;
-  calibrarPeso1 = false ;
-  calibracion1(); 
+  calibracion(); 
 }
 
 void Menus::talarBascula()
@@ -640,6 +631,10 @@ void Menus::calibrarEscala()
   lcd.clear();
   lcd.setCursor(0,0);
   lcd.print("ESPERE....");
+  iniciarCalibracion = false;
+  calibrarPeso = false;
+  calibrarPeso1 = false ;
+  conf = false; 
   finDeCalibracion();
   lcd.clear();
   lcd.setCursor(0,0);
@@ -650,15 +645,15 @@ void Menus::calibrarEscala()
  
 void Menus::mostrarElPeso()
 {
+  PesoActual();
   lcd.clear();
   lcd.setCursor(0,0);
   lcd.print("EL PESO ES :");
   lcd.setCursor(2,1);
-  lcd.print(PesoActual());
+  lcd.print(peso);
   lcd.setCursor(8,1);
   lcd.print("GRAMOS");
   Serial.println("Peso: ");
-  Serial.print(PesoActual());
+  Serial.print(peso);
   Serial.println(" g");
 }
-*/

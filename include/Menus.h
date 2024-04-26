@@ -29,6 +29,11 @@ class Menus
         int editIndex = 0;
         int dia = 01, mes=01, anio=2024;
 
+        bool iniciarCalibracion = false;
+        bool calibrarPeso = false;
+        bool calibrarPeso1 = false ;
+        bool conf = false ;
+        bool mostrarPeso = false;
         
         // Variables de la EEPROM
         const int dayAddress = 0;
@@ -63,12 +68,10 @@ class Menus
         void cargarFecha();
         void escribirFecha();
         void inicializarEEPROM();
-        /*
         void iniciarCaliBascula(); 
         void talarBascula();  
         void calibrarEscala();   
         void mostrarElPeso();   
-        */
 };
 
 #endif
