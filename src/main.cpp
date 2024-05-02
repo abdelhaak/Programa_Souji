@@ -8,7 +8,6 @@
 #include "EEPROM.h"
 #include "Bascula.h"
 
-#define SCALE_BALANZA -220
 #define VALUE_TARA 20
 #define DOUT  A1
 #define CLK  A0

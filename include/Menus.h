@@ -65,8 +65,6 @@ class Menus
         void bajaFecha();
         void modificarBotonSel();
         void modificarBotonSet();
-        void cargarFecha();
-        void escribirFecha();
         void inicializarEEPROM();
         void iniciarCaliBascula(); 
         void talarBascula();  

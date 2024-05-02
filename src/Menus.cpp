@@ -5,7 +5,8 @@
 #include "EEPROM.h"
 #include "Bascula.h"
 
-Menus::Menus(LiquidCrystal &display) : lcd(display) {
+Menus::Menus(LiquidCrystal &display) : lcd(display) 
+{
   misPantallas = 20;
   lcd_init();
 }
@@ -445,15 +446,7 @@ void Menus::mezcla_25_Litros()
 }
 
 void Menus::displayFecha()
-{
-  Serial.println("estoy en displayFecha");
-  Serial.print("La fecha es : ");
-  Serial.print(dia);
-  Serial.print("/");
-  Serial.print(mes);
-  Serial.print("/");
-  Serial.println(anio);
-  
+{  
   lcd.clear();
   lcd.setCursor(0,0);
   lcd.print("LA FECHA ES:");
@@ -574,20 +567,6 @@ void Menus::bajaFecha()
   displayFecha();
 }
  
-void Menus::cargarFecha()
-{
-  dia =  EEPROM.get(DAY_ADDRESS, dia);
-  mes =  EEPROM.get(MONTH_ADDRESS, mes);
-  anio = EEPROM.get(YEAR_ADDRESS, anio);
-}
-
-void Menus::escribirFecha()
-{
-  EEPROM.put(DAY_ADDRESS, dia);
-  EEPROM.put(MONTH_ADDRESS, mes);
-  EEPROM.put(YEAR_ADDRESS, anio);
-}
-
 void Menus::inicializarEEPROM() {
     int initCheck;
     EEPROM.get(INIT_CHECK_ADDRESS, initCheck);
