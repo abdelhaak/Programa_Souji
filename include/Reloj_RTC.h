@@ -3,6 +3,9 @@
 
 #include "RTClib.h"
 
+
+
+
 extern RTC_DS1307 rtc;
 extern DateTime Tiempo;
 
@@ -12,14 +15,22 @@ extern const unsigned long intervaloActualizacion;
 
 extern char numeroDia[7][12];
 extern char numeroMes[12][12];
+
 extern uint8_t segundo, minuto, hora, dia, mes, diaDeLaSemana;
-extern long anio;
+extern String elMes;
+
+extern uint16_t anio;
 extern String La_fecha;
 extern String La_hora;
 
- 
+extern uint32_t litrosTotales;
+extern int cantidadMezclaMes[12]; 
+extern int litrosMensuales[12];
 
-String Fecha_actual(uint8_t dia, int8_t mes, long anio);
+String Fecha_actual(uint8_t dia, int8_t mes, uint16_t anio);
 String Hora_actual();
+void guardarLitrosMensualesEnEEPROM();
+void cargarLitrosMensualesDesdeEEPROM();
+
 
 #endif

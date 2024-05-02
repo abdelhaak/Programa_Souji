@@ -42,36 +42,47 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
   // Pantalla de Litros Mensuales
   if (pantalla == 1)
   {
+    mostrarLitrosMensuales = false;
     lcd.clear();
-    lcd.setCursor(0,0);
-    lcd.print("LITROS MENSUALES");
+    lcd.setCursor(4,0);
+    lcd.print("MOSTRAR");
     lcd.setCursor(0,1);
-    lcd.print("LOS LITROS");
-    lcd.setCursor(12,1);
-    lcd.print(Litros_Mensuales);
+    lcd.print("LITROS MENSUALES");
+    //lcd.setCursor(0,1);
+    //lcd.print("LOS LITROS");
+    //lcd.setCursor(12,1);
+    //lcd.print(Litros_Mensuales);
   }
 
   // Pantalla de Litros Totales
   if (pantalla == 2)
   {
+    EEPROM.get(LITROS_TOTALES_DIRECCION, litrosTotales);
     lcd.clear();
     lcd.setCursor(0,0);
     lcd.print("LITROS TOTALES");
     lcd.setCursor(0,1);
     lcd.print("LOS LITROS");
     lcd.setCursor(12,1);
-    lcd.print(Litros_Totales);
+    lcd.print(litrosTotales);
   }
 
   // El Menu de la FECHA
   if (pantalla == 3)
-  {
-    
+  { 
+    dia =  EEPROM.get(DAY_ADDRESS, dia);
+    mes =  EEPROM.get(MONTH_ADDRESS, mes);
+    anio = EEPROM.get(YEAR_ADDRESS, anio);
+
     lcd.clear();
     lcd.setCursor(0,0);
     lcd.print("LA FECHA ES :");
     lcd.setCursor(0,1);
-    lcd.print(Fecha_actual(dia, mes, anio));
+    lcd.print(dia);
+    lcd.print("/");
+    lcd.print(mes);
+    lcd.print("/");
+    lcd.print(anio);
   }
 
   // El Menu de Limpieza Automatica
@@ -128,13 +139,8 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
   // El SubMenu de Litros Mensuales
   if (pantalla == 9)
   {
-    lcd.clear();
-    lcd.setCursor(2,0);
-    lcd.print("EN ABRIL HAY");
-    lcd.setCursor(3,1);
-    lcd.print(Litros_Mensuales);
-    lcd.setCursor(8,1);
-    lcd.print("LITROS");
+    mostrarLitrosMensuales = true;
+    displayLitrosMensuales();
   }
 
    // El SubMenu de Litros Totales
@@ -144,7 +150,7 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     lcd.setCursor(0,0);
     lcd.print("HASTA AHORA HAY");
     lcd.setCursor(2,1);
-    lcd.print(Litros_Totales);
+    lcd.print(litrosTotales);
     lcd.setCursor(8,1);
     lcd.print("LITROS");
   }
@@ -194,7 +200,6 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     Serial.print("Estamos en la pantalla 14 de Calibre : ");
     iniciarCalibracion = true;
   }
-
   // El SubMenu de lenguaje
   if (pantalla == 15)
   {
@@ -223,6 +228,16 @@ void Menus::decrementandoIndex()
       bajaFecha();
       displayFecha(); 
     }
+    
+    else if (mostrarLitrosMensuales)
+    {
+      mes++;
+      if (mes > 12) 
+      {
+        mes = 1;
+      }
+      displayLitrosMensuales();
+    }
     else{}
 }
 
@@ -243,6 +258,16 @@ void Menus::incrementandoIndex()
       subeFecha();
       displayFecha();
     }
+    else if (mostrarLitrosMensuales)
+    {
+      mes--;
+      if (mes < 1) 
+      {
+        mes = 12;
+      }
+      displayLitrosMensuales();
+    }
+    else{}
 }
 
 void Menus::updateMenuDisplay()
@@ -357,6 +382,7 @@ void Menus::modificarBotonSel()
   else
   {
     validarMezca();
+    
   }   
 }
 
@@ -378,21 +404,49 @@ void Menus::ejecutarMezcla(int Cantidad_Souji)
   {
   case 5:
     Menus::mezcla_5_Litros();
+    incrementarCantidad(5);
   break;
   case 10:
     Menus::mezcla_10_Litros();
+    incrementarCantidad(10);
+
   break;
   case 15:
     Menus::mezcla_15_Litros();
+    incrementarCantidad(15);
+
   break;
   case 20:
     Menus::mezcla_20_Litros();
+    incrementarCantidad(20);
+
   break;
   case 25:
     Menus::mezcla_25_Litros();
+    incrementarCantidad(25);
   break;
   }
+  Serial.println("Cantidad guardada en la EEPROM es ");
+  Serial.println(litrosMensuales[12]);
+
 }
+
+
+void Menus::incrementarCantidad(int cantidad) 
+{
+  dia =  EEPROM.get(DAY_ADDRESS, dia);
+  mes =  EEPROM.get(MONTH_ADDRESS, mes);
+  anio = EEPROM.get(YEAR_ADDRESS, anio);
+
+  int mesActual = mes - 1; // Mes actual (0-11)
+  cantidadMezclaMes[mesActual] += cantidad; // Incrementa la cantidad correspondiente al mes actual
+  litrosMensuales[mesActual] += cantidad; // Actualiza los litros mensuales
+  litrosTotales += cantidad;
+  EEPROM.put(LITROS_TOTALES_DIRECCION, litrosTotales);
+  guardarLitrosMensualesEnEEPROM();
+  //EEPROM.put(LITROS_MENSUALES_DIRECCION, litrosMensuales[12]);
+}
+
 
 void Menus::mezcla_5_Litros()
 {
@@ -443,6 +497,24 @@ void Menus::mezcla_25_Litros()
   lcd.print(Cantidad_Souji[IndexCantidad]);
   lcd.setCursor(5,1);
   lcd.print("LITROS");
+}
+
+void Menus::displayLitrosMensuales()
+{
+  //litrosMensuales[12] =  EEPROM.get(LITROS_MENSUALES_DIRECCION, litrosMensuales[12]);
+  cargarLitrosMensualesDesdeEEPROM();
+  lcd.clear();
+  lcd.setCursor(0,0);
+  lcd.print("EN ");
+  lcd.print(elegirMes(mes)); // Muestra el nombre del mes actual
+  lcd.print(" HAY");
+  lcd.setCursor(3,1);
+  lcd.print(litrosMensuales[mes - 1]); // Muestra los litros mensuales del mes actual
+  lcd.setCursor(8,1);
+  lcd.print("LITROS");
+  Serial.print("elegirMes es : ");
+  Serial.println(elegirMes(mes));
+
 }
 
 void Menus::displayFecha()
@@ -634,4 +706,48 @@ void Menus::mostrarElPeso()
   Serial.println("Peso: ");
   Serial.print(peso);
   Serial.println(" g");
+}
+
+String Menus::elegirMes(uint8_t mes)
+{
+  switch (mes) 
+  {
+    case 1:
+      elMes = "ENERO";
+      break;
+    case 2:
+      elMes = "FEBRERO";
+      break;
+    case 3:
+      elMes = "MARZO";
+      break;
+    case 4:
+      elMes = "ABRIL";
+      break;
+    case 5:
+      elMes = "MAYO";
+      break;
+    case 6:
+      elMes = "JUNIO";
+      break;
+    case 7:
+      elMes = "JULIO";
+      break;
+    case 8:
+      elMes = "AGOSTO";
+      break;
+    case 9:
+      elMes = "SEPTIEMBRE";
+      break;
+    case 10:
+      elMes = "OCTUBRE";
+      break;
+    case 11:
+      elMes = "NOVIEMBRE";
+      break;
+    case 12:
+      elMes = "DICIEMBRE";
+      break;
+  }
+  return elMes;
 }

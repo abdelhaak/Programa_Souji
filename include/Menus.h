@@ -8,7 +8,7 @@
 #define MONTH_ADDRESS 4 // Dirección para el mes
 #define YEAR_ADDRESS 8  // Dirección para el año
 #define INIT_CHECK_ADDRESS 24 // Dirección para verificar la inicialización
-
+#define LITROS_TOTALES_DIRECCION 64
 class Menus
 {
     private:
@@ -17,8 +17,8 @@ class Menus
         // Cantidad de Souji posible 
         int Cantidad_Souji[5] = {5, 10, 15, 20, 25};
         // Variable para almacenar el índice del valor seleccionado
-        uint32_t Litros_Totales ;
-        uint32_t Litros_Mensuales;
+        
+
         // Los menus que tenemos por ahora : 0 | 1 | 2
         int menuIndex = 0;   
         bool inSubMenu = false;
@@ -39,7 +39,9 @@ class Menus
         const int dayAddress = 0;
         const int monthAddress = 1;
         const int yearAddress = 2;
-
+        
+        bool mostrarLitrosMensuales = false;
+        
     public:
         Menus(LiquidCrystal &display);
         void lcd_init();
@@ -70,6 +72,9 @@ class Menus
         void talarBascula();  
         void calibrarEscala();   
         void mostrarElPeso();   
+        void incrementarCantidad(int cantidad);
+        void displayLitrosMensuales();
+        String elegirMes(uint8_t mes);
 };
 
 #endif

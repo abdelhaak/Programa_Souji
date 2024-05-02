@@ -11,7 +11,7 @@ class Boton
         bool UltimaLectura;
         bool pulso;
         uint64_t  UltimoTiempoPulsado;
-        uint8_t TiempoPulsado = 20;
+        uint64_t TiempoPulsado = 1000;
         uint64_t t_mantenido = 0;
         uint64_t t_pulsado = 0;
         uint16_t mantener = 2500;
