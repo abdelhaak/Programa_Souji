@@ -25,6 +25,8 @@ class Mezclas
         Mezclas();
         void init();
         void parado();
+        void vacioOn();
+        void vacioOff();
 
 };
 

@@ -24,5 +24,18 @@ void Mezclas::init()
 
 void Mezclas::parado()
 {
+    bombaAceite.off();
+    bombaSouji.off();
+    bombaAgua.off();
+    bombaVacio.off();
+    motorMezclador.parar();
+}
 
+//Función para vaciar:
+void Mezclas::vacioOn(){
+    bombaVacio.on();
+}
+
+void Mezclas::vacioOff(){
+    bombaVacio.off();
 }
