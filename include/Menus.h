@@ -41,6 +41,7 @@ class Menus
         const int yearAddress = 2;
         
         bool mostrarLitrosMensuales = false;
+        bool accederRpms  = false;
         
     public:
         Menus(LiquidCrystal &display);
@@ -75,6 +76,7 @@ class Menus
         void incrementarCantidad(int cantidad);
         void displayLitrosMensuales();
         String elegirMes(uint8_t mes);
+        void mostrarRpms();
 };
 
 #endif

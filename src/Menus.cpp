@@ -4,6 +4,10 @@
 #include "Boton.h"
 #include "EEPROM.h"
 #include "Bascula.h"
+#include "Motor.h"
+
+//Motor motorMezclador(uint8_t pinMotor,uint8_t pinPot,uint8_t pinSensor);
+
 
 Menus::Menus(LiquidCrystal &display) : lcd(display) 
 {
@@ -89,10 +93,10 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
   if (pantalla == 4)
   {
     lcd.clear();
-    lcd.setCursor(4,0);
-    lcd.print("LIMPIEZA ");
-    lcd.setCursor(3,1);
-    lcd.print("AUTOMATICA");
+    lcd.setCursor(3,0);
+    lcd.print("VISUALIZAR ");
+    lcd.setCursor(0,1);
+    lcd.print("RPMS DEL MOTOR");
   }
 
   // El Menu de Vaciar Deposito
@@ -173,11 +177,12 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
   // El SubMenu de Limpieza
   if (pantalla == 12)
   {
+    accederRpms = true ;
     lcd.clear();
-    lcd.setCursor(3,0);
-    lcd.print("INICIAR");
-    lcd.setCursor(4,1);
-    lcd.print("LIMPIEZA");
+    lcd.setCursor(4,0);
+    lcd.print("PUSLE SEL ");
+    lcd.setCursor(2,1);
+    lcd.print("PARA ACCEDER");
   }
   // El SubMenu de Vaciar Deposito
   if (pantalla == 13)
@@ -237,6 +242,10 @@ void Menus::decrementandoIndex()
         mes = 1;
       }
       displayLitrosMensuales();
+    }
+    else if (accederRpms)
+    {
+      mostrarRpms();
     }
     else{}
 }
@@ -750,4 +759,17 @@ String Menus::elegirMes(uint8_t mes)
       break;
   }
   return elMes;
+}
+
+void Menus::mostrarRpms()
+{
+  lcd.clear();
+  lcd.setCursor(0,0);
+  lcd.print("LA FREQ:");
+  //lcd.setCursor(10,0);
+  //lcd.print(frecuencia);
+  lcd.setCursor(2,1);
+  lcd.print("LOS RPMS:");
+  //lcd.setCursor(10,1);
+  //lcd.print(Motor::calcularRpms());
 }

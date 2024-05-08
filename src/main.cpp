@@ -7,11 +7,14 @@
 #include "Boton.h"
 #include "EEPROM.h"
 #include "Bascula.h"
+#include "Motor.h"
 
 #define VALUE_TARA 20
 #define DOUT  A1
 #define CLK  A0
 
+
+//Motor motorMezclador(PIN_MOTOR,PIN_POT,PIN_SENSOR);
 LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
 
 // Definición de Botones
