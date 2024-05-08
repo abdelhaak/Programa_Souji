@@ -22,12 +22,13 @@ const uint8_t PIN_BOTON_SET = 6;
 const uint8_t PIN_BOTON_UP = 7;
 const uint8_t PIN_BOTON_DOWN = 8;
 const uint8_t PIN_BOTON_SEL = 9;
+const uint8_t PIN_PROGRAMADOR = 50;
 
 Boton botonSet(PIN_BOTON_SET);
 Boton botonUp(PIN_BOTON_UP);
 Boton botonDown(PIN_BOTON_DOWN);
 Boton botonSel(PIN_BOTON_SEL);
-
+Boton botonProg(PIN_PROGRAMADOR);
 // Cantidad de Souji posible 
 int Cantidad_Souji[] = {5, 10, 15, 20, 25};
 const uint32_t Litros_Totales = 100;
@@ -65,5 +66,9 @@ void loop()
     if (botonSel.pulsado()) 
     { 
       menu.modificarBotonSel();
+    }
+    if (botonProg.pulsado())
+    {
+      menu.modificarProg();
     }
 }

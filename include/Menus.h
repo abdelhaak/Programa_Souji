@@ -22,6 +22,11 @@ class Menus
         // Los menus que tenemos por ahora : 0 | 1 | 2
         int menuIndex = 0;   
         bool inSubMenu = false;
+
+        bool menuProgramador = false;
+        bool SubMenuProgamador = false;
+        int menuProgIndex = 20;
+
         int IndexCantidad = 0;
         bool variarCantidad = false;
         bool definirFecha = false;
@@ -52,6 +57,7 @@ class Menus
         void decrementandoIndex();
         void incrementandoIndex();
         void entrarSubMenu();
+        void entrarSubMenuProg();
         void volverMenu();
         void validarMezca();
         void ejecutarMezcla(int Cantidad_Souji);
@@ -68,6 +74,8 @@ class Menus
         void bajaFecha();
         void modificarBotonSel();
         void modificarBotonSet();
+        void modificarProg();
+        void updateMenuProgDisplay();
         void inicializarEEPROM();
         void iniciarCaliBascula(); 
         void talarBascula();  
