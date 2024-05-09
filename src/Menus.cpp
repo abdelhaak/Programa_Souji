@@ -6,8 +6,7 @@
 #include "Bascula.h"
 #include "Motor.h"
 
-//Motor motorMezclador(uint8_t pinMotor,uint8_t pinPot,uint8_t pinSensor);
-
+// MENUS GENERALES
 
 Menus::Menus(LiquidCrystal &display) : lcd(display) 
 {
@@ -22,6 +21,8 @@ void Menus::lcd_init()
   PantallaSeleccionada(0);
 }
 
+
+///////////////// Pantallas del MENU Principal   ////////////////////////
 void Menus::PantallaSeleccionada(uint8_t pantalla)
 {
   // Limpieza de la pantalla 
@@ -108,7 +109,8 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     lcd.setCursor(4,1);
     lcd.print("DEPOSITO");
   }
-   // El Menu de Calibracion de Bascula
+  
+  // El Menu de Calibracion de Bascula
   if (pantalla == 6)
   {
     lcd.clear();
@@ -117,7 +119,8 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     lcd.setCursor(4,1);
     lcd.print("BASCULA");
   }
-   // El Menu de Lenguaje
+  
+  // El Menu de Lenguaje
   if (pantalla == 7)
   {
     lcd.clear();
@@ -169,6 +172,7 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     lcd.setCursor(3,1);
     lcd.print("PULSE SEL ");
   }
+  
   // El SubMenu de Limpieza
   if (pantalla == 12)
   {
@@ -179,6 +183,7 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     lcd.setCursor(2,1);
     lcd.print("PARA ACCEDER");
   }
+  
   // El SubMenu de Vaciar Deposito
   if (pantalla == 13)
   {
@@ -189,6 +194,7 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     lcd.print("VACIO");
     mostrarPeso = true;
   }
+  
   // El SubMenu de Calibracion
   if (pantalla == 14)
   {
@@ -200,6 +206,7 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     Serial.print("Estamos en la pantalla 14 de Calibre : ");
     iniciarCalibracion = true;
   }
+  
   // El SubMenu de lenguaje
   if (pantalla == 15)
   {
@@ -211,77 +218,9 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
   }
 }
 
-void Menus::decrementandoIndex() 
-{
-    if (!inSubMenu && menuIndex < 7) 
-    {
-      menuIndex++;
-      updateMenuDisplay();
-    }
-    else if(inSubMenu && variarCantidad && IndexCantidad > 0)
-    {                      
-      IndexCantidad--; 
-      updateCantidadSouji();
-    }
-    else if(definirFecha)
-    {
-      bajaFecha();
-      displayFecha(); 
-    }
-    
-    else if (mostrarLitrosMensuales)
-    {
-      mes++;
-      if (mes > 12) 
-      {
-        mes = 1;
-      }
-      displayLitrosMensuales();
-    }
-    else{}
-}
-
-void Menus::incrementandoIndex() 
-{
-    if (!inSubMenu && menuIndex > 0)
-    {
-      menuIndex--;
-      updateMenuDisplay(); 
-    }
-    else if(inSubMenu && variarCantidad && IndexCantidad < 4)
-    {
-      IndexCantidad++;
-      updateCantidadSouji();
-    }
-    else if(definirFecha)
-    {
-      subeFecha();
-      displayFecha();
-    }
-    else if (mostrarLitrosMensuales)
-    {
-      mes--;
-      if (mes < 1) 
-      {
-        mes = 12;
-      }
-      displayLitrosMensuales();
-    }
-    else{}
-}
-
 void Menus::updateMenuDisplay()
 {
   PantallaSeleccionada(menuIndex);
-}
-
-void Menus::updateCantidadSouji()
-{
-  lcd.clear();
-  lcd.setCursor(3,0);
-  lcd.print("AJUSTAR:");
-  lcd.setCursor(4,1);
-  lcd.print(Cantidad_Souji[IndexCantidad]);
 }
 
 void Menus::entrarSubMenu()
@@ -328,6 +267,226 @@ void Menus::entrarSubMenu()
   }
 }
 
+
+//////////////// PANTALLAS DEL MODO PROGRAMADOR  ///////////////////////
+void Menus::PantallaProgramador(uint8_t pantallaProg)
+{
+  // Limpieza de la pantalla 
+  if(pantallaProg != misPantallasProg)
+  {
+    lcd.clear();
+    misPantallasProg = pantallaProg;
+  }
+
+  // Pantalla de inicio del modo PROGRAMADOR
+  if (pantallaProg == 0)
+  {
+    lcd.clear();
+    lcd.setCursor(1,0);
+    lcd.print("ESTAMOS EN EL");
+    lcd.setCursor(0,1);
+    lcd.print("MODO PROGRAMADOR");
+  }
+  
+  // Pantalla de Ajustar la cantidad del ACEITE
+  if (pantallaProg == 1)
+  {
+    lcd.clear();
+    lcd.setCursor(0,0);
+    lcd.print("AJUSTAR CANTIDAD");
+    lcd.setCursor(2,1);
+    lcd.print("DE : ACEITE");
+  }
+
+  // Pantalla de Ajustar la cantidad del SOUJI
+  if (pantallaProg == 2)
+  {
+    lcd.clear();
+    lcd.setCursor(0,0);
+    lcd.print("AJUSTAR CANTIDAD");
+    lcd.setCursor(2,1);
+    lcd.print("DE : SOUJI");
+  }
+
+  // Pantalla de RESETEAR LA CANTIDAD DE LITROS ACUMULADA
+  if (pantallaProg == 3)
+  {
+    lcd.clear();
+    lcd.setCursor(2,0);
+    lcd.print("RESETEAR LOS");
+    lcd.setCursor(1,1);
+    lcd.print("LITROS TOTALES");
+  }
+
+  // Pantalla de Ajustar LA VELOCIDAD DEL MOTOR
+  if (pantallaProg == 4)
+  {
+    lcd.clear();
+    lcd.setCursor(3,0);
+    lcd.print("AJUSTAR RPMS");
+    lcd.setCursor(5,1);
+    lcd.print("DEL MOTOR");
+  }
+
+  
+  // SUBMENU de Ajustar la cantidad del ACEITE
+  if (pantallaProg == 5)
+  {
+    lcd.clear();
+    lcd.setCursor(3,0);
+    lcd.print("AJUSTANDO");
+    lcd.setCursor(5,1);
+    lcd.print("ACEITE...");
+  }
+
+  // SUBMENU de Ajustar la cantidad del SOUJI
+  if (pantallaProg == 6)
+  {
+    lcd.clear();
+    lcd.setCursor(3,0);
+    lcd.print("AJUSTANDO");
+    lcd.setCursor(5,1);
+    lcd.print("SOUJI...");
+  }
+
+  // SUBMENU de RESETEAR LA CANTIDAD DE LITROS ACUMULADA
+  if (pantallaProg == 7)
+  {
+    lcd.clear();
+    lcd.setCursor(0,0);
+    lcd.print("PARA BORRAR TODO");
+    lcd.setCursor(4,1);
+    lcd.print("PULSE SEL");
+  }
+
+  // Pantalla de Ajustar LA VELOCIDAD DEL MOTOR
+  if (pantallaProg == 8)
+  {
+    lcd.clear();
+    lcd.setCursor(3,0);
+    lcd.print("AJUSTANDO");
+    lcd.setCursor(2,1);
+    lcd.print("RPMS MOTOR..");
+  }
+}
+
+void Menus::modificarProg()
+{
+  menuProgramador = true;
+  PantallaProgramador(0);
+}
+
+void Menus::entrarSubMenuProg()
+{
+  if(!SubMenuProgamador)
+  {
+  SubMenuProgamador = true;
+  Serial.println("Hestamos en Submenu del Modo Programador");
+  lcd.clear();
+  switch (menuProgIndex) 
+  {
+    case 0:
+      Menus::PantallaProgramador(4);
+      break;
+    case 1:
+      Menus::PantallaProgramador(5);
+      break;
+    case 2:
+      Menus::PantallaProgramador(6);
+      break;
+    case 3:
+      Menus::PantallaProgramador(7);
+      break;
+  }
+  }
+  else
+  {
+    SubMenuProgamador = false;
+    updateMenuProgDisplay();
+  }
+}
+
+void Menus::updateMenuProgDisplay()
+{
+  PantallaProgramador(menuProgIndex);
+}
+
+
+
+
+////////////////  Manejar los botones de entrada  ///////////////////////
+void Menus::decrementandoIndex() 
+{
+    if (!inSubMenu && menuIndex < 7) 
+    {
+      menuIndex++;
+      updateMenuDisplay();
+    }
+    else if(inSubMenu && variarCantidad && IndexCantidad > 0)
+    {                      
+      IndexCantidad--; 
+      updateCantidadSouji();
+    }
+    else if(definirFecha)
+    {
+      bajaFecha();
+      displayFecha(); 
+    }
+    else if (mostrarLitrosMensuales)
+    {
+      mes++;
+      if (mes > 12) 
+      {
+        mes = 1;
+      }
+      displayLitrosMensuales();
+    }
+    /*
+    else if(menuProgramador && !inSubMenuProg && menuProgIndex < 4)
+    {
+      menuProgIndex++;
+      updateMenuProgDisplay(); 
+    }
+    */
+    else{}
+}
+
+void Menus::incrementandoIndex() 
+{
+    if (!inSubMenu && menuIndex > 0)
+    {
+      menuIndex--;
+      updateMenuDisplay(); 
+    }
+    else if(inSubMenu && variarCantidad && IndexCantidad < 4)
+    {
+      IndexCantidad++;
+      updateCantidadSouji();
+    }
+    else if(definirFecha)
+    {
+      subeFecha();
+      displayFecha();
+    }
+    else if (mostrarLitrosMensuales)
+    {
+      mes--;
+      if (mes < 1) 
+      {
+        mes = 12;
+      }
+      displayLitrosMensuales();
+    }
+    /*
+    else if(menuProgramador && !inSubMenuProg && menuProgIndex > 0)
+    {
+      menuProgIndex--;
+      updateMenuProgDisplay(); 
+    }
+    */
+    else{}
+}
+
 void Menus::modificarBotonSet()
 {
   Serial.println("He pulsado en SET: ");
@@ -340,6 +499,12 @@ void Menus::modificarBotonSet()
     Serial.println("bascularFecha esta en true ");
     validarFecha();
   }
+  /*
+  if(menuProgramador)
+  {
+    entrarSubMenuProg();
+  }
+  */
   else
   {
     entrarSubMenu();
@@ -386,6 +551,18 @@ void Menus::modificarBotonSel()
   }   
 }
 
+
+
+////////////////   Programas de las mezclas     /////////////////////////
+void Menus::updateCantidadSouji()
+{
+  lcd.clear();
+  lcd.setCursor(3,0);
+  lcd.print("AJUSTAR:");
+  lcd.setCursor(4,1);
+  lcd.print(Cantidad_Souji[IndexCantidad]);
+}
+
 void Menus::volverMenu()
 {
   lcd.clear();
@@ -397,40 +574,6 @@ void Menus::volverMenu()
   Serial.println(variarCantidad);
   PantallaSeleccionada(menuIndex);
 }
-
-void Menus::ejecutarMezcla(int Cantidad_Souji)
-{
-  switch (Cantidad_Souji)
-  {
-  case 5:
-    Menus::mezcla_5_Litros();
-    incrementarCantidad(5);
-  break;
-  case 10:
-    Menus::mezcla_10_Litros();
-    incrementarCantidad(10);
-
-  break;
-  case 15:
-    Menus::mezcla_15_Litros();
-    incrementarCantidad(15);
-
-  break;
-  case 20:
-    Menus::mezcla_20_Litros();
-    incrementarCantidad(20);
-
-  break;
-  case 25:
-    Menus::mezcla_25_Litros();
-    incrementarCantidad(25);
-  break;
-  }
-  Serial.println("Cantidad guardada en la EEPROM es ");
-  Serial.println(litrosMensuales[12]);
-
-}
-
 
 void Menus::incrementarCantidad(int cantidad) 
 {
@@ -445,7 +588,6 @@ void Menus::incrementarCantidad(int cantidad)
   EEPROM.put(LITROS_TOTALES_DIRECCION, litrosTotales);
   guardarLitrosMensualesEnEEPROM();
 }
-
 
 void Menus::mezcla_5_Litros()
 {
@@ -527,6 +669,96 @@ void Menus::displayLitrosTotales()
   lcd.print("LITROS");
 }
 
+void Menus::validarMezca()
+{
+  if(variarCantidad)
+  {
+    ejecutarMezcla(Cantidad_Souji[IndexCantidad]);
+  }
+}
+
+String Menus::elegirMes(uint8_t mes)
+{
+  switch (mes) 
+  {
+    case 1:
+      elMes = "ENERO";
+      break;
+    case 2:
+      elMes = "FEBRERO";
+      break;
+    case 3:
+      elMes = "MARZO";
+      break;
+    case 4:
+      elMes = "ABRIL";
+      break;
+    case 5:
+      elMes = "MAYO";
+      break;
+    case 6:
+      elMes = "JUNIO";
+      break;
+    case 7:
+      elMes = "JULIO";
+      break;
+    case 8:
+      elMes = "AGOSTO";
+      break;
+    case 9:
+      elMes = "SEPTIEMBRE";
+      break;
+    case 10:
+      elMes = "OCTUBRE";
+      break;
+    case 11:
+      elMes = "NOVIEMBRE";
+      break;
+    case 12:
+      elMes = "DICIEMBRE";
+      break;
+  }
+  return elMes;
+}
+
+void Menus::ejecutarMezcla(int Cantidad_Souji)
+{
+  switch (Cantidad_Souji)
+  {
+  case 5:
+    Menus::mezcla_5_Litros();
+    incrementarCantidad(5);
+  break;
+  case 10:
+    Menus::mezcla_10_Litros();
+    incrementarCantidad(10);
+
+  break;
+  case 15:
+    Menus::mezcla_15_Litros();
+    incrementarCantidad(15);
+
+  break;
+  case 20:
+    Menus::mezcla_20_Litros();
+    incrementarCantidad(20);
+
+  break;
+  case 25:
+    Menus::mezcla_25_Litros();
+    incrementarCantidad(25);
+  break;
+  }
+  Serial.println("Cantidad guardada en la EEPROM es ");
+  Serial.println(litrosMensuales[12]);
+
+}
+
+
+
+
+//////////////////////  CONTROL DE LA FECHA  ///////////////////////////
+
 void Menus::displayFecha()
 {  
   lcd.clear();
@@ -582,14 +814,6 @@ void Menus::pasarFecha()
   {
     editIndex=0;
   } 
-}
-
-void Menus::validarMezca()
-{
-  if(variarCantidad)
-  {
-    ejecutarMezcla(Cantidad_Souji[IndexCantidad]);
-  }
 }
 
 void Menus::subeFecha()
@@ -649,6 +873,8 @@ void Menus::bajaFecha()
   displayFecha();
 }
  
+
+////////////////////  CONTROL DE LA EEPROM   //////////////////////////
 void Menus::inicializarEEPROM() {
     int initCheck;
     EEPROM.get(INIT_CHECK_ADDRESS, initCheck);
@@ -660,6 +886,8 @@ void Menus::inicializarEEPROM() {
     }
 }
 
+
+//////////////////  CONTROL DE LA BASCULA  ////////////////////////////
 void Menus::iniciarCaliBascula()
 {
   Serial.println("estoy en iniciarCaliBascula ");
@@ -718,50 +946,8 @@ void Menus::mostrarElPeso()
   Serial.println(" g");
 }
 
-String Menus::elegirMes(uint8_t mes)
-{
-  switch (mes) 
-  {
-    case 1:
-      elMes = "ENERO";
-      break;
-    case 2:
-      elMes = "FEBRERO";
-      break;
-    case 3:
-      elMes = "MARZO";
-      break;
-    case 4:
-      elMes = "ABRIL";
-      break;
-    case 5:
-      elMes = "MAYO";
-      break;
-    case 6:
-      elMes = "JUNIO";
-      break;
-    case 7:
-      elMes = "JULIO";
-      break;
-    case 8:
-      elMes = "AGOSTO";
-      break;
-    case 9:
-      elMes = "SEPTIEMBRE";
-      break;
-    case 10:
-      elMes = "OCTUBRE";
-      break;
-    case 11:
-      elMes = "NOVIEMBRE";
-      break;
-    case 12:
-      elMes = "DICIEMBRE";
-      break;
-  }
-  return elMes;
-}
 
+///////////////////  CONTROL DEL MOTOR  //////////////////////////////
 void Menus::mostrarRpms()
 {
   lcd.clear();
@@ -773,15 +959,4 @@ void Menus::mostrarRpms()
   lcd.print("LOS RPMS:");
   //lcd.setCursor(10,1);
   //lcd.print(Motor::calcularRpms());
-}
-
-void Menus::botonUpMantenido()
-{
-  lcd.clear();
-  lcd.setCursor(0,0);
-  lcd.print("BOTON UP ");
-  lcd.setCursor(0,1);
-  lcd.print("MANTENIDO");
-  delay(2000);
-  PantallaSeleccionada(0);
 }

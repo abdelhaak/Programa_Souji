@@ -14,7 +14,6 @@
 #define CLK  A0
 
 
-//Motor motorMezclador(PIN_MOTOR,PIN_POT,PIN_SENSOR);
 LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
 
 // Definición de Botones
@@ -28,13 +27,6 @@ Boton botonUp(PIN_BOTON_UP);
 Boton botonDown(PIN_BOTON_DOWN);
 Boton botonSel(PIN_BOTON_SEL);
 
-// Cantidad de Souji posible 
-int Cantidad_Souji[] = {5, 10, 15, 20, 25};
-//const uint32_t Litros_Totales = 100;
-//const uint32_t Litros_Mensuales = 15;
-
-// Variables de los menus 
-
 Menus menu(lcd);
 
 void setup()
@@ -43,7 +35,7 @@ void setup()
   Serial.println("Programa iniciado");
   menu.lcd_init();
   rtc.begin();
-  litrosTotales =0 ;
+  litrosTotales = 0;
   balanza_Setup();
 }
 

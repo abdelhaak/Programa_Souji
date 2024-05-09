@@ -8,18 +8,16 @@
 #define MONTH_ADDRESS 4 // Dirección para el mes
 #define YEAR_ADDRESS 8  // Dirección para el año
 #define INIT_CHECK_ADDRESS 10 // Dirección para verificar la inicialización
-#define LITROS_TOTALES_DIRECCION 12
+#define LITROS_TOTALES_DIRECCION 12  // Direccion de los litros totales
+
 class Menus
 {
     private:
-        LiquidCrystal &lcd;
-        uint8_t misPantallas=0;
-        // Cantidad de Souji posible 
-        int Cantidad_Souji[5] = {5, 10, 15, 20, 25};
-        // Variable para almacenar el índice del valor seleccionado
-        
 
-        // Los menus que tenemos por ahora : 0 | 1 | 2
+        LiquidCrystal &lcd;
+        
+        // Variables del menu principal 
+        uint8_t misPantallas=0;
         int menuIndex = 0;   
         bool inSubMenu = false;
         int IndexCantidad = 0;
@@ -28,29 +26,35 @@ class Menus
         bool bascularFecha = false;
         int editIndex = 0;
         int dia = 01, mes=01, anio=2024;
-
         bool iniciarCalibracion = false;
         bool calibrarPeso = false;
         bool calibrarPeso1 = false ;
         bool conf = false ;
         bool mostrarPeso = false;
-        
+        int Cantidad_Souji[5] = {5, 10, 15, 20, 25};
+        bool mostrarLitrosMensuales = false;
+        bool accederRpms  = false;
+
+        // Variables del menu programador
+        uint8_t misPantallasProg=0;
+        bool menuProgramador = false;
+        bool SubMenuProgamador = false;
+        int menuProgIndex = 0;
+        bool inSubMenuProg = false;
+
         // Variables de la EEPROM
         const int dayAddress = 0;
         const int monthAddress = 1;
         const int yearAddress = 2;
         
-        bool mostrarLitrosMensuales = false;
-        bool accederRpms  = false;
-        
     public:
         Menus(LiquidCrystal &display);
         void lcd_init();
+
+        // Variables del menu principal
         void PantallaSeleccionada(uint8_t pantalla);
         void updateMenuDisplay();
         void updateCantidadSouji();
-        void decrementandoIndex();
-        void incrementandoIndex();
         void entrarSubMenu();
         void volverMenu();
         void validarMezca();
@@ -79,7 +83,14 @@ class Menus
         String elegirMes(uint8_t mes);
         void mostrarRpms();
 
-        void botonUpMantenido();
+        // Variables del menu programador
+        void PantallaProgramador(uint8_t pantallaProg);
+        void modificarProg();
+        void entrarSubMenuProg();
+        void updateMenuProgDisplay();
+
+        void decrementandoIndex();
+        void incrementandoIndex();
 };
 
 #endif
