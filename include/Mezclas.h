@@ -7,13 +7,13 @@
 
 
 
-#define PIN_MOTOR 10
-#define PIN_SENSOR 13
+#define PIN_MOTOR A3
+#define PIN_SENSOR A2
 
-#define PIN_BOMBA_ACEITE 40
-#define PIN_BOMBA_SOUJI 41
-#define PIN_BOMBA_AGUA 42 
-#define PIN_BOMBA_VACIO 43
+#define PIN_BOMBA_ACEITE 
+#define PIN_BOMBA_SOUJI 
+#define PIN_BOMBA_AGUA  
+#define PIN_BOMBA_VACIO 
 
 
 class Mezclas

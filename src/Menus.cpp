@@ -243,10 +243,6 @@ void Menus::decrementandoIndex()
       }
       displayLitrosMensuales();
     }
-    else if (accederRpms)
-    {
-      mostrarRpms();
-    }
     else{}
 }
 
