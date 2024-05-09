@@ -23,7 +23,7 @@ extern uint16_t anio;
 extern String La_fecha;
 extern String La_hora;
 
-extern uint32_t litrosTotales;
+extern uint8_t litrosTotales;
 extern int cantidadMezclaMes[12]; 
 extern int litrosMensuales[12];
 

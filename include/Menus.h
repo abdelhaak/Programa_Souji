@@ -7,8 +7,8 @@
 #define DAY_ADDRESS 0   // Dirección para el día
 #define MONTH_ADDRESS 4 // Dirección para el mes
 #define YEAR_ADDRESS 8  // Dirección para el año
-#define INIT_CHECK_ADDRESS 24 // Dirección para verificar la inicialización
-#define LITROS_TOTALES_DIRECCION 64
+#define INIT_CHECK_ADDRESS 10 // Dirección para verificar la inicialización
+#define LITROS_TOTALES_DIRECCION 12
 class Menus
 {
     private:
@@ -75,8 +75,11 @@ class Menus
         void mostrarElPeso();   
         void incrementarCantidad(int cantidad);
         void displayLitrosMensuales();
+        void displayLitrosTotales();
         String elegirMes(uint8_t mes);
         void mostrarRpms();
+
+        void botonUpMantenido();
 };
 
 #endif

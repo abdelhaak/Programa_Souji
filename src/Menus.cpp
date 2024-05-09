@@ -150,13 +150,8 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
    // El SubMenu de Litros Totales
   if (pantalla == 10)
   {
-    lcd.clear();
-    lcd.setCursor(0,0);
-    lcd.print("HASTA AHORA HAY");
-    lcd.setCursor(2,1);
-    lcd.print(litrosTotales);
-    lcd.setCursor(8,1);
-    lcd.print("LITROS");
+    EEPROM.get(LITROS_TOTALES_DIRECCION, litrosTotales);
+    displayLitrosTotales();
   }
   
   // El SubMenu de Fecha
@@ -449,7 +444,6 @@ void Menus::incrementarCantidad(int cantidad)
   litrosTotales += cantidad;
   EEPROM.put(LITROS_TOTALES_DIRECCION, litrosTotales);
   guardarLitrosMensualesEnEEPROM();
-  //EEPROM.put(LITROS_MENSUALES_DIRECCION, litrosMensuales[12]);
 }
 
 
@@ -506,7 +500,6 @@ void Menus::mezcla_25_Litros()
 
 void Menus::displayLitrosMensuales()
 {
-  //litrosMensuales[12] =  EEPROM.get(LITROS_MENSUALES_DIRECCION, litrosMensuales[12]);
   cargarLitrosMensualesDesdeEEPROM();
   lcd.clear();
   lcd.setCursor(0,0);
@@ -520,6 +513,18 @@ void Menus::displayLitrosMensuales()
   Serial.print("elegirMes es : ");
   Serial.println(elegirMes(mes));
 
+}
+
+void Menus::displayLitrosTotales()
+{
+  EEPROM.get(LITROS_TOTALES_DIRECCION, litrosTotales);
+  lcd.clear();
+  lcd.setCursor(0,0);
+  lcd.print("HASTA AHORA HAY");
+  lcd.setCursor(2,1);
+  lcd.print(litrosTotales);
+  lcd.setCursor(8,1);
+  lcd.print("LITROS");
 }
 
 void Menus::displayFecha()
@@ -548,7 +553,7 @@ void Menus::validarFecha()
   EEPROM.put(DAY_ADDRESS, dia);
   EEPROM.put(MONTH_ADDRESS, mes);
   EEPROM.put(YEAR_ADDRESS, anio);
-  rtc.adjust(DateTime(anio, mes, dia, Tiempo.hour(), Tiempo.minute(), Tiempo.second())); 
+  //rtc.adjust(DateTime(anio, mes, dia, Tiempo.hour(), Tiempo.minute(), Tiempo.second())); 
   lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print("Fecha ajustada a");
@@ -768,4 +773,15 @@ void Menus::mostrarRpms()
   lcd.print("LOS RPMS:");
   //lcd.setCursor(10,1);
   //lcd.print(Motor::calcularRpms());
+}
+
+void Menus::botonUpMantenido()
+{
+  lcd.clear();
+  lcd.setCursor(0,0);
+  lcd.print("BOTON UP ");
+  lcd.setCursor(0,1);
+  lcd.print("MANTENIDO");
+  delay(2000);
+  PantallaSeleccionada(0);
 }

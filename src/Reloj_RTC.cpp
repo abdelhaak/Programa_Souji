@@ -13,7 +13,7 @@ DateTime Tiempo;
 
 int cantidadMezclaMes[12] = {0}; 
 int litrosMensuales[12] = {0};
-uint32_t litrosTotales =0 ;
+uint8_t litrosTotales =0 ;
 String elMes;
 
 

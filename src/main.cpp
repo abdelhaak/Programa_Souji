@@ -30,8 +30,8 @@ Boton botonSel(PIN_BOTON_SEL);
 
 // Cantidad de Souji posible 
 int Cantidad_Souji[] = {5, 10, 15, 20, 25};
-const uint32_t Litros_Totales = 100;
-const uint32_t Litros_Mensuales = 15;
+//const uint32_t Litros_Totales = 100;
+//const uint32_t Litros_Mensuales = 15;
 
 // Variables de los menus 
 
@@ -43,6 +43,7 @@ void setup()
   Serial.println("Programa iniciado");
   menu.lcd_init();
   rtc.begin();
+  litrosTotales =0 ;
   balanza_Setup();
 }
 
@@ -65,5 +66,10 @@ void loop()
     if (botonSel.pulsado()) 
     { 
       menu.modificarBotonSel();
+    }
+    if(botonUp.mantenerPulsado())
+    {
+      Serial.println("He mantenido en UP: ");
+      menu.botonUpMantenido();
     }
 }
