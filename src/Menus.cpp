@@ -6,8 +6,6 @@
 #include "Bascula.h"
 #include "Motor.h"
 
-//Motor motorMezclador(uint8_t pinMotor,uint8_t pinPot,uint8_t pinSensor);
-
 // Gestion de las pantallas de la lcd 16x2
 Menus::Menus(LiquidCrystal &display) : lcd(display) 
 {
