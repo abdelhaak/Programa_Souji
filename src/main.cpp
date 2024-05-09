@@ -67,9 +67,11 @@ void loop()
     { 
       menu.modificarBotonSel();
     }
+    /*
     if(botonUp.mantenerPulsado())
     {
       Serial.println("He mantenido en UP: ");
       menu.botonUpMantenido();
     }
+    */
 }
