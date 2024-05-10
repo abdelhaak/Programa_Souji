@@ -372,6 +372,7 @@ void Menus::PantallaProgramador(uint8_t pantallaProg)
 
 void Menus::modificarProg()
 {
+  Serial.println("He pulsado en boton programador: ");
   menuProgramador = true;
   PantallaProgramador(0);
 }
@@ -417,23 +418,28 @@ void Menus::updateMenuProgDisplay()
 ////////////////  Manejar los botones de entrada  ///////////////////////
 void Menus::decrementandoIndex() 
 {
+  Serial.println("Estoy en decrementando Index");
     if (!inSubMenu && menuIndex < 7) 
     {
+      Serial.println("Desplazando en el menu principal");
       menuIndex++;
       updateMenuDisplay();
     }
     else if(inSubMenu && variarCantidad && IndexCantidad > 0)
-    {                      
+    {        
+      Serial.println("Decrementando cantidad de Souji");              
       IndexCantidad--; 
       updateCantidadSouji();
     }
     else if(definirFecha)
     {
+      Serial.println("Bajando la fecha");
       bajaFecha();
       displayFecha(); 
     }
     else if (mostrarLitrosMensuales)
     {
+      Serial.println("Desplazando en los meses");
       mes++;
       if (mes > 12) 
       {
@@ -444,6 +450,7 @@ void Menus::decrementandoIndex()
     /*
     else if(menuProgramador && !inSubMenuProg && menuProgIndex < 4)
     {
+      Serial.println("bajando en el menu programador");
       menuProgIndex++;
       updateMenuProgDisplay(); 
     }
@@ -453,23 +460,29 @@ void Menus::decrementandoIndex()
 
 void Menus::incrementandoIndex() 
 {
+    Serial.println("Estoy en decrementando Index");
+
     if (!inSubMenu && menuIndex > 0)
     {
+      Serial.println("Desplazando en el menu principal");                    
       menuIndex--;
       updateMenuDisplay(); 
     }
     else if(inSubMenu && variarCantidad && IndexCantidad < 4)
     {
+      Serial.println("Incrementando cantidad de Souji");
       IndexCantidad++;
       updateCantidadSouji();
     }
     else if(definirFecha)
     {
+      Serial.println("Subiendo la fecha");
       subeFecha();
       displayFecha();
     }
     else if (mostrarLitrosMensuales)
     {
+      Serial.println("Desplazando en los meses");
       mes--;
       if (mes < 1) 
       {
@@ -480,6 +493,7 @@ void Menus::incrementandoIndex()
     /*
     else if(menuProgramador && !inSubMenuProg && menuProgIndex > 0)
     {
+      Serial.println("subiendo en el menu programador");
       menuProgIndex--;
       updateMenuProgDisplay(); 
     }
