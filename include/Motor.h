@@ -10,7 +10,6 @@ class Motor
     private:
         uint8_t pin;
         uint8_t pinSensor;
-        //uint8_t pinPot;
         unsigned long pulsos_ultimo_segundo;
         float frecuencia;
         int rpms;

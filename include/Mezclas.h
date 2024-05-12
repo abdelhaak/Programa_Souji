@@ -5,8 +5,6 @@
 #include "Motor.h"
 #include "Bombas.h"
 
-
-
 #define PIN_MOTOR A3
 #define PIN_SENSOR A2
 

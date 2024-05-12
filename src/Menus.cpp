@@ -53,10 +53,6 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     lcd.print("MOSTRAR");
     lcd.setCursor(0,1);
     lcd.print("LITROS MENSUALES");
-    //lcd.setCursor(0,1);
-    //lcd.print("LOS LITROS");
-    //lcd.setCursor(12,1);
-    //lcd.print(Litros_Mensuales);
   }
 
   // Pantalla de Litros Totales
@@ -75,9 +71,9 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
   // El Menu de la FECHA
   if (pantalla == 3)
   { 
-    dia =  EEPROM.get(DAY_ADDRESS, dia);
-    mes =  EEPROM.get(MONTH_ADDRESS, mes);
-    anio = EEPROM.get(YEAR_ADDRESS, anio);
+    EEPROM.get(DAY_ADDRESS, dia);
+    EEPROM.get(MONTH_ADDRESS, mes);
+    EEPROM.get(YEAR_ADDRESS, anio);
 
     lcd.clear();
     lcd.setCursor(0,0);
@@ -160,12 +156,12 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
   // El SubMenu de Fecha
   if (pantalla == 11)
   {
-    dia =  EEPROM.get(DAY_ADDRESS, dia);
-    mes =  EEPROM.get(MONTH_ADDRESS, mes);
-    anio = EEPROM.get(YEAR_ADDRESS, anio);
+    EEPROM.get(DAY_ADDRESS, dia);
+    EEPROM.get(MONTH_ADDRESS, mes);
+    EEPROM.get(YEAR_ADDRESS, anio);
     definirFecha = true;
     editIndex = -1 ;
-    Serial.println("Estoy en pantalla 11 ");
+
     lcd.clear();
     lcd.setCursor(2,0);
     lcd.print("AJUSTAR FECHA ");
@@ -203,7 +199,6 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     lcd.print("INICIAR CALIB.");
     lcd.setCursor(3,1);
     lcd.print("PULSA SEL");
-    Serial.print("Estamos en la pantalla 14 de Calibre : ");
     iniciarCalibracion = true;
   }
   
@@ -228,7 +223,6 @@ void Menus::entrarSubMenu()
   if(!inSubMenu)
   {
   inSubMenu = true;
-  Serial.println("Hestamos en Submenu");
   lcd.clear();
   switch (menuIndex) 
   {
@@ -372,7 +366,6 @@ void Menus::PantallaProgramador(uint8_t pantallaProg)
 
 void Menus::modificarProg()
 {
-  Serial.println("He pulsado en boton programador: ");
   menuProgramador = true;
   PantallaProgramador(0);
 }
@@ -382,7 +375,6 @@ void Menus::entrarSubMenuProg()
   if(!SubMenuProgamador)
   {
   SubMenuProgamador = true;
-  Serial.println("Hestamos en Submenu del Modo Programador");
   lcd.clear();
   switch (menuProgIndex) 
   {
@@ -413,33 +405,26 @@ void Menus::updateMenuProgDisplay()
 }
 
 
-
-
 ////////////////  Manejar los botones de entrada  ///////////////////////
 void Menus::decrementandoIndex() 
 {
-  Serial.println("Estoy en decrementando Index");
     if (!inSubMenu && menuIndex < 7) 
     {
-      Serial.println("Desplazando en el menu principal");
       menuIndex++;
       updateMenuDisplay();
     }
     else if(inSubMenu && variarCantidad && IndexCantidad > 0)
     {        
-      Serial.println("Decrementando cantidad de Souji");              
       IndexCantidad--; 
       updateCantidadSouji();
     }
     else if(definirFecha)
     {
-      Serial.println("Bajando la fecha");
       bajaFecha();
       displayFecha(); 
     }
     else if (mostrarLitrosMensuales)
     {
-      Serial.println("Desplazando en los meses");
       mes++;
       if (mes > 12) 
       {
@@ -460,29 +445,23 @@ void Menus::decrementandoIndex()
 
 void Menus::incrementandoIndex() 
 {
-    Serial.println("Estoy en decrementando Index");
-
     if (!inSubMenu && menuIndex > 0)
     {
-      Serial.println("Desplazando en el menu principal");                    
       menuIndex--;
       updateMenuDisplay(); 
     }
     else if(inSubMenu && variarCantidad && IndexCantidad < 4)
     {
-      Serial.println("Incrementando cantidad de Souji");
       IndexCantidad++;
       updateCantidadSouji();
     }
     else if(definirFecha)
     {
-      Serial.println("Subiendo la fecha");
       subeFecha();
       displayFecha();
     }
     else if (mostrarLitrosMensuales)
     {
-      Serial.println("Desplazando en los meses");
       mes--;
       if (mes < 1) 
       {
@@ -503,14 +482,8 @@ void Menus::incrementandoIndex()
 
 void Menus::modificarBotonSet()
 {
-  Serial.println("He pulsado en SET: ");
-  if(definirFecha)
-  {
-    Serial.println("definirFecha esta en true ");
-  }
   if(bascularFecha)
   {
-    Serial.println("bascularFecha esta en true ");
     validarFecha();
   }
   /*
@@ -527,7 +500,6 @@ void Menus::modificarBotonSet()
 
 void Menus::modificarBotonSel()
 {
-  Serial.println(" BOTON SEL pulsado ");
   if(definirFecha)
   {
     bascularFecha = true;
@@ -535,33 +507,27 @@ void Menus::modificarBotonSel()
   } 
   if(bascularFecha)
   {
-    Serial.println("bascularFecha esta en true ");
     pasarFecha();
   }
   if(iniciarCalibracion)
   {
-    Serial.println("iniciarCalibracion esta en true ");
     iniciarCaliBascula();
   }
   else if(calibrarPeso)
   {
-    Serial.println("calibrarPeso esta en true ");
     talarBascula();
   }
   else if(calibrarPeso1)
   {
-    Serial.println("calibrarPeso1 esta en true ");
     calibrarEscala();
   }
   else if(mostrarPeso)
   {
-    Serial.println("mostrarPeso esta en true ");
     mostrarElPeso();
   }
   else
   {
     validarMezca();
-    
   }   
 }
 
@@ -582,19 +548,13 @@ void Menus::volverMenu()
   lcd.clear();
   inSubMenu = false;
   variarCantidad = false;
-  Serial.println("inSubMenu : ");
-  Serial.println(inSubMenu);
-  Serial.println("variarCantidad : ");
-  Serial.println(variarCantidad);
   PantallaSeleccionada(menuIndex);
 }
 
 void Menus::incrementarCantidad(int cantidad) 
 {
-  dia =  EEPROM.get(DAY_ADDRESS, dia);
-  mes =  EEPROM.get(MONTH_ADDRESS, mes);
-  anio = EEPROM.get(YEAR_ADDRESS, anio);
-
+  EEPROM.get(MONTH_ADDRESS, mes);
+ 
   int mesActual = mes - 1; // Mes actual (0-11)
   cantidadMezclaMes[mesActual] += cantidad; // Incrementa la cantidad correspondiente al mes actual
   litrosMensuales[mesActual] += cantidad; // Actualiza los litros mensuales
@@ -666,9 +626,6 @@ void Menus::displayLitrosMensuales()
   lcd.print(litrosMensuales[mes - 1]); // Muestra los litros mensuales del mes actual
   lcd.setCursor(8,1);
   lcd.print("LITROS");
-  Serial.print("elegirMes es : ");
-  Serial.println(elegirMes(mes));
-
 }
 
 void Menus::displayLitrosTotales()
@@ -763,12 +720,7 @@ void Menus::ejecutarMezcla(int Cantidad_Souji)
     incrementarCantidad(25);
   break;
   }
-  Serial.println("Cantidad guardada en la EEPROM es ");
-  Serial.println(litrosMensuales[12]);
-
 }
-
-
 
 
 //////////////////////  CONTROL DE LA FECHA  ///////////////////////////
@@ -788,18 +740,15 @@ void Menus::displayFecha()
 
 void Menus::ajustarFecha()
 {
-  Serial.println("estoy en ajustarFecha");
   bascularFecha = true;
   displayFecha(); 
 }
 
 void Menus::validarFecha()
 {
-  Serial.println("estoy en validarFecha ");
   EEPROM.put(DAY_ADDRESS, dia);
   EEPROM.put(MONTH_ADDRESS, mes);
   EEPROM.put(YEAR_ADDRESS, anio);
-  //rtc.adjust(DateTime(anio, mes, dia, Tiempo.hour(), Tiempo.minute(), Tiempo.second())); 
   lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print("Fecha ajustada a");
@@ -819,7 +768,6 @@ void Menus::validarFecha()
 
 void Menus::pasarFecha()
 {
-  Serial.println("estoy en pasarFecha ");
   if(editIndex<2)
   {
     editIndex++;
@@ -832,7 +780,6 @@ void Menus::pasarFecha()
 
 void Menus::subeFecha()
 {
-  Serial.println("estoy en subeFecha ");
   switch (editIndex)
   {
   case 0 :
@@ -862,7 +809,6 @@ void Menus::subeFecha()
 
 void Menus::bajaFecha()
 {
-  Serial.println("estoy en bajaFecha ");
   switch (editIndex)
   {
   case 0 :
@@ -889,22 +835,23 @@ void Menus::bajaFecha()
  
 
 ////////////////////  CONTROL DE LA EEPROM   //////////////////////////
-void Menus::inicializarEEPROM() {
-    int initCheck;
-    EEPROM.get(INIT_CHECK_ADDRESS, initCheck);
-    if (initCheck != 12345) {
-        EEPROM.put(DAY_ADDRESS, 1); // Día inicial
-        EEPROM.put(MONTH_ADDRESS, 1); // Mes inicial
-        EEPROM.put(YEAR_ADDRESS, 2024); // Año inicial
-        EEPROM.put(INIT_CHECK_ADDRESS, 12345); // Marcar como inicializado
-    }
+void Menus::inicializarEEPROM() 
+{
+  int initCheck;
+  EEPROM.get(INIT_CHECK_ADDRESS, initCheck);
+  if (initCheck != 12345) 
+  {
+    EEPROM.put(DAY_ADDRESS, 1); // Día inicial
+    EEPROM.put(MONTH_ADDRESS, 1); // Mes inicial
+    EEPROM.put(YEAR_ADDRESS, 2024); // Año inicial
+    EEPROM.put(INIT_CHECK_ADDRESS, 12345); // Marcar como inicializado
+  }
 }
 
 
 //////////////////  CONTROL DE LA BASCULA  ////////////////////////////
 void Menus::iniciarCaliBascula()
 {
-  Serial.println("estoy en iniciarCaliBascula ");
   lcd.clear();
   lcd.setCursor(3,0);
   lcd.print("PULSE SEL :");
@@ -917,7 +864,6 @@ void Menus::iniciarCaliBascula()
 
 void Menus::talarBascula()
 {
-  Serial.println("estoy talarBascula ");
   lcd.clear();
   lcd.setCursor(1,0);
   lcd.print("PONGA EL PESO :");
@@ -929,7 +875,6 @@ void Menus::talarBascula()
 
 void Menus::calibrarEscala()
 {
-  Serial.println("estoy en calibrarEscala ");
   lcd.clear();
   lcd.setCursor(0,0);
   lcd.print("ESPERE....");
@@ -955,9 +900,6 @@ void Menus::mostrarElPeso()
   lcd.print(peso);
   lcd.setCursor(8,1);
   lcd.print("GRAMOS");
-  Serial.println("Peso: ");
-  Serial.print(peso);
-  Serial.println(" g");
 }
 
 
@@ -967,10 +909,6 @@ void Menus::mostrarRpms()
   lcd.clear();
   lcd.setCursor(0,0);
   lcd.print("LA FREQ:");
-  //lcd.setCursor(10,0);
-  //lcd.print(frecuencia);
   lcd.setCursor(2,1);
   lcd.print("LOS RPMS:");
-  //lcd.setCursor(10,1);
-  //lcd.print(Motor::calcularRpms());
 }

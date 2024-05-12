@@ -13,14 +13,14 @@ HX711 balanza;
 void balanza_Setup()
 {
     balanza.begin(DOUT,CLK);
-    escala = EEPROM.get(SCALE_ADDRESS, escala);
+    EEPROM.get(SCALE_ADDRESS, escala);
     balanza.set_scale(escala);
     balanza.tare(VALUE_TARA);
 }
 
 void PesoActual()
 {
-    escala = EEPROM.get(SCALE_ADDRESS, escala);
+    EEPROM.get(SCALE_ADDRESS, escala);
     peso = balanza.get_units(10);
     if(peso < 0)
     {
