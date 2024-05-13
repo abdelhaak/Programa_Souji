@@ -6,7 +6,7 @@
 #define VALUE_TARA 20
 #define PesoConocido 195  // EL peso del ejemplo en gramos
 
-#define SCALE_ADDRESS 12   // Dirección para la escala
+#define SCALE_ADDRESS 14   // Dirección para la escala
 
 #define DOUT  A1
 #define CLK  A0

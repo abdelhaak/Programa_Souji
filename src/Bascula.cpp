@@ -20,7 +20,6 @@ void balanza_Setup()
 
 void PesoActual()
 {
-    EEPROM.get(SCALE_ADDRESS, escala);
     peso = balanza.get_units(10);
     if(peso < 0)
     {
@@ -42,12 +41,12 @@ void finDeCalibracion()
     //Lee el valor del HX711
     adc_lecture = balanza.get_value(100);
     //Calcula la escala con el valor leido dividiendo el peso conocido
-    escala = adc_lecture / PesoConocido;
+    escala = adc_lecture / PesoConocido; 
+    EEPROM.put(SCALE_ADDRESS, escala);
     // Escribir en la EEPROM
     delay(2000);
     balanza.set_scale(escala); // Establecemos la escala
     balanza.tare(VALUE_TARA);  //El peso actual de la base es considerado zero.
-    EEPROM.put(SCALE_ADDRESS, escala);
 }
 
 

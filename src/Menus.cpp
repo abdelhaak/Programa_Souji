@@ -918,7 +918,6 @@ void Menus::calibrarEscala()
   iniciarCalibracion = false;
   calibrarPeso = false;
   calibrarPeso1 = false ;
-  conf = false; 
   finDeCalibracion();
   lcd.clear();
   lcd.setCursor(0,0);
@@ -933,7 +932,7 @@ void Menus::mostrarElPeso()
   lcd.clear();
   lcd.setCursor(0,0);
   lcd.print("EL PESO ES :");
-  lcd.setCursor(2,1);
+  lcd.setCursor(0,1);
   lcd.print(peso);
   lcd.setCursor(8,1);
   lcd.print("GRAMOS");
@@ -989,5 +988,5 @@ void Menus::ReseteoTotal()
   lcd.print("RESETEANDO...");
   delay(2000);  
   resetearLitrosMensuales();
-  PantallaProgramador(3);
+  PantallaProgramador(0);
 }
