@@ -34,7 +34,7 @@ class Menus
         bool mostrarPeso = false;
         int Cantidad_Souji[5] = {5, 10, 15, 20, 25};
         bool mostrarLitrosMensuales = false;
-        bool accederRpms  = false;
+        bool limpiezaAutomatica = false;
 
         // Variables del menu programador
         uint8_t misPantallasProg=0;
@@ -42,6 +42,9 @@ class Menus
         bool SubMenuProgamador = false;
         int menuProgIndex = 0;
         bool inSubMenuProg = false;
+        bool accederRpms  = false;
+        bool resetearTodoVerif = false;
+        bool resetearTodo = false;
 
         // Variables de la EEPROM
         const int dayAddress = 0;
@@ -82,13 +85,19 @@ class Menus
         void displayLitrosMensuales();
         void displayLitrosTotales();
         String elegirMes(uint8_t mes);
-        void mostrarRpms();
+        void iniciarLimpieza();
+
 
         // Variables del menu programador
         void PantallaProgramador(uint8_t pantallaProg);
         void modificarProg();
         void entrarSubMenuProg();
         void updateMenuProgDisplay();
+        void mostrarRpms();
+        void ReseteoTotalVerif();
+        void ReseteoTotal();
+        void resetearLitrosMensuales();
+
 
         void decrementandoIndex();
         void incrementandoIndex();

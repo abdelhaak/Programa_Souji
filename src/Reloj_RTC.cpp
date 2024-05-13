@@ -6,10 +6,6 @@
 RTC_DS1307 rtc;
 DateTime Tiempo;
 
-#define LITROS_MENSUALES_DIRECCION 32
-
-
-#define TAMANIO_DATOS_MENSUALES 4
 
 int cantidadMezclaMes[12] = {0}; 
 int litrosMensuales[12] = {0};

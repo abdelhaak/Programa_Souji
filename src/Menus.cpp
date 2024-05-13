@@ -173,7 +173,7 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
   // El SubMenu de Limpieza
   if (pantalla == 12)
   {
-    //limpiezaAutomatica = true ;
+    limpiezaAutomatica = true ;
     lcd.clear();
     lcd.setCursor(4,0);
     lcd.print("PUSLE SEL ");
@@ -346,6 +346,7 @@ void Menus::PantallaProgramador(uint8_t pantallaProg)
   // SUBMENU de RESETEAR LA CANTIDAD DE LITROS ACUMULADA
   if (pantallaProg == 7)
   {
+    resetearTodo = true;
     lcd.clear();
     lcd.setCursor(0,0);
     lcd.print("PARA BORRAR TODO");
@@ -384,23 +385,23 @@ void Menus::entrarSubMenuProg()
 {
   if(!SubMenuProgamador)
   {
-  SubMenuProgamador = true;
-  lcd.clear();
-  switch (menuProgIndex) 
-  {
-    case 0:
-      Menus::PantallaProgramador(4);
-      break;
-    case 1:
-      Menus::PantallaProgramador(5);
-      break;
-    case 2:
-      Menus::PantallaProgramador(6);
-      break;
-    case 3:
-      Menus::PantallaProgramador(7);
-      break;
-  }
+    SubMenuProgamador = true;
+    lcd.clear();
+    switch (menuProgIndex) 
+    {
+      case 0:
+        Menus::PantallaProgramador(4);
+        break;
+      case 1:
+        Menus::PantallaProgramador(5);
+        break;
+      case 2:
+        Menus::PantallaProgramador(6);
+        break;
+      case 3:
+        Menus::PantallaProgramador(7);
+        break;
+    }
   }
   else
   {
@@ -533,6 +534,10 @@ void Menus::modificarBotonSel()
     {
       mostrarElPeso();
     }
+    else if(limpiezaAutomatica)
+    {
+      iniciarLimpieza();
+    }
     else
     {
       validarMezca();
@@ -540,7 +545,19 @@ void Menus::modificarBotonSel()
   }  
   else if(menuProgramador)
   {
-   
+    if(resetearTodoVerif)
+    {
+      ReseteoTotalVerif();
+    }
+    else if(resetearTodo)
+    {
+      ReseteoTotal();
+    }
+    else if(accederRpms)
+    {
+      mostrarRpms();
+    }
+    
   } 
 }
 
@@ -736,6 +753,14 @@ void Menus::ejecutarMezcla(int Cantidad_Souji)
   }
 }
 
+void Menus::resetearLitrosMensuales()
+{
+  for (int i = 0; i < 12; ++i) {
+    litrosMensuales[i] = 0; // Reseteamos los litros mensuales a cero
+    int direccion = LITROS_MENSUALES_DIRECCION + i * TAMANIO_DATOS_MENSUALES;
+    EEPROM.put(direccion, litrosMensuales[i]); // Guardamos los litros mensuales en la EEPROM
+  }
+}
 
 //////////////////////  CONTROL DE LA FECHA  ///////////////////////////
 
@@ -929,3 +954,40 @@ void Menus::mostrarRpms()
   //lcd.print(Motor::calcularRpms());
 }
 
+
+
+///////////////////  CONTROL DE LA LIMPIEZA AUTOMATICA  //////////////////////////////
+
+void Menus::iniciarLimpieza()
+{
+
+}
+
+
+
+///////////////////  CONTROL DEL RESETEO TOTAL DE DATA//////////////////////////////
+
+
+void Menus::ReseteoTotalVerif()
+{
+  resetearTodo = true;
+  resetearTodoVerif = false;
+  lcd.clear();
+  lcd.setCursor(0,0);
+  lcd.print("ESTAS SEGURO ??");
+  lcd.setCursor(3,1);
+  lcd.print("PULSE SEL");
+}
+
+
+void Menus::ReseteoTotal()
+{
+  litrosTotales = 0 ;
+  EEPROM.put(LITROS_TOTALES_DIRECCION, litrosTotales);
+  lcd.clear();
+  lcd.setCursor(0,0);
+  lcd.print("RESETEANDO...");
+  delay(2000);  
+  resetearLitrosMensuales();
+  PantallaProgramador(3);
+}
