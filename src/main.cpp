@@ -21,11 +21,14 @@ const uint8_t PIN_BOTON_SET = 6;
 const uint8_t PIN_BOTON_UP = 7;
 const uint8_t PIN_BOTON_DOWN = 8;
 const uint8_t PIN_BOTON_SEL = 9;
+const uint8_t PIN_BOTON_PRO = 10;
 
 Boton botonSet(PIN_BOTON_SET);
 Boton botonUp(PIN_BOTON_UP);
 Boton botonDown(PIN_BOTON_DOWN);
 Boton botonSel(PIN_BOTON_SEL);
+Boton botonPro(PIN_BOTON_PRO);
+
 
 Menus menu(lcd);
 
@@ -43,12 +46,10 @@ void loop()
 {
     if (botonUp.pulsado()) 
     {
-      Serial.println("He pulsado en UP: ");
       menu.incrementandoIndex();
     }
     if (botonDown.pulsado()) 
     {
-      Serial.println("He pulsado en DOWN: ");
       menu.decrementandoIndex();
     }
     if (botonSet.pulsado()) 
@@ -59,11 +60,8 @@ void loop()
     { 
       menu.modificarBotonSel();
     }
-    /*
-    if(botonUp.mantenerPulsado())
+    if(botonPro.pulsado())
     {
-      Serial.println("He mantenido en UP: ");
-      menu.botonUpMantenido();
+      menu.modificarProg();
     }
-    */
 }

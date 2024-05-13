@@ -20,6 +20,7 @@ class Menus
         uint8_t misPantallas=0;
         int menuIndex = 0;   
         bool inSubMenu = false;
+        bool menuPrincipal = false;
         int IndexCantidad = 0;
         bool variarCantidad = false;
         bool definirFecha = false;
