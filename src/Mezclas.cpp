@@ -12,7 +12,6 @@ Motor motorMezclador(PIN_MOTOR,PIN_SENSOR);
 
 Mezclas::Mezclas()
 {
-
     init();
 }
 
@@ -26,3 +25,4 @@ void Mezclas::parado()
 {
 
 }
+
