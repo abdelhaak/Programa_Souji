@@ -19,8 +19,9 @@ void balanza_Setup()
 }
 
 float PesoActual()
-{
-    peso = balanza.get_units(10);
+{ 
+    peso = balanza.get_units(100); // balanza.get_units(100);
+    //peso += PesoConocido;
     if(peso < 0)
     {
         peso = 0.0;                    

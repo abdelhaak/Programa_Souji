@@ -15,7 +15,7 @@ class Menus
     private:
 
         LiquidCrystal &lcd;
-        
+        bool mezclar5Litros = false;
         // Variables del menu principal 
         uint8_t misPantallas=0;
         int menuIndex = 0;   
@@ -26,7 +26,7 @@ class Menus
         bool definirFecha = false;
         bool bascularFecha = false;
         int editIndex = 0;
-        int dia = 01, mes=01, anio=2024;
+        int dia = 1, mes=1, anio=2024;
         bool iniciarCalibracion = false;
         bool calibrarPeso = false;
         bool calibrarPeso1 = false ;
@@ -35,7 +35,7 @@ class Menus
         int Cantidad_Souji[5] = {5, 10, 15, 20, 25};
         bool mostrarLitrosMensuales = false;
         bool limpiezaAutomatica = false;
-
+        float elPeso = 0.0;
         // Variables del menu programador
         uint8_t misPantallasProg=0;
         bool menuProgramador = false;

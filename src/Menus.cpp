@@ -5,9 +5,11 @@
 #include "EEPROM.h"
 #include "Bascula.h"
 #include "Motor.h"
+#include "Mezclas.h"
 
 // MENUS GENERALES
 
+Mezclas mezcla;
 Menus::Menus(LiquidCrystal &display) : lcd(display) 
 {
   misPantallas = 20;
@@ -538,6 +540,11 @@ void Menus::modificarBotonSel()
     {
       iniciarLimpieza();
     }
+    else if(mezclar5Litros)
+    {
+      mezclar5Litros = false;
+      mezcla.mezclaGeneral();
+    }
     else
     {
       validarMezca();
@@ -556,8 +563,7 @@ void Menus::modificarBotonSel()
     else if(accederRpms)
     {
       mostrarRpms();
-    }
-    
+    }    
   } 
 }
 
@@ -596,6 +602,7 @@ void Menus::incrementarCantidad(int cantidad)
 
 void Menus::mezcla_5_Litros()
 {
+  mezclar5Litros = true;
   lcd.clear();
   lcd.setCursor(0,0);
   lcd.print("EJECUTANDO...:");
@@ -603,6 +610,7 @@ void Menus::mezcla_5_Litros()
   lcd.print(Cantidad_Souji[IndexCantidad]);
   lcd.setCursor(5,1);
   lcd.print("LITROS");
+  mezcla.mezclaGeneral();
 }
 void Menus::mezcla_10_Litros()
 {
@@ -889,25 +897,25 @@ void Menus::inicializarEEPROM() {
 //////////////////  CONTROL DE LA BASCULA  ////////////////////////////
 void Menus::iniciarCaliBascula()
 {
+  iniciarCalibracion = false;
+  calibrarPeso = true;
   lcd.clear();
   lcd.setCursor(3,0);
   lcd.print("PULSE SEL :");
   lcd.setCursor(2,1);
   lcd.print("PARA INICIAR");
-  iniciarCalibracion = false;
-  calibrarPeso = true;
   calibracion(); 
 }
 
 void Menus::talarBascula()
 {
+  calibrarPeso = false;
+  calibrarPeso1 = true ;
   lcd.clear();
   lcd.setCursor(1,0);
   lcd.print("PONGA EL PESO :");
   lcd.setCursor(4,1);
   lcd.print("PULSE SEL");
-  calibrarPeso = false;
-  calibrarPeso1 = true ;
 }
 
 void Menus::calibrarEscala()
@@ -915,27 +923,26 @@ void Menus::calibrarEscala()
   lcd.clear();
   lcd.setCursor(0,0);
   lcd.print("ESPERE....");
-  iniciarCalibracion = false;
-  calibrarPeso = false;
-  calibrarPeso1 = false ;
   finDeCalibracion();
   lcd.clear();
   lcd.setCursor(0,0);
   lcd.print("RETIRE EL PESO");
   lcd.setCursor(2,1);
   lcd.print("YA ESTAAAA");
+  calibrarPeso1 = false ;
 }
  
 void Menus::mostrarElPeso()
 {
-  PesoActual();
+  elPeso = PesoActual();
   lcd.clear();
   lcd.setCursor(0,0);
   lcd.print("EL PESO ES :");
   lcd.setCursor(0,1);
-  lcd.print(peso);
+  lcd.print(elPeso);
   lcd.setCursor(8,1);
   lcd.print("GRAMOS");
+  mostrarPeso = false;
 }
 
 
@@ -959,7 +966,7 @@ void Menus::mostrarRpms()
 
 void Menus::iniciarLimpieza()
 {
-
+  limpiezaAutomatica = false;
 }
 
 

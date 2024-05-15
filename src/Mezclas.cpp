@@ -13,7 +13,7 @@ Motor motorMezclador(PIN_MOTOR,PIN_SENSOR);
 //Menus menus;
 
 // 2 minutos => 120000 milisegundos
-uint64_t tiempoMezcla1 = 5000;
+uint64_t tiempoMezcla1 = 10000;
 // 3 minutos => 180000 milisegundos
 uint64_t tiempoMezcla2 = 10000; 
 // 5 minutos de Vacio => 300000 milisegundos
@@ -60,15 +60,13 @@ void Mezclas::mezclaGeneral()
     Serial.println(pesoAgregado);
     delay(100);
   }
-  Serial.println("Cantidad deseada hecha");
   Serial.println("Apagando Bomba");
   bombaAceite.off();
-  Serial.println("Terminado");
   Serial.println("Ahora activamos el motor mezclador");
   delay(1000);
-  Serial.print("Motor mezclador activo en : ");
+  Serial.print("Motor mezclador activo en :  ");
   Serial.print(RPMS_INICIO);
-  Serial.print(" RPMs");
+  Serial.println(" RPMs");
   motorMezclador.ajustarRpms(RPMS_INICIO,tiempoMezcla1);
   motorMezclador.parar();
   Serial.println("Mezcla terminada.");
