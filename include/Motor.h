@@ -11,18 +11,18 @@ class Motor
         uint8_t pin;
         uint8_t pinSensor;
         //uint8_t pinPot;
-        unsigned long pulsos_ultimo_segundo;
+        uint64_t pulsos_ultimo_segundo;
         float frecuencia;
         int rpms;
-        unsigned long tiempoInicio;
-        static volatile unsigned long pulsos;
+        uint64_t tiempoInicio;
+        static volatile uint64_t pulsos;
        
     public:
         Motor(uint8_t pin,uint8_t pinSensor);
         void init();
         void parar();
         static void contarPulsos();
-        void ajustarRpms();
+        void ajustarRpms(int rpms,uint64_t tiempoMezcla);
         float calcularFrecuencia();
         int calcularRpms();        
 };

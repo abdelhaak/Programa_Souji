@@ -1,7 +1,7 @@
 #include "Motor.h"
 //#include "Arduino.h"
 
-volatile unsigned long Motor::pulsos = 0;
+volatile uint64_t Motor::pulsos = 0;
 
 Motor::Motor(uint8_t pin,uint8_t pinSensor)
 {
@@ -33,11 +33,16 @@ void Motor::contarPulsos()
     pulsos++;
 }
         
-void Motor::ajustarRpms()
+void Motor::ajustarRpms(int rpms, uint64_t tiempoMezcla)
 {
-    int valorPot = analogRead(pinPot);
-    int valorPwm = map(valorPot,0,1023,0,255); 
+    int valorPwm = map(rpms,0,3300,0,255); 
     analogWrite(pin,valorPwm);
+    uint64_t tiempoInicio = millis();
+    while(millis() - tiempoInicio < tiempoMezcla)
+    {
+        delay(500);
+    }
+    parar();
 }
         
 float Motor::calcularFrecuencia()

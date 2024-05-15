@@ -23,6 +23,6 @@ extern long adc_lecture;
 void calibracion();
 void balanza_Setup();
 void finDeCalibracion();
-void PesoActual();
+float PesoActual();
 
 #endif

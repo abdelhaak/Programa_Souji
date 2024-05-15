@@ -18,13 +18,14 @@ void balanza_Setup()
     balanza.tare(VALUE_TARA);
 }
 
-void PesoActual()
+float PesoActual()
 {
     peso = balanza.get_units(10);
     if(peso < 0)
     {
         peso = 0.0;                    
     }
+    return peso;
 }
 
 void calibracion()
