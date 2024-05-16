@@ -13,7 +13,6 @@
 class Menus
 {
     private:
-
         LiquidCrystal &lcd;
         bool mezclar5Litros = false;
         // Variables del menu principal 
@@ -21,20 +20,24 @@ class Menus
         int menuIndex = 0;   
         bool inSubMenu = false;
         bool menuPrincipal = false;
+        // Variables de la cantidad SOUJI
         int IndexCantidad = 0;
-        bool variarCantidad = false;
+        bool variarCantidad = false;        
+        int Cantidad_Souji[5] = {5, 10, 15, 20, 25};
+        bool mostrarLitrosMensuales = false;
+        // Variables de la gestion de fecha
         bool definirFecha = false;
         bool bascularFecha = false;
         int editIndex = 0;
+        // Variables de la gestion de la galga
         bool iniciarCalibracion = false;
         bool calibrarPeso = false;
         bool calibrarPeso1 = false ;
-        bool conf = false ;
         bool mostrarPeso = false;
-        int Cantidad_Souji[5] = {5, 10, 15, 20, 25};
-        bool mostrarLitrosMensuales = false;
-        bool limpiezaAutomatica = false;
         float elPeso = 0.0;
+        // Variables del vacio automatico
+        bool vacioAutomatico = false;
+        bool iniciarVacio = false;
 
         // Variables del menu programador
         uint8_t misPantallasProg=0;
@@ -81,8 +84,8 @@ class Menus
         void displayLitrosMensuales();
         void displayLitrosTotales();
         String elegirMes(uint8_t mes);
-        void iniciarLimpieza();
-
+        void funcionVacio();
+        void vaciando();
 
         // Variables del menu programador
         void PantallaProgramador(uint8_t pantallaProg);

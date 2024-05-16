@@ -92,18 +92,8 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
         
   }
 
-  // El Menu de Limpieza Automatica
-  if (pantalla == 4)
-  {
-    lcd.clear();
-    lcd.setCursor(2,0);
-    lcd.print("LA LIMPIEZA ");
-    lcd.setCursor(3,1);
-    lcd.print("AUTOMATICA");
-  }
-
   // El Menu de Vaciar Deposito
-  if (pantalla == 5)
+  if (pantalla == 4)
   {
     lcd.clear();
     lcd.setCursor(5,0);
@@ -113,7 +103,7 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
   }
   
   // El Menu de Calibracion de Bascula
-  if (pantalla == 6)
+  if (pantalla == 5)
   {
     lcd.clear();
     lcd.setCursor(2,0);
@@ -123,7 +113,7 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
   }
   
   // El Menu de Lenguaje
-  if (pantalla == 7)
+  if (pantalla == 6)
   {
     lcd.clear();
     lcd.setCursor(2,0);
@@ -133,7 +123,7 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
   }
 
   // El SubMenu de Cantidad Souji
-  if (pantalla == 8)
+  if (pantalla == 7)
   {
     inSubMenu = true;
     variarCantidad = true;
@@ -146,7 +136,7 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
   }
 
   // El SubMenu de Litros Mensuales
-  if (pantalla == 9)
+  if (pantalla == 8)
   {
     for (int i = 0; i < 12; ++i) 
     {
@@ -159,14 +149,14 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
 
  // El SubMenu de Litros Totales
   
-  if (pantalla == 10)
+  if (pantalla == 9)
   {
     EEPROM.get(LITROS_TOTALES_DIRECCION, litrosTotales);
     displayLitrosTotales();
   }
   
   // El SubMenu de Fecha
-  if (pantalla == 11)
+  if (pantalla == 10)
   {
     definirFecha = true;
     editIndex = 0 ;
@@ -177,30 +167,19 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     lcd.print("PULSE SEL ");
   }
   
-  // El SubMenu de Limpieza
-  if (pantalla == 12)
-  {
-    limpiezaAutomatica = true ;
-    lcd.clear();
-    lcd.setCursor(4,0);
-    lcd.print("PUSLE SEL ");
-    lcd.setCursor(0,1);
-    lcd.print("PARA LA LIMPIEZA");
-  }
-  
   // El SubMenu de Vaciar Deposito
-  if (pantalla == 13)
+  if (pantalla == 11)
   {
+    vacioAutomatico = true;
     lcd.clear();
     lcd.setCursor(3,0);
     lcd.print("INICIAR");
     lcd.setCursor(5,1);
     lcd.print("VACIO");
-    mostrarPeso = true;
   }
   
   // El SubMenu de Calibracion
-  if (pantalla == 14)
+  if (pantalla == 12)
   {
     lcd.clear();
     lcd.setCursor(1,0);
@@ -211,7 +190,7 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
   }
   
   // El SubMenu de lenguaje
-  if (pantalla == 15)
+  if (pantalla == 13)
   {
     lcd.clear();
     lcd.setCursor(4,0);
@@ -235,30 +214,27 @@ void Menus::entrarSubMenu()
   switch (menuIndex) 
   {
     case 0:
-      Menus::PantallaSeleccionada(8);
+      Menus::PantallaSeleccionada(7);
       break;
     case 1:
-      Menus::PantallaSeleccionada(9);
+      Menus::PantallaSeleccionada(8);
       break;
     case 2:
-      Menus::PantallaSeleccionada(10);
+      Menus::PantallaSeleccionada(9);
       break;
     case 3:
-      Menus::PantallaSeleccionada(11);
+      Menus::PantallaSeleccionada(10);
       break;
     case 4:
-      Menus::PantallaSeleccionada(12);
+      Menus::PantallaSeleccionada(11);
       break;
     case 5:
-      Menus::PantallaSeleccionada(13);
+      Menus::PantallaSeleccionada(12);
       break;
     case 6:
-      Menus::PantallaSeleccionada(14);
+      Menus::PantallaSeleccionada(13);
       break;
-    case 7:
-      Menus::PantallaSeleccionada(15);
-      break;
-  }
+ }
   }
   else
   {
@@ -475,9 +451,13 @@ void Menus::modificarBotonSel()
     {
       mostrarElPeso();
     }
-    else if(limpiezaAutomatica)
+    else if(vacioAutomatico)
     {
-      iniciarLimpieza();
+      funcionVacio();
+    }
+    else if(iniciarVacio)
+    {
+      vaciando();
     }
     else if(mezclar5Litros)
     {
@@ -508,7 +488,7 @@ void Menus::modificarBotonSel()
 
 void Menus::decrementandoIndex() 
 {
-    if (!inSubMenu && menuPrincipal && menuIndex < 7) 
+    if (!inSubMenu && menuPrincipal && menuIndex < 6) 
     {
       menuIndex++;
       updateMenuDisplay();
@@ -980,13 +960,28 @@ void Menus::mostrarRpms()
 
 
 
-///////////////////  CONTROL DE LA LIMPIEZA AUTOMATICA  //////////////////////////////
+///////////////////  CONTROL DEL VACIO AUTOMATICO  //////////////////////////////
 
-void Menus::iniciarLimpieza()
+void Menus::funcionVacio()
 {
-  limpiezaAutomatica = false;
+  lcd.clear();
+  lcd.setCursor(0,0);
+  lcd.print("INICIAMOS VACIO");
+  lcd.setCursor(0,1);
+  lcd.print("PULSE SEL");
+  vacioAutomatico = false;
+  iniciarVacio = true;
 }
 
+void Menus::vaciando()
+{
+  lcd.clear();
+  lcd.setCursor(0,0);
+  lcd.print("VACIANDO...");
+  delay(2000);
+  PantallaSeleccionada(11);
+  //mezcla.mezclaVacio();
+}
 
 
 ///////////////////  CONTROL DEL RESETEO TOTAL DE DATA//////////////////////////////
