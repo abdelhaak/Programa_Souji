@@ -45,7 +45,8 @@ class Mezclas
         Mezclas();
         void init();
         void parado();
-        void mezclaGeneral();     
+        void mezclaGeneral();  
+        void mezclaVacio();   
 };
 
 

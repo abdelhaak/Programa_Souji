@@ -1,7 +1,5 @@
 #include "Reloj_RTC.h"
-#include "Menus.h"
-#include <LiquidCrystal.h>
-#include "EEPROM.h"
+
 
 RTC_DS1307 rtc;
 DateTime Tiempo;
@@ -10,22 +8,10 @@ DateTime Tiempo;
 int cantidadMezclaMes[12] = {0}; 
 int litrosMensuales[12] = {0};
 uint8_t litrosTotales =0 ;
+uint8_t segundo, minuto, hora, dia, mes, diaDeLaSemana;
+uint16_t anio;
 String elMes;
 
-
-void guardarLitrosMensualesEnEEPROM() {
-  for (int i = 0; i < 12; ++i) {
-    int direccion = LITROS_MENSUALES_DIRECCION + i * TAMANIO_DATOS_MENSUALES;
-    EEPROM.put(direccion, litrosMensuales[i]);
-  }
-}
-
-void cargarLitrosMensualesDesdeEEPROM() {
-  for (int i = 0; i < 12; ++i) {
-    int direccion = LITROS_MENSUALES_DIRECCION + i * TAMANIO_DATOS_MENSUALES;
-    EEPROM.get(direccion, litrosMensuales[i]);
-  }
-}
 
 String Fecha_actual(uint8_t dia, int8_t mes, uint16_t anio)
 {

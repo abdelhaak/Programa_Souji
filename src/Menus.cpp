@@ -804,9 +804,6 @@ void Menus::displayFecha()
 
 void Menus::ajustarFecha()
 {
-  Serial.println("Estamos en ajustarFecha ");
-  Serial.print("bascularFecha : ");
-  Serial.println(bascularFecha);
   bascularFecha = true;
   displayFecha(); 
 }

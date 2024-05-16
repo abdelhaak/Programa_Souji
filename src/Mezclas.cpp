@@ -10,14 +10,15 @@ Bomba bombaVacio(PIN_BOMBA_VACIO);
 
 Motor motorMezclador(PIN_MOTOR,PIN_SENSOR);
 
-//Menus menus;
-
-// 2 minutos => 120000 milisegundos
-uint64_t tiempoMezcla1 = 10000;
-// 3 minutos => 180000 milisegundos
-uint64_t tiempoMezcla2 = 10000; 
-// 5 minutos de Vacio => 300000 milisegundos
-uint64_t tiempoVacio = 15000;
+// 2 minutos => 120000 ms    ::   PARA LA PRIMERA MEZCLA
+uint64_t tiempoMezcla1 = 120000;
+// 3 minutos => 180000 ms    ::   PARA LA SEGUNDA MEZCLA
+uint64_t tiempoMezcla2 = 180000;
+// El peso minimo del vacio autorizado
+uint64_t pesoMinimo = 30.0;
+// El tiempo de error autorizado de la bascula 
+// iniciado en 3 minutos => 180000
+uint64_t tiempoErrorBascula = 180000;
 
 float porcentajeAceite = 30.0;
 float porcentajeSouji = 50.0;
@@ -72,3 +73,25 @@ void Mezclas::mezclaGeneral()
   Serial.println("Mezcla terminada.");
 }
 
+void Mezclas::mezclaVacio()
+{
+  Serial.println("Iniciamos el vacio");
+  Serial.println("Activamos la bomba");
+  bombaVacio.on();
+  unsigned long tiempoInicio = millis(); // Guardar el tiempo de inicio
+
+  while(PesoActual() < pesoMinimo)
+  {
+    delay(500);
+    if (millis() - tiempoInicio > tiempoErrorBascula)
+    {
+      Serial.println("Error de la bascula : Tiempo máximo de espera alcanzado");
+      Serial.println("Apagamos la Bomba ");
+      bombaVacio.off();
+      return;
+    }
+  }  
+  Serial.println("Bomba apagada");
+  bombaVacio.off();
+  Serial.println("Proceso finalizado");
+}

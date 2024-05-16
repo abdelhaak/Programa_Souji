@@ -29,8 +29,6 @@ extern int litrosMensuales[12];
 
 String Fecha_actual(uint8_t dia, int8_t mes, uint16_t anio);
 String Hora_actual();
-void guardarLitrosMensualesEnEEPROM();
-void cargarLitrosMensualesDesdeEEPROM();
 
 
 #endif
