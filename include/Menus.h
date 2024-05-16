@@ -7,7 +7,7 @@
 #define DAY_ADDRESS 0   // Dirección para el día
 #define MONTH_ADDRESS 4 // Dirección para el mes
 #define YEAR_ADDRESS 8  // Dirección para el año
-#define INIT_CHECK_ADDRESS 10 // Dirección para verificar la inicialización
+//#define INIT_CHECK_ADDRESS   // Dirección para verificar la inicialización
 #define LITROS_TOTALES_DIRECCION 12  // Direccion de los litros totales
 
 class Menus
@@ -26,7 +26,6 @@ class Menus
         bool definirFecha = false;
         bool bascularFecha = false;
         int editIndex = 0;
-        int dia = 1, mes=1, anio=2024;
         bool iniciarCalibracion = false;
         bool calibrarPeso = false;
         bool calibrarPeso1 = false ;
@@ -36,6 +35,7 @@ class Menus
         bool mostrarLitrosMensuales = false;
         bool limpiezaAutomatica = false;
         float elPeso = 0.0;
+
         // Variables del menu programador
         uint8_t misPantallasProg=0;
         bool menuProgramador = false;
@@ -46,10 +46,6 @@ class Menus
         bool resetearTodoVerif = false;
         bool resetearTodo = false;
 
-        // Variables de la EEPROM
-        const int dayAddress = 0;
-        const int monthAddress = 1;
-        const int yearAddress = 2;
         
     public:
         Menus(LiquidCrystal &display);

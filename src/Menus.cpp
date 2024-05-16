@@ -2,7 +2,7 @@
 #include "Menus.h"
 #include "Reloj_RTC.h"
 #include "Boton.h"
-#include "EEPROM.h"
+#include <EEPROM.h>
 #include "Bascula.h"
 #include "Motor.h"
 #include "Mezclas.h"
@@ -51,6 +51,7 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
   // Pantalla de Litros Mensuales
   if (pantalla == 1)
   {
+    if(mes == 0)mes =1;
     mostrarLitrosMensuales = false;
     lcd.clear();
     lcd.setCursor(4,0);
@@ -61,7 +62,7 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
 
   // Pantalla de Litros Totales
   if (pantalla == 2)
-  {
+  { 
     EEPROM.get(LITROS_TOTALES_DIRECCION, litrosTotales);
     lcd.clear();
     lcd.setCursor(0,0);
@@ -88,6 +89,7 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     lcd.print(mes);
     lcd.print("/");
     lcd.print(anio);
+        
   }
 
   // El Menu de Limpieza Automatica
@@ -146,11 +148,17 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
   // El SubMenu de Litros Mensuales
   if (pantalla == 9)
   {
+    for (int i = 0; i < 12; ++i) 
+    {
+      int direccion = LITROS_MENSUALES_DIRECCION + i * TAMANIO_DATOS_MENSUALES;
+      EEPROM.get(direccion, litrosMensuales[i]);
+    }
     mostrarLitrosMensuales = true;
     displayLitrosMensuales();
   }
 
-   // El SubMenu de Litros Totales
+ // El SubMenu de Litros Totales
+  
   if (pantalla == 10)
   {
     EEPROM.get(LITROS_TOTALES_DIRECCION, litrosTotales);
@@ -160,11 +168,8 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
   // El SubMenu de Fecha
   if (pantalla == 11)
   {
-    EEPROM.get(DAY_ADDRESS, dia);
-    EEPROM.get(MONTH_ADDRESS, mes);
-    EEPROM.get(YEAR_ADDRESS, anio);
     definirFecha = true;
-    editIndex = -1 ;
+    editIndex = 0 ;
     lcd.clear();
     lcd.setCursor(2,0);
     lcd.print("AJUSTAR FECHA ");
@@ -419,6 +424,88 @@ void Menus::updateMenuProgDisplay()
 
 
 ////////////////  Manejar los botones de entrada  ///////////////////////
+
+
+void Menus::modificarBotonSet()
+{
+  if (menuPrincipal)
+  {
+    if(bascularFecha)
+    {
+      validarFecha();
+    }
+    else
+    {
+      entrarSubMenu();
+    }
+  }
+  else if(menuProgramador)
+  {
+    entrarSubMenuProg();
+  }
+  else{}
+}
+
+void Menus::modificarBotonSel()
+{
+  if (menuPrincipal)
+  {
+    if(definirFecha && !bascularFecha)
+    {
+      //bascularFecha = true;
+      ajustarFecha();
+    } 
+    else if(definirFecha && bascularFecha)
+    {
+      pasarFecha();
+    }
+    else if(iniciarCalibracion)
+    {
+      iniciarCaliBascula();
+    }
+    else if(calibrarPeso)
+    {
+      talarBascula();
+    }
+    else if(calibrarPeso1)
+    {
+      calibrarEscala();
+    }
+    else if(mostrarPeso)
+    {
+      mostrarElPeso();
+    }
+    else if(limpiezaAutomatica)
+    {
+      iniciarLimpieza();
+    }
+    else if(mezclar5Litros)
+    {
+      mezclar5Litros = false;
+      mezcla.mezclaGeneral();
+    }
+    else
+    {
+      validarMezca();
+    }
+  }  
+  else if(menuProgramador)
+  {
+    if(resetearTodoVerif)
+    {
+      ReseteoTotalVerif();
+    }
+    else if(resetearTodo)
+    {
+      ReseteoTotal();
+    }
+    else if(accederRpms)
+    {
+      mostrarRpms();
+    }    
+  } 
+}
+
 void Menus::decrementandoIndex() 
 {
     if (!inSubMenu && menuPrincipal && menuIndex < 7) 
@@ -487,87 +574,6 @@ void Menus::incrementandoIndex()
     else{}
 }
 
-void Menus::modificarBotonSet()
-{
-  if (menuPrincipal)
-  {
-    if(bascularFecha)
-    {
-      validarFecha();
-    }
-    else
-    {
-      entrarSubMenu();
-    }
-  }
-  else if(menuProgramador)
-  {
-    entrarSubMenuProg();
-  }
-  else{}
-}
-
-void Menus::modificarBotonSel()
-{
-  if (menuPrincipal)
-  {
-    if(definirFecha)
-    {
-      bascularFecha = true;
-      ajustarFecha();
-    } 
-    else if(bascularFecha)
-    {
-      pasarFecha();
-    }
-    else if(iniciarCalibracion)
-    {
-      iniciarCaliBascula();
-    }
-    else if(calibrarPeso)
-    {
-      talarBascula();
-    }
-    else if(calibrarPeso1)
-    {
-      calibrarEscala();
-    }
-    else if(mostrarPeso)
-    {
-      mostrarElPeso();
-    }
-    else if(limpiezaAutomatica)
-    {
-      iniciarLimpieza();
-    }
-    else if(mezclar5Litros)
-    {
-      mezclar5Litros = false;
-      mezcla.mezclaGeneral();
-    }
-    else
-    {
-      validarMezca();
-    }
-  }  
-  else if(menuProgramador)
-  {
-    if(resetearTodoVerif)
-    {
-      ReseteoTotalVerif();
-    }
-    else if(resetearTodo)
-    {
-      ReseteoTotal();
-    }
-    else if(accederRpms)
-    {
-      mostrarRpms();
-    }    
-  } 
-}
-
-
 ////////////////   Programas de las mezclas     /////////////////////////
 void Menus::updateCantidadSouji()
 {
@@ -592,12 +598,15 @@ void Menus::incrementarCantidad(int cantidad)
   EEPROM.get(MONTH_ADDRESS, mes);
   EEPROM.get(YEAR_ADDRESS, anio);
 
-  int mesActual = mes - 1; 
-  cantidadMezclaMes[mesActual] += cantidad; 
+  int mesActual = mes; 
   litrosMensuales[mesActual] += cantidad; 
   litrosTotales += cantidad;
   EEPROM.put(LITROS_TOTALES_DIRECCION, litrosTotales);
-  guardarLitrosMensualesEnEEPROM();
+  for (int i = 0; i < 12; ++i) 
+  {
+    int direccion = LITROS_MENSUALES_DIRECCION + i * TAMANIO_DATOS_MENSUALES;
+    EEPROM.put(direccion, litrosMensuales[i]);
+  }
 }
 
 void Menus::mezcla_5_Litros()
@@ -655,16 +664,20 @@ void Menus::mezcla_25_Litros()
 
 void Menus::displayLitrosMensuales()
 {
-  cargarLitrosMensualesDesdeEEPROM();
-  lcd.clear();
-  lcd.setCursor(0,0);
-  lcd.print("EN ");
-  lcd.print(elegirMes(mes)); // Muestra el nombre del mes actual
-  lcd.print(" HAY");
-  lcd.setCursor(3,1);
-  lcd.print(litrosMensuales[mes - 1]); // Muestra los litros mensuales del mes actual
-  lcd.setCursor(8,1);
-  lcd.print("LITROS");
+
+    for (int i = 0; i < 12; ++i) 
+    {
+    int direccion = LITROS_MENSUALES_DIRECCION + i * TAMANIO_DATOS_MENSUALES;
+    EEPROM.get(direccion, litrosMensuales[i]);
+    }
+    lcd.clear();
+    lcd.setCursor(0,0);
+    lcd.print(elegirMes(mes)); // Muestra el nombre del mes actual
+    lcd.print(" HAY:");
+    lcd.setCursor(3,1);
+    lcd.print(litrosMensuales[mes]); // Muestra los litros mensuales del mes actual
+    lcd.setCursor(8,1);
+    lcd.print("LITROS");  
 }
 
 void Menus::displayLitrosTotales()
@@ -774,6 +787,10 @@ void Menus::resetearLitrosMensuales()
 
 void Menus::displayFecha()
 {  
+  EEPROM.get(DAY_ADDRESS, dia);
+  EEPROM.get(MONTH_ADDRESS, mes);
+  EEPROM.get(YEAR_ADDRESS, anio);
+
   lcd.clear();
   lcd.setCursor(0,0);
   lcd.print("LA FECHA ES:");
@@ -787,6 +804,9 @@ void Menus::displayFecha()
 
 void Menus::ajustarFecha()
 {
+  Serial.println("Estamos en ajustarFecha ");
+  Serial.print("bascularFecha : ");
+  Serial.println(bascularFecha);
   bascularFecha = true;
   displayFecha(); 
 }
@@ -882,6 +902,7 @@ void Menus::bajaFecha()
  
 
 ////////////////////  CONTROL DE LA EEPROM   //////////////////////////
+/*
 void Menus::inicializarEEPROM() {
     int initCheck;
     EEPROM.get(INIT_CHECK_ADDRESS, initCheck);
@@ -893,7 +914,7 @@ void Menus::inicializarEEPROM() {
     }
 }
 
-
+*/
 //////////////////  CONTROL DE LA BASCULA  ////////////////////////////
 void Menus::iniciarCaliBascula()
 {

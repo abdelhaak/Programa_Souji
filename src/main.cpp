@@ -9,11 +9,6 @@
 #include "Bascula.h"
 #include "Motor.h"
 
-#define VALUE_TARA 20
-#define DOUT  A1
-#define CLK  A0
-
-
 LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
 
 // Definición de Botones
@@ -36,10 +31,11 @@ void setup()
 {
   Serial.begin(9600);
   Serial.println("Programa iniciado");
+  //cargarLitrosMensualesDesdeEEPROM();
   menu.lcd_init();
   rtc.begin();
   litrosTotales = 0;
-  balanza_Setup();
+  balanza_Setup();  
 }
 
 void loop()
