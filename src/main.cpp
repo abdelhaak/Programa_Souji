@@ -31,7 +31,6 @@ void setup()
 {
   Serial.begin(9600);
   Serial.println("Programa iniciado");
-  //cargarLitrosMensualesDesdeEEPROM();
   menu.lcd_init();
   rtc.begin();
   litrosTotales = 0;
@@ -60,4 +59,13 @@ void loop()
     {
       menu.modificarProg();
     }
+    if (botonUp.pulsadoLargo()) 
+    {
+      menu.incrementandoIndexRapido();
+    }
+      if (botonDown.pulsadoLargo()) 
+    {
+      menu.decrementandoIndexRapido();
+    }
+    
 }

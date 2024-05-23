@@ -7,6 +7,8 @@ Boton::Boton(byte pin)
     estado = true;
     UltimaLectura = true;
     UltimoTiempoPulsado = 0;
+    pulso = false;
+    pulsado_largo = false ;
     init();
 }
 
@@ -18,22 +20,42 @@ void Boton::init()
 
 void Boton::update()
 {
-    estado = digitalRead(pin);
-    if(estado && !UltimaLectura && (millis() - UltimaLectura > UltimoTiempoPulsado))
-    {
-        pulso = true;
-        UltimaLectura = millis();
+    bool lecturaActual = digitalRead(pin);
+    unsigned long tiempoActual = millis();
+
+    if (lecturaActual && !UltimaLectura) {
+        UltimoTiempoPulsado = tiempoActual;
     }
-    else if (UltimaLectura)
-    {
+    
+    if (!lecturaActual && UltimaLectura) {
+        if ((tiempoActual - UltimoTiempoPulsado) < TIEMPO_PULSO_LARGO) {
+            pulso = true;
+        } else {
+            pulso = false;
+        }
+        pulsado_largo = false;
+    }
+
+    if (lecturaActual && UltimaLectura && (tiempoActual - UltimoTiempoPulsado >= TIEMPO_PULSO_LARGO)) {
+        pulsado_largo = true;
         pulso = false;
     }
-    UltimaLectura = estado;
+    
+    UltimaLectura = lecturaActual;
 }
 
 bool Boton::pulsado()
 {
     update();
-    return pulso;
+    bool resultado = pulso;
+    if (pulso) pulso = false;
+    return resultado;
 }
 
+bool Boton::pulsadoLargo()
+{
+    update();
+    bool resultado = pulsado_largo;
+    if (pulsado_largo) pulsado_largo = false;
+    return resultado;
+}

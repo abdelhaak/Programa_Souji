@@ -24,7 +24,7 @@ void Menus::lcd_init()
 }
 
 
-///////////////// Pantallas del MENU Principal   ////////////////////////
+///////////////// Pantallas del MENU Principal   /////////////////
 void Menus::PantallaSeleccionada(uint8_t pantalla)
 {
   // Limpieza de la pantalla 
@@ -246,7 +246,7 @@ void Menus::entrarSubMenu()
 }
 
 
-//////////////// PANTALLAS DEL MODO PROGRAMADOR  ///////////////////////
+//////////////// PANTALLAS DEL MODO PROGRAMADOR  /////////////////
 void Menus::PantallaProgramador(uint8_t pantallaProg)
 {
   // Limpieza de la pantalla 
@@ -399,8 +399,7 @@ void Menus::updateMenuProgDisplay()
 }
 
 
-////////////////  Manejar los botones de entrada  ///////////////////////
-
+////////////////  Manejar los botones de entrada  /////////////////
 
 void Menus::modificarBotonSet()
 {
@@ -520,6 +519,15 @@ void Menus::decrementandoIndex()
     else{}
 }
 
+void Menus::decrementandoIndexRapido()
+{
+  if(definirFecha)
+  {
+    bajaFechaRapido();
+    displayFecha();
+  }
+}
+
 void Menus::incrementandoIndex() 
 {
     if (!inSubMenu && menuPrincipal && menuIndex > 0)
@@ -554,7 +562,16 @@ void Menus::incrementandoIndex()
     else{}
 }
 
-////////////////   Programas de las mezclas     /////////////////////////
+void Menus::incrementandoIndexRapido()
+{
+  if(definirFecha)
+  {
+    subeFechaRapido();
+    displayFecha();
+  }
+}
+
+////////////////   Programas de las mezclas     /////////////////
 void Menus::updateCantidadSouji()
 {
   lcd.clear();
@@ -763,22 +780,53 @@ void Menus::resetearLitrosMensuales()
   }
 }
 
-//////////////////////  CONTROL DE LA FECHA  ///////////////////////////
+/////////////////  CONTROL DE LA FECHA  /////////////////
 
 void Menus::displayFecha()
 {  
   EEPROM.get(DAY_ADDRESS, dia);
   EEPROM.get(MONTH_ADDRESS, mes);
   EEPROM.get(YEAR_ADDRESS, anio);
-
+  
+  // Limpiar la pantalla LCD y colocar el cursor al principio
   lcd.clear();
-  lcd.setCursor(0,0);
-  lcd.print("LA FECHA ES:");
-  lcd.setCursor(3,1);
-  lcd.print(dia); 
-  lcd.print("/"); 
-  lcd.print(mes); 
-  lcd.print("/"); 
+  lcd.setCursor(0, 0);
+  lcd.print("AJUSTANDO ..."); 
+  lcd.setCursor(0, 1);
+  
+  // Mostrar el día con o sin resaltado según el editIndex
+  if (editIndex == 0) {
+    lcd.print(">");  // Indicar que está seleccionado
+  } else {
+    lcd.print(" ");
+  }
+  if (dia < 10) {
+    lcd.print("0"); // Añadir un 0 si el día es menor que 10 para mantener el formato
+  }
+  lcd.print(dia);
+  //lcd.print("/");
+  
+  // Mostrar el mes con o sin resaltado según el editIndex
+  if (editIndex == 1) {
+    lcd.print(">");  // Indicar que está seleccionado
+  } else {
+    lcd.print(" ");
+  }
+  if (mes < 10) {
+    lcd.print("0"); // Añadir un 0 si el mes es menor que 10 para mantener el formato
+  }
+  lcd.print(mes);
+  //lcd.print("/");
+  
+  // Mostrar el año con o sin resaltado según el editIndex
+  if (editIndex == 2) {
+    lcd.print(">");  // Indicar que está seleccionado
+  } else {
+    lcd.print(" ");
+  }
+  if (anio < 2024) {
+    lcd.print(" "); // Añadir un 0 si el mes es menor que 10 para mantener el formato
+  }
   lcd.print(anio);
 }
 
@@ -851,6 +899,43 @@ void Menus::subeFecha()
   displayFecha();
 }
 
+void Menus::subeFechaRapido()
+{
+  switch (editIndex)
+  {
+  case 0 :
+    if(dia<31)
+    {dia+=2;}
+    else
+    {dia = 1;}
+    EEPROM.put(DAY_ADDRESS, dia);
+    break;
+  case 1 :
+    if(mes<12)
+    {mes+=2;}
+    else
+    {mes = 1;}
+    EEPROM.put(MONTH_ADDRESS, mes);
+    break;
+  case 2 :
+    if(anio<3000)
+    {anio++;}
+    else
+    {anio = 2024;}
+    EEPROM.put(MONTH_ADDRESS, anio);
+    break;
+    
+  }
+  /*
+  EEPROM.put(DAY_ADDRESS, dia);
+  EEPROM.put(MONTH_ADDRESS, mes);
+  EEPROM.put(YEAR_ADDRESS, anio);
+  */
+  //displayFecha();
+  delay(300);
+}
+
+
 void Menus::bajaFecha()
 {
   switch (editIndex)
@@ -876,9 +961,44 @@ void Menus::bajaFecha()
   EEPROM.put(YEAR_ADDRESS, anio);
   displayFecha();
 }
- 
 
-////////////////////  CONTROL DE LA EEPROM   //////////////////////////
+void Menus::bajaFechaRapido()
+{
+  switch (editIndex)
+  {
+  case 0 :
+    if(dia>1)
+    {dia-=2;}
+    else
+    {dia = 31;}
+    EEPROM.put(MONTH_ADDRESS, dia);
+    break;
+  case 1 :
+    if(mes>1)
+    {mes-=2;}
+    else
+    {mes = 12;}
+    EEPROM.put(MONTH_ADDRESS, mes);
+    break;
+  case 2 :
+    if(anio>2024)
+    {anio-=2;}
+    else
+    {anio=3000;}
+    EEPROM.put(MONTH_ADDRESS, anio);
+    break;
+  }
+  /*
+  EEPROM.put(DAY_ADDRESS, dia);
+  EEPROM.put(MONTH_ADDRESS, mes);
+  EEPROM.put(YEAR_ADDRESS, anio);
+  */
+  //displayFecha();
+  delay(300);
+}
+
+
+/////////////////  CONTROL DE LA EEPROM   /////////////////
 /*
 void Menus::inicializarEEPROM() {
     int initCheck;
@@ -892,7 +1012,7 @@ void Menus::inicializarEEPROM() {
 }
 
 */
-//////////////////  CONTROL DE LA BASCULA  ////////////////////////////
+/////////////////  CONTROL DE LA BASCULA  /////////////////
 void Menus::iniciarCaliBascula()
 {
   iniciarCalibracion = false;
@@ -944,7 +1064,7 @@ void Menus::mostrarElPeso()
 }
 
 
-///////////////////  CONTROL DEL MOTOR  //////////////////////////////
+/////////////////  CONTROL DEL MOTOR  /////////////////
 void Menus::mostrarRpms()
 {
   lcd.clear();
@@ -960,7 +1080,7 @@ void Menus::mostrarRpms()
 
 
 
-///////////////////  CONTROL DEL VACIO AUTOMATICO  //////////////////////////////
+/////////////////  CONTROL DEL VACIO AUTOMATICO  /////////////////
 
 void Menus::funcionVacio()
 {
@@ -984,7 +1104,7 @@ void Menus::vaciando()
 }
 
 
-///////////////////  CONTROL DEL RESETEO TOTAL DE DATA//////////////////////////////
+/////////////////  CONTROL DEL RESETEO TOTAL DE DATA  /////////////////
 
 
 void Menus::ReseteoTotalVerif()
