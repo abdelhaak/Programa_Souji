@@ -20,7 +20,7 @@ void Menus::lcd_init()
 {  
   lcd.begin(16,2);
   lcd.clear();
-  PantallaSeleccionada(0);
+  //PantallaSeleccionada(0);
 }
 
 
@@ -39,6 +39,9 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
   {
     menuPrincipal = true;
     menuProgramador = false;
+    mostrarLitrosMensuales = false;
+    inSubMenu = false;
+    menuIndex = 0;
     lcd.clear();
     lcd.setCursor(0,0);
     lcd.print("CANTIDAD SOUJI");
@@ -95,6 +98,7 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
   // El Menu de Vaciar Deposito
   if (pantalla == 4)
   {
+    mostrarPeso = false;
     lcd.clear();
     lcd.setCursor(5,0);
     lcd.print("VACIAR");
@@ -148,7 +152,6 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
   }
 
  // El SubMenu de Litros Totales
-  
   if (pantalla == 9)
   {
     EEPROM.get(LITROS_TOTALES_DIRECCION, litrosTotales);
@@ -170,7 +173,8 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
   // El SubMenu de Vaciar Deposito
   if (pantalla == 11)
   {
-    vacioAutomatico = true;
+    //vacioAutomatico = true;
+    mostrarPeso = true;
     lcd.clear();
     lcd.setCursor(3,0);
     lcd.print("INICIAR");
@@ -353,13 +357,13 @@ void Menus::modificarProg()
 {
   if(menuProgramador)
   {
-    PantallaSeleccionada(0);
+    PantallaProgramador(0);
   }
   else if(!menuProgramador)
   {
-    menuPrincipal = false;
-    menuProgramador = true;
-    PantallaProgramador(0);
+    menuPrincipal = true;
+    menuProgramador = false;
+    PantallaSeleccionada(0);
   }
   
 }
@@ -408,6 +412,10 @@ void Menus::modificarBotonSet()
     if(bascularFecha)
     {
       validarFecha();
+    }
+    else if(finDeCalibre)
+    {
+      finalizarCalibracion();
     }
     else
     {
@@ -1046,10 +1054,19 @@ void Menus::calibrarEscala()
   lcd.setCursor(0,0);
   lcd.print("RETIRE EL PESO");
   lcd.setCursor(2,1);
-  lcd.print("YA ESTAAAA");
-  calibrarPeso1 = false ;
+  lcd.print("PULSE SET");
+  finDeCalibre = true;
+  calibrarPeso1 = false;
 }
  
+void Menus::finalizarCalibracion()
+{
+  finDeCalibre = false;
+  //menuPrincipal = true;
+  balanza_Setup();
+  //PantallaSeleccionada(12);
+}
+
 void Menus::mostrarElPeso()
 {
   elPeso = PesoActual();
@@ -1060,7 +1077,7 @@ void Menus::mostrarElPeso()
   lcd.print(elPeso);
   lcd.setCursor(8,1);
   lcd.print("GRAMOS");
-  mostrarPeso = false;
+  //mostrarPeso = false;
 }
 
 

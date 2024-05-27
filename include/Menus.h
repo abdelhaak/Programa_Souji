@@ -33,6 +33,7 @@ class Menus
         bool iniciarCalibracion = false;
         bool calibrarPeso = false;
         bool calibrarPeso1 = false ;
+        bool finDeCalibre = false;
         bool mostrarPeso = false;
         float elPeso = 0.0;
         // Variables del vacio automatico
@@ -81,6 +82,7 @@ class Menus
         void iniciarCaliBascula(); 
         void talarBascula();  
         void calibrarEscala();   
+        void finalizarCalibracion();
         void mostrarElPeso();   
         void incrementarCantidad(int cantidad);
         void displayLitrosMensuales();

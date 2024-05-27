@@ -20,7 +20,7 @@ void balanza_Setup()
 
 float PesoActual()
 { 
-    peso = balanza.get_units(100); // balanza.get_units(100);
+    peso = balanza.get_units(10); // balanza.get_units(100);
     //peso += PesoConocido;
     if(peso < 0)
     {
@@ -46,9 +46,8 @@ void finDeCalibracion()
     escala = adc_lecture / PesoConocido; 
     EEPROM.put(SCALE_ADDRESS, escala);
     // Escribir en la EEPROM
-    delay(2000);
+    delay(1000);
     balanza.set_scale(escala); // Establecemos la escala
     balanza.tare(VALUE_TARA);  //El peso actual de la base es considerado zero.
 }
-
 

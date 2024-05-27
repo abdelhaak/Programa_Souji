@@ -29,12 +29,15 @@ Menus menu(lcd);
 
 void setup()
 {
+  litrosMensuales[12]=0;
   Serial.begin(9600);
   Serial.println("Programa iniciado");
   menu.lcd_init();
   rtc.begin();
   litrosTotales = 0;
   balanza_Setup();  
+  //inicializarEEPROM();
+  menu.PantallaSeleccionada(0);
 }
 
 void loop()
