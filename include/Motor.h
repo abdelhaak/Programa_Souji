@@ -2,6 +2,7 @@
 #define MOTOR_H
 
 #include "Arduino.h"
+#include "LCD_Progress.h"
 
 #define pinPot A2
 

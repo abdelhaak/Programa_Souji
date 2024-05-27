@@ -38,8 +38,11 @@ void Motor::ajustarRpms(int rpms, uint64_t tiempoMezcla)
     int valorPwm = map(rpms,0,3300,0,255); 
     analogWrite(pin,valorPwm);
     uint64_t tiempoInicio = millis();
+    uint64_t tiempoPasado;
     while(millis() - tiempoInicio < tiempoMezcla)
     {
+        tiempoPasado = millis() - tiempoInicio;
+        updateProgressBar(tiempoPasado, tiempoMezcla, 1);  
         delay(500);
     }
     parar();

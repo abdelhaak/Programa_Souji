@@ -9,7 +9,7 @@
 #include "Bascula.h"
 #include "Motor.h"
 
-LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
+
 
 // Definición de Botones
 const uint8_t PIN_BOTON_SET = 6;

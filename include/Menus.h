@@ -4,6 +4,8 @@
 #include <Wire.h> 
 #include <LiquidCrystal.h>
 
+extern LiquidCrystal lcd;
+
 #define DAY_ADDRESS 0   // Dirección para el día
 #define MONTH_ADDRESS 4 // Dirección para el mes
 #define YEAR_ADDRESS 8  // Dirección para el año
@@ -40,6 +42,9 @@ class Menus
         bool vacioAutomatico = false;
         bool iniciarVacio = false;
 
+        // Variables de las mezclas
+        uint8_t misPantallasMezc = 0;
+
         // Variables del menu programador
         uint8_t misPantallasProg=0;
         bool menuProgramador = false;
@@ -61,13 +66,8 @@ class Menus
         void updateCantidadSouji();
         void entrarSubMenu();
         void volverMenu();
-        void validarMezca();
+        void validarMezcla();
         void ejecutarMezcla(int Cantidad_Souji);
-        void mezcla_5_Litros();
-        void mezcla_10_Litros();
-        void mezcla_15_Litros();
-        void mezcla_20_Litros(); 
-        void mezcla_25_Litros();
         void displayFecha();
         void ajustarFecha();
         void validarFecha();

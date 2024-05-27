@@ -9,6 +9,8 @@
 
 // MENUS GENERALES
 
+LiquidCrystal lcd(12, 11, 5, 4, 3, 2); 
+
 Mezclas mezcla;
 Menus::Menus(LiquidCrystal &display) : lcd(display) 
 {
@@ -466,16 +468,12 @@ void Menus::modificarBotonSel()
     {
       vaciando();
     }
-    else if(mezclar5Litros)
+    else if(variarCantidad)
     {
-      mezclar5Litros = false;
-      mezcla.mezclaGeneral();
-    }
-    else
-    {
-      validarMezca();
-    }
-  }  
+      validarMezcla();
+    } 
+    else{}
+  } 
   else if(menuProgramador)
   {
     if(resetearTodoVerif)
@@ -492,6 +490,7 @@ void Menus::modificarBotonSel()
     }    
   } 
 }
+
 
 void Menus::decrementandoIndex() 
 {
@@ -614,58 +613,6 @@ void Menus::incrementarCantidad(int cantidad)
   }
 }
 
-void Menus::mezcla_5_Litros()
-{
-  mezclar5Litros = true;
-  lcd.clear();
-  lcd.setCursor(0,0);
-  lcd.print("EJECUTANDO...:");
-  lcd.setCursor(2,1);
-  lcd.print(Cantidad_Souji[IndexCantidad]);
-  lcd.setCursor(5,1);
-  lcd.print("LITROS");
-  mezcla.mezclaGeneral();
-}
-void Menus::mezcla_10_Litros()
-{
-  lcd.clear();
-  lcd.setCursor(0,0);
-  lcd.print("EJECUTANDO...:");
-  lcd.setCursor(2,1);
-  lcd.print(Cantidad_Souji[IndexCantidad]);
-  lcd.setCursor(5,1);
-  lcd.print("LITROS");
-}
-void Menus::mezcla_15_Litros()
-{
-  lcd.clear();
-  lcd.setCursor(0,0);
-  lcd.print("EJECUTANDO...:");
-  lcd.setCursor(2,1);
-  lcd.print(Cantidad_Souji[IndexCantidad]);
-  lcd.setCursor(5,1);
-  lcd.print("LITROS");
-}
-void Menus::mezcla_20_Litros()
-{
-  lcd.clear();
-  lcd.setCursor(0,0);
-  lcd.print("EJECUTANDO...:");
-  lcd.setCursor(2,1);
-  lcd.print(Cantidad_Souji[IndexCantidad]);
-  lcd.setCursor(5,1);
-  lcd.print("LITROS");
-}
-void Menus::mezcla_25_Litros()
-{
-  lcd.clear();
-  lcd.setCursor(0,0);
-  lcd.print("EJECUTANDO...:");
-  lcd.setCursor(2,1);
-  lcd.print(Cantidad_Souji[IndexCantidad]);
-  lcd.setCursor(5,1);
-  lcd.print("LITROS");
-}
 
 void Menus::displayLitrosMensuales()
 {
@@ -697,7 +644,7 @@ void Menus::displayLitrosTotales()
   lcd.print("LITROS");
 }
 
-void Menus::validarMezca()
+void Menus::validarMezcla()
 {
   if(variarCantidad)
   {
@@ -754,26 +701,25 @@ void Menus::ejecutarMezcla(int Cantidad_Souji)
   switch (Cantidad_Souji)
   {
   case 5:
-    Menus::mezcla_5_Litros();
+    mezcla.mezclaGeneral(5);
     incrementarCantidad(5);
   break;
   case 10:
-    Menus::mezcla_10_Litros();
+    mezcla.mezclaGeneral(10);;
     incrementarCantidad(10);
-
   break;
   case 15:
-    Menus::mezcla_15_Litros();
+    mezcla.mezclaGeneral(15);
     incrementarCantidad(15);
 
   break;
   case 20:
-    Menus::mezcla_20_Litros();
+    mezcla.mezclaGeneral(20);
     incrementarCantidad(20);
 
   break;
   case 25:
-    Menus::mezcla_25_Litros();
+    mezcla.mezclaGeneral(25);
     incrementarCantidad(25);
   break;
   }

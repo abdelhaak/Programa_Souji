@@ -5,8 +5,8 @@
 #include "Motor.h"
 #include "Bombas.h"
 #include "Bascula.h"
-#include <LiquidCrystal.h>
-
+#include "LCD_Progress.h"
+#include "Menus.h"
 
 #define PIN_MOTOR 53
 #define PIN_SENSOR 52
@@ -34,18 +34,25 @@ class Mezclas
 
         //// Souji
         float pesoSoujiDeseado = 0;
+        float volumenSouji = 0.0;
 
         //// Agua
-        float pesoAguaDeseado = 0;
+        float volumenAgua = 0.0;
 
         //// Mezclas
         float pesoAgregado = 0.0;
-
+        uint8_t misPantallasMezc = 0;
+        int cantidadDeCincoLitros = 0;
+         
     public:
         Mezclas();
         void init();
         void parado();
-        void mezclaGeneral();  
+        void Pantallamezcla(uint8_t pantallamezcla);
+        void laMezcla(int cantidadSouji);  
+        void mezclaGeneral(int cantidadTotal);
+        void calcularVolumen();
+        void hecharLiquido(float volumen);
         void mezclaVacio();   
 };
 
