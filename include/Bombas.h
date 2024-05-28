@@ -1,7 +1,6 @@
 #ifndef BOMBAS_H
 #define BOMBAS_H
 
-
 #include "Arduino.h"
 class Bomba
 {
@@ -14,17 +13,5 @@ class Bomba
         void on();
         void off();
 };
-
-
-
-
-
-
-
-
-
-
-
-
 
 #endif

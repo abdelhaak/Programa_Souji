@@ -1,5 +1,4 @@
 #include "Motor.h"
-//#include "Arduino.h"
 
 volatile uint64_t Motor::pulsos = 0;
 
@@ -16,10 +15,8 @@ Motor::Motor(uint8_t pin,uint8_t pinSensor)
 
 void Motor::init()
 {
-    //attachInterrupt(digitalPinToInterrupt(pinSensor), contarPulsos, RISING); // Adjunta la función de interrupción al pin para contar los pulsos
     attachInterrupt(digitalPinToInterrupt(pinSensor), contarPulsos, RISING); 
-
-    // Funcion para parar las bombas o el motors
+    // Funcion para parar EL MOTOR
     parar();
 }
 
@@ -62,13 +59,6 @@ float Motor::calcularFrecuencia()
     // Calcula la frecuencia en Hz (pulsos por segundo)
     frecuencia = pulsos_ultimo_segundo / 1.0;
     //rpms = abs((int(frecuencia)*60)/600);
-
-    // Imprime la frecuencia medida
-    Serial.print("Frecuencia: ");
-    Serial.print(frecuencia);
-    Serial.print(" Hz  ||  ");
-    Serial.print("RPMS : ");
-    Serial.println(rpms);
   }
   return frecuencia;
 }
@@ -76,8 +66,5 @@ float Motor::calcularFrecuencia()
 int Motor::calcularRpms()
 {
     rpms = abs((int(frecuencia)*60)/600);
-    Serial.print(" Hz  ||  ");
-    Serial.print("RPMS : ");
-    Serial.println(rpms);
     return rpms;
 }

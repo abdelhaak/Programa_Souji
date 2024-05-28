@@ -10,8 +10,8 @@
 // MENUS GENERALES
 
 LiquidCrystal lcd(12, 11, 5, 4, 3, 2); 
-
 Mezclas mezcla;
+
 Menus::Menus(LiquidCrystal &display) : lcd(display) 
 {
   misPantallas = 20;
@@ -23,7 +23,6 @@ void Menus::lcd_init()
   lcd.begin(16,2);
   lcd.clear();
 }
-
 
 ///////////////// Pantallas del MENU Principal   /////////////////
 void Menus::PantallaSeleccionada(uint8_t pantalla)
@@ -155,12 +154,13 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     displayLitrosMensuales();
   }
 
- // El SubMenu de Litros Totales
+  // El SubMenu de Litros Totales
   if (pantalla == 9)
   {
     EEPROM.get(LITROS_TOTALES_DIRECCION, litrosTotales);
     displayLitrosTotales();
   }
+
   // El SubMenu de Fecha
   if (pantalla == 10)
   {
@@ -216,32 +216,32 @@ void Menus::entrarSubMenu()
 {
   if(!inSubMenu && menuPrincipal)
   {
-  inSubMenu = true;
-  lcd.clear();
-  switch (menuIndex) 
-  {
-    case 0:
+    inSubMenu = true;
+    lcd.clear();
+    switch (menuIndex) 
+    {
+      case 0:
       Menus::PantallaSeleccionada(7);
       break;
-    case 1:
+      case 1:
       Menus::PantallaSeleccionada(8);
       break;
-    case 2:
+      case 2:
       Menus::PantallaSeleccionada(9);
       break;
-    case 3:
+      case 3:
       Menus::PantallaSeleccionada(10);
       break;
-    case 4:
+      case 4:
       Menus::PantallaSeleccionada(11);
       break;
-    case 5:
+      case 5:
       Menus::PantallaSeleccionada(12);
       break;
-    case 6:
+      case 6:
       Menus::PantallaSeleccionada(13);
       break;
- }
+    }
   }
   else
   {
@@ -413,7 +413,7 @@ void Menus::updateMenuProgDisplay()
 
 void Menus::modificarBotonSet()
 {
-  if (menuPrincipal)
+  if(menuPrincipal)
   {
     if(bascularFecha)
     {
@@ -643,7 +643,6 @@ void Menus::incrementarCantidad(int cantidad)
 
 void Menus::displayLitrosMensuales()
 {
-
     for (int i = 0; i < 12; ++i) 
     {
     int direccion = LITROS_MENSUALES_DIRECCION + i * TAMANIO_DATOS_MENSUALES;
@@ -754,7 +753,8 @@ void Menus::ejecutarMezcla(int Cantidad_Souji)
 
 void Menus::resetearLitrosMensuales()
 {
-  for (int i = 0; i < 12; ++i) {
+  for (int i = 0; i < 12; ++i) 
+  {
     litrosMensuales[i] = 0; // Reseteamos los litros mensuales a cero
     int direccion = LITROS_MENSUALES_DIRECCION + i * TAMANIO_DATOS_MENSUALES;
     EEPROM.put(direccion, litrosMensuales[i]); // Guardamos los litros mensuales en la EEPROM
@@ -776,37 +776,47 @@ void Menus::displayFecha()
   lcd.setCursor(0, 1);
   
   // Mostrar el día con o sin resaltado según el editIndex
-  if (editIndex == 0) {
-    lcd.print(">");  // Indicar que está seleccionado
-  } else {
+  if (editIndex == 0) 
+  {
+    // Indicar que está seleccionado
+    lcd.print(">"); 
+  } 
+  else 
+  {
     lcd.print(" ");
   }
   if (dia < 10) {
     lcd.print("0"); // Añadir un 0 si el día es menor que 10 para mantener el formato
   }
   lcd.print(dia);
-  //lcd.print("/");
   
   // Mostrar el mes con o sin resaltado según el editIndex
-  if (editIndex == 1) {
+  if (editIndex == 1) 
+  {
     lcd.print(">");  // Indicar que está seleccionado
-  } else {
+  }
+  else
+  {
     lcd.print(" ");
   }
-  if (mes < 10) {
+  if (mes < 10) 
+  {
     lcd.print("0"); // Añadir un 0 si el mes es menor que 10 para mantener el formato
   }
   lcd.print(mes);
-  //lcd.print("/");
   
   // Mostrar el año con o sin resaltado según el editIndex
-  if (editIndex == 2) {
+  if (editIndex == 2) 
+  {
     lcd.print(">");  // Indicar que está seleccionado
-  } else {
+  } 
+  else 
+  {
     lcd.print(" ");
   }
-  if (anio < 2024) {
-    lcd.print(" "); // Añadir un 0 si el mes es menor que 10 para mantener el formato
+  if (anio < 2024) 
+  {
+    lcd.print(" "); 
   }
   lcd.print(anio);
 }
@@ -831,7 +841,7 @@ void Menus::validarFecha()
   lcd.print(mes); 
   lcd.print("/"); 
   lcd.print(anio);
-  delay(2000);
+  delay(1000);
   bascularFecha = false;
   definirFecha = false;
   inSubMenu = false;
@@ -907,15 +917,8 @@ void Menus::subeFechaRapido()
     break;
     
   }
-  /*
-  EEPROM.put(DAY_ADDRESS, dia);
-  EEPROM.put(MONTH_ADDRESS, mes);
-  EEPROM.put(YEAR_ADDRESS, anio);
-  */
-  //displayFecha();
   delay(300);
 }
-
 
 void Menus::bajaFecha()
 {
@@ -969,12 +972,6 @@ void Menus::bajaFechaRapido()
     EEPROM.put(MONTH_ADDRESS, anio);
     break;
   }
-  /*
-  EEPROM.put(DAY_ADDRESS, dia);
-  EEPROM.put(MONTH_ADDRESS, mes);
-  EEPROM.put(YEAR_ADDRESS, anio);
-  */
-  //displayFecha();
   delay(300);
 }
 
@@ -1035,9 +1032,7 @@ void Menus::calibrarEscala()
 void Menus::finalizarCalibracion()
 {
   finDeCalibre = false;
-  //menuPrincipal = true;
   balanza_Setup();
-  //PantallaSeleccionada(12);
 }
 
 void Menus::mostrarElPeso()
@@ -1050,7 +1045,6 @@ void Menus::mostrarElPeso()
   lcd.print(elPeso);
   lcd.setCursor(8,1);
   lcd.print("GRAMOS");
-  //mostrarPeso = false;
 }
 
 
@@ -1090,7 +1084,6 @@ void Menus::vaciando()
   lcd.print("VACIANDO...");
   delay(2000);
   PantallaSeleccionada(11);
-  //mezcla.mezclaVacio();
 }
 
 

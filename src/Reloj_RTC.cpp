@@ -1,9 +1,7 @@
 #include "Reloj_RTC.h"
 
-
 RTC_DS1307 rtc;
 DateTime Tiempo;
-
 
 int cantidadMezclaMes[12] = {0}; 
 int litrosMensuales[12] = {0};
@@ -11,7 +9,6 @@ uint8_t litrosTotales =0 ;
 uint8_t segundo, minuto, hora, dia, mes, diaDeLaSemana;
 uint16_t anio;
 String elMes;
-
 
 String Fecha_actual(uint8_t dia, int8_t mes, uint16_t anio)
 {

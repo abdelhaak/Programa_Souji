@@ -7,7 +7,6 @@ float pesoTara = 0;
 long escala = 0;
 long adc_lecture=0;
 
-
 HX711 balanza;
 
 void balanza_Setup()
@@ -20,8 +19,7 @@ void balanza_Setup()
 
 float PesoActual()
 { 
-    peso = balanza.get_units(10); // balanza.get_units(100);
-    //peso += PesoConocido;
+    peso = balanza.get_units(10); 
     if(peso < 0)
     {
         peso = 0.0;                    

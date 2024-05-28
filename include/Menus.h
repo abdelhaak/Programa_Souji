@@ -57,7 +57,6 @@ class Menus
         bool ajustarAceite = false;
         bool ajustarSouji = false;
 
-        
     public:
         Menus(LiquidCrystal &display);
         void lcd_init();
@@ -107,7 +106,6 @@ class Menus
         void decrementandoIndexRapido();
         void incrementandoIndexRapido();
         void incrementandoIndex();
-        
 };
 
 #endif

@@ -12,7 +12,7 @@ class Boton
         bool pulso;
         bool pulsado_largo;
         uint64_t  UltimoTiempoPulsado;
-        const unsigned long TIEMPO_PULSO_LARGO = 1000; // 2 segundos
+        const unsigned long TIEMPO_PULSO_LARGO = 2000; // 2 segundos
         uint64_t TiempoPulsado = 1000;
         uint64_t t_mantenido = 0;
         uint64_t t_pulsado = 0;

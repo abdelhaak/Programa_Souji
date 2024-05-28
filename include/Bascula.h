@@ -18,8 +18,6 @@ extern float pesoTara;
 extern long escala;
 extern long adc_lecture;
 
-
-
 void calibracion();
 void balanza_Setup();
 void finDeCalibracion();

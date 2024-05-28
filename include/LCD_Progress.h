@@ -4,8 +4,7 @@
 #include <LiquidCrystal.h>
 #include <Arduino.h>
 
-
-//These 5 arrays paint the bars that go across the screen.  
+// Caracteres de la LCD por añadir
 extern byte zero[];
 extern byte one[];
 extern byte two[];
@@ -16,7 +15,6 @@ extern byte Character1[];
 extern byte Character2[];
 
 void lcdBarInit();
-
 void updateProgressBar(unsigned long count, unsigned long totalCount, int lineToPrintOn);
 
 #endif

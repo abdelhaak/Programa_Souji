@@ -19,6 +19,7 @@ uint64_t pesoMinimo = 30.0;
 uint64_t tiempoErrorBascula = 180000;
 
 uint64_t tiempoPasado = 0;
+// Porcentajes de inicio de liquidos
 float porcentajeAceite = 30.0;
 float porcentajeSouji = 50.0;
 
@@ -32,24 +33,24 @@ Mezclas::Mezclas()
   pesoAgregado = 0.0;
   init();
 }
+
 void Mezclas::init()
 {
   parado();
-
 }
 
 void Mezclas::parado()
 {
-    bombaAceite.off();
-    bombaSouji.off();
-    bombaAgua.off();
-    bombaVacio.off();
-    motorMezclador.parar();
+  bombaAceite.off();
+  bombaSouji.off();
+  bombaAgua.off();
+  bombaVacio.off();
+  motorMezclador.parar();
 }
 
+// La MEZCLA COMPLETA PARA 5 LITROS
 void Mezclas::mezclaGeneral(int cantidadSouji)
 {
-
   Pantallamezcla(0);
   delay(1000);
   calcularVolumen();
@@ -113,6 +114,7 @@ void Mezclas::mezclaGeneral(int cantidadSouji)
   menus.PantallaSeleccionada(0);
 }
 
+
 /*
 void Mezclas::mezclaGeneralizada(int cantidadTotal) {
   int cantidadDeCincoLitros = cantidadTotal / 5;
@@ -141,7 +143,6 @@ void Mezclas::Pantallamezcla(uint8_t pantallamezcla)
 
   if (pantallamezcla == 0)
   {
-
     lcd.clear();
     lcd.setCursor(1,0);
     lcd.print("AHORA EMPEZAMOS");
@@ -150,6 +151,7 @@ void Mezclas::Pantallamezcla(uint8_t pantallamezcla)
     lcd.setCursor(12,1);
     lcd.createChar(0, Character2);
   }
+
   // Pantalla hechando Aceite
   if (pantallamezcla == 1)
   {
@@ -157,6 +159,7 @@ void Mezclas::Pantallamezcla(uint8_t pantallamezcla)
     lcd.setCursor(0,0);
     lcd.print("HECHANDO ACEITE");
   }
+
   // Pantalla hechando Souji
   if (pantallamezcla == 2)
   {
@@ -164,6 +167,7 @@ void Mezclas::Pantallamezcla(uint8_t pantallamezcla)
     lcd.setCursor(0,0);
     lcd.print("HECHANDO SOUJI");
   }
+
   // Pantalla hechando Agua
   if (pantallamezcla == 3)
   {
@@ -171,6 +175,7 @@ void Mezclas::Pantallamezcla(uint8_t pantallamezcla)
     lcd.setCursor(0,0);
     lcd.print("HECHANDO AGUA");
   }
+
   // Pantalla Mezclando Primera Mezcla
   if (pantallamezcla == 4)
   {
@@ -178,6 +183,7 @@ void Mezclas::Pantallamezcla(uint8_t pantallamezcla)
     lcd.setCursor(0,0);
     lcd.print("PRIMERA MEZCLA");
   }
+
   // Pantalla Mezclando Primera Mezcla
   if (pantallamezcla == 5)
   {
@@ -185,6 +191,7 @@ void Mezclas::Pantallamezcla(uint8_t pantallamezcla)
     lcd.setCursor(0,0);
     lcd.print("SEGUNDA MEZCLA");
   }
+
   // Pantalla del VACIO
   if (pantallamezcla == 6)
   {
@@ -192,6 +199,7 @@ void Mezclas::Pantallamezcla(uint8_t pantallamezcla)
     lcd.setCursor(0,0);
     lcd.print("VACIANDO ....");
   }
+
   // Pantalla de fin de mezcla
   if (pantallamezcla == 7)
   {
@@ -201,6 +209,7 @@ void Mezclas::Pantallamezcla(uint8_t pantallamezcla)
     lcd.setCursor(3,1);
     lcd.print("FINALIZADA");
   }
+
   // Pantalla Ajustar porcentaje Aceite
   if (pantallamezcla == 8)
   {
@@ -212,8 +221,8 @@ void Mezclas::Pantallamezcla(uint8_t pantallamezcla)
     lcd.print(porcentajeAceite);
     lcd.setCursor(10,1);
     lcd.print("%");
-
   }
+
   // Pantalla Ajustar porcentaje Souji
   if (pantallamezcla == 9)
   {
@@ -230,10 +239,8 @@ void Mezclas::Pantallamezcla(uint8_t pantallamezcla)
 
 void Mezclas::mezclaVacio()
 {
-  Serial.println("Iniciamos el vacio");
-  Serial.println("Activamos la bomba");
   bombaVacio.on();
-  unsigned long tiempoInicio = millis(); // Guardar el tiempo de inicio
+  unsigned long tiempoInicio = millis(); 
   float pesoInicial = PesoActual();
   float pesoVaciado;
   float pesoActual; 
@@ -244,19 +251,16 @@ void Mezclas::mezclaVacio()
     pesoActual = PesoActual();
     pesoVaciado = pesoInicial - pesoActual; 
     updateProgressBar(pesoVaciado, pesoTotalAVaciar, 1); // Actualizar la barra de progreso
-    
     delay(500);
     if (millis() - tiempoInicio > tiempoErrorBascula)
     {
       Serial.println("Error de la bascula : Tiempo máximo de espera alcanzado");
-      Serial.println("Apagamos la Bomba ");
       bombaVacio.off();
       return;
     }
   }  
-  Serial.println("Bomba apagada");
   bombaVacio.off();
-  Serial.println("Proceso finalizado");
+  //Serial.println("Proceso finalizado");
 }
 
 void Mezclas::calcularVolumen()
@@ -283,8 +287,8 @@ void Mezclas::hecharLiquido(float volumen)
   {
     pesoRelativo = PesoActual() - pesoInicioEtapa;
     updateProgressBar(pesoRelativo, volumen, 1);  
-    Serial.print("El peso es : ");
-    Serial.println(pesoRelativo);
+    //Serial.print("El peso es : ");
+    //Serial.println(pesoRelativo);
     delay(100);
   }
 }

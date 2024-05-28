@@ -4,14 +4,11 @@
 #include "Arduino.h"
 #include "LCD_Progress.h"
 
-#define pinPot A2
-
 class Motor
 {
     private:
         uint8_t pin;
         uint8_t pinSensor;
-        //uint8_t pinPot;
         uint64_t pulsos_ultimo_segundo;
         float frecuencia;
         int rpms;
@@ -27,6 +24,5 @@ class Motor
         float calcularFrecuencia();
         int calcularRpms();        
 };
-
 
 #endif

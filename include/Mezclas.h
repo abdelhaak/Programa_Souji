@@ -30,7 +30,6 @@ class Mezclas
 {
     private:
         //// Aceite 
-        
         float pesoAceiteDeseado = 0.0;
         float volumenAceite = 0.0;
 
@@ -57,9 +56,6 @@ class Mezclas
         void calcularVolumen();
         void hecharLiquido(float volumen);
         void mezclaVacio();   
-
-        void ajustarPorcenajeSouji();
-        void ajustarPorcenajeAceite();
 
         void subirPorcentajeAceite();
         void subirPorcentajeSouji();

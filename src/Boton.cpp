@@ -23,24 +23,29 @@ void Boton::update()
     bool lecturaActual = digitalRead(pin);
     unsigned long tiempoActual = millis();
 
-    if (lecturaActual && !UltimaLectura) {
+    if (lecturaActual && !UltimaLectura) 
+    {
         UltimoTiempoPulsado = tiempoActual;
     }
     
-    if (!lecturaActual && UltimaLectura) {
-        if ((tiempoActual - UltimoTiempoPulsado) < TIEMPO_PULSO_LARGO) {
+    if (!lecturaActual && UltimaLectura) 
+    {
+        if ((tiempoActual - UltimoTiempoPulsado) < TIEMPO_PULSO_LARGO) 
+        {
             pulso = true;
-        } else {
+        }
+        else 
+        {
             pulso = false;
         }
         pulsado_largo = false;
     }
 
-    if (lecturaActual && UltimaLectura && (tiempoActual - UltimoTiempoPulsado >= TIEMPO_PULSO_LARGO)) {
+    if (lecturaActual && UltimaLectura && (tiempoActual - UltimoTiempoPulsado >= TIEMPO_PULSO_LARGO)) 
+    {
         pulsado_largo = true;
         pulso = false;
     }
-    
     UltimaLectura = lecturaActual;
 }
 
