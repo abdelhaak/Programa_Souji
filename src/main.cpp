@@ -10,7 +10,6 @@
 #include "Motor.h"
 
 
-
 // Definición de Botones
 const uint8_t PIN_BOTON_SET = 6;
 const uint8_t PIN_BOTON_UP = 7;
@@ -29,14 +28,12 @@ Menus menu(lcd);
 
 void setup()
 {
-  litrosMensuales[12]=0;
   Serial.begin(9600);
   Serial.println("Programa iniciado");
   menu.lcd_init();
   rtc.begin();
   litrosTotales = 0;
   balanza_Setup();  
-  //inicializarEEPROM();
   menu.PantallaSeleccionada(0);
 }
 
@@ -60,15 +57,18 @@ void loop()
     }
     if(botonPro.pulsado())
     {
-      menu.modificarProg();
+      menu.entrarMenuProg();
     }
     if (botonUp.pulsadoLargo()) 
     {
       menu.incrementandoIndexRapido();
     }
-      if (botonDown.pulsadoLargo()) 
+    if (botonDown.pulsadoLargo()) 
     {
       menu.decrementandoIndexRapido();
     }
-    
+    if(botonPro.pulsadoLargo())
+    {
+      menu.salirMenuProg();
+    }
 }

@@ -5,7 +5,7 @@ Boton::Boton(byte pin)
 {
     this->pin = pin;
     estado = true;
-    UltimaLectura = true;
+    UltimaLectura = false;
     UltimoTiempoPulsado = 0;
     pulso = false;
     pulsado_largo = false ;

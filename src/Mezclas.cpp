@@ -35,6 +35,7 @@ Mezclas::Mezclas()
 void Mezclas::init()
 {
     parado();
+
 }
 
 void Mezclas::parado()
@@ -48,11 +49,7 @@ void Mezclas::parado()
 
 void Mezclas::mezclaGeneral(int cantidadSouji)
 {
-  /*
-  int cantidad5Litros = cantidadSouji /5;
-  for (int i = 0; i < cantidadDeCincoLitros; i++) 
-  {
-  */
+
   Pantallamezcla(0);
   delay(1000);
   calcularVolumen();
@@ -66,11 +63,8 @@ void Mezclas::mezclaGeneral(int cantidadSouji)
   bombaAceite.off();
 
   // Hechamos la cantidad adecuada para el SOUJI
-  //pesoAgregado = 0;
   Serial.println("Bomba Souji activada : ");
   Pantallamezcla(2);
-  volumenSouji += volumenAceite;
-  pesoAgregado = volumenAceite;
   bombaSouji.on();
   hecharLiquido(volumenSouji);
   Serial.println("Apagando Bomba de Souji");
@@ -89,11 +83,8 @@ void Mezclas::mezclaGeneral(int cantidadSouji)
   motorMezclador.parar();
 
   // Hechamos la cantidad adecuada de AGUA
-  //pesoAgregado = 0;
   Serial.println("Bomba Agua activada : ");
   Pantallamezcla(3);
-  volumenAgua += volumenSouji;
-  pesoAgregado = volumenSouji;
   bombaAgua.on();
   hecharLiquido(volumenAgua);
   Serial.println("Apagando Bomba de Agua");
@@ -150,6 +141,7 @@ void Mezclas::Pantallamezcla(uint8_t pantallamezcla)
 
   if (pantallamezcla == 0)
   {
+
     lcd.clear();
     lcd.setCursor(1,0);
     lcd.print("AHORA EMPEZAMOS");
@@ -207,7 +199,30 @@ void Mezclas::Pantallamezcla(uint8_t pantallamezcla)
     lcd.setCursor(3,1);
     lcd.print("FINALIZADA");
   }
+  // Pantalla Ajustar porcentaje Aceite
+  if (pantallamezcla == 8)
+  {
+    Serial.println("pantalla 8");
+    lcd.clear();
+    lcd.setCursor(0,0);
+    lcd.print("AJUSTANDO ACEITE");
+    lcd.setCursor(5,1);
+    lcd.print(porcentajeAceite);
+    lcd.setCursor(10,1);
+    lcd.print("%");
 
+  }
+  // Pantalla Ajustar porcentaje Souji
+  if (pantallamezcla == 9)
+  {
+    lcd.clear();
+    lcd.setCursor(0,0);
+    lcd.print("AJUSTANDO SOUJI");
+    lcd.setCursor(5,1);
+    lcd.print(porcentajeSouji);
+    lcd.setCursor(10,1);
+    lcd.print("%");
+  }
 }
 
 
@@ -218,10 +233,17 @@ void Mezclas::mezclaVacio()
   Serial.println("Activamos la bomba");
   bombaVacio.on();
   unsigned long tiempoInicio = millis(); // Guardar el tiempo de inicio
-  while(PesoActual() < pesoMinimo)
+  float pesoInicial = PesoActual();
+  float pesoVaciado;
+  float pesoActual; 
+  float pesoTotalAVaciar = pesoInicial - pesoMinimo;
+
+  while(PesoActual() > pesoMinimo)
   {
-    //tiempoPasado = millis() - tiempoInicio;
-    //updateProgressBar(tiempoPasado, tiempoMezcla, 1);  
+    pesoActual = PesoActual();
+    pesoVaciado = pesoInicial - pesoActual; 
+    updateProgressBar(pesoVaciado, pesoTotalAVaciar, 1); // Actualizar la barra de progreso
+    
     delay(500);
     if (millis() - tiempoInicio > tiempoErrorBascula)
     {
@@ -250,12 +272,39 @@ void Mezclas::calcularVolumen()
 
 void Mezclas::hecharLiquido(float volumen)
 {
-  while(pesoAgregado < volumen)
+  pesoInicioEtapa = PesoActual();
+  float pesoRelativo = 0;
+
+  while(pesoRelativo < volumen)
   {
-    pesoAgregado = PesoActual();
-    updateProgressBar(pesoAgregado, volumen, 1);  
+    pesoRelativo = PesoActual() - pesoInicioEtapa;
+    updateProgressBar(pesoRelativo, volumen, 1);  
     Serial.print("El peso es : ");
-    Serial.println(pesoAgregado);
+    Serial.println(pesoRelativo);
     delay(100);
   }
+}
+
+
+void Mezclas::subirPorcentajeAceite()
+{
+  porcentajeAceite++;
+  Pantallamezcla(8);
+}
+void Mezclas::subirPorcentajeSouji()
+{
+  porcentajeSouji++;
+  Pantallamezcla(9);
+}
+
+void Mezclas::bajarPorcentajeAceite()
+{
+  porcentajeAceite--;
+  Pantallamezcla(8);
+}
+
+void Mezclas::bajarPorcentajeSouji()
+{
+  porcentajeSouji--;
+  Pantallamezcla(9);
 }

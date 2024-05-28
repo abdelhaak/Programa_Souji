@@ -5,7 +5,6 @@
 
 //Menus menus(lcd);
 
-
 byte zero[] = 
 {
   B00000,
@@ -78,7 +77,8 @@ byte five[] =
   B11111
 };
 
-byte vacio[] = {
+byte vacio[] = 
+{
   B11111,
   B11111,
   B11111,
@@ -89,6 +89,18 @@ byte vacio[] = {
   B11111
 };
 
+
+byte Character1[] =
+{
+  0b00000,
+  0b01110,
+  0b01110,
+  0b00100,
+  0b11111,
+  0b00100,
+  0b01010,
+  0b10001
+};
 
 void lcdBarInit() 
 {

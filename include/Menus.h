@@ -54,6 +54,8 @@ class Menus
         bool accederRpms  = false;
         bool resetearTodoVerif = false;
         bool resetearTodo = false;
+        bool ajustarAceite = false;
+        bool ajustarSouji = false;
 
         
     public:
@@ -65,7 +67,6 @@ class Menus
         void updateMenuDisplay();
         void updateCantidadSouji();
         void entrarSubMenu();
-        void volverMenu();
         void validarMezcla();
         void ejecutarMezcla(int Cantidad_Souji);
         void displayFecha();
@@ -93,14 +94,14 @@ class Menus
 
         // Variables del menu programador
         void PantallaProgramador(uint8_t pantallaProg);
-        void modificarProg();
+        void entrarMenuProg();
+        void salirMenuProg();
         void entrarSubMenuProg();
         void updateMenuProgDisplay();
         void mostrarRpms();
         void ReseteoTotalVerif();
         void ReseteoTotal();
         void resetearLitrosMensuales();
-
 
         void decrementandoIndex();
         void decrementandoIndexRapido();

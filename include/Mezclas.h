@@ -7,6 +7,7 @@
 #include "Bascula.h"
 #include "LCD_Progress.h"
 #include "Menus.h"
+#include "EEPROM.h"
 
 #define PIN_MOTOR 53
 #define PIN_SENSOR 52
@@ -29,11 +30,11 @@ class Mezclas
     private:
         //// Aceite 
         
-        float pesoAceiteDeseado = 0;
+        float pesoAceiteDeseado = 0.0;
         float volumenAceite = 0.0;
 
         //// Souji
-        float pesoSoujiDeseado = 0;
+        float pesoSoujiDeseado = 0.0;
         float volumenSouji = 0.0;
 
         //// Agua
@@ -41,6 +42,7 @@ class Mezclas
 
         //// Mezclas
         float pesoAgregado = 0.0;
+        float pesoInicioEtapa = 0.0;
         uint8_t misPantallasMezc = 0;
         int cantidadDeCincoLitros = 0;
          
@@ -54,6 +56,14 @@ class Mezclas
         void calcularVolumen();
         void hecharLiquido(float volumen);
         void mezclaVacio();   
+
+        void ajustarPorcenajeSouji();
+        void ajustarPorcenajeAceite();
+
+        void subirPorcentajeAceite();
+        void subirPorcentajeSouji();
+        void bajarPorcentajeAceite();
+        void bajarPorcentajeSouji();
 };
 
 

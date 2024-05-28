@@ -22,7 +22,6 @@ void Menus::lcd_init()
 {  
   lcd.begin(16,2);
   lcd.clear();
-  //PantallaSeleccionada(0);
 }
 
 
@@ -38,7 +37,7 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
 
   // Pantalla de Cantidad de Souji
   if (pantalla == 0)
-  {
+  { 
     menuPrincipal = true;
     menuProgramador = false;
     mostrarLitrosMensuales = false;
@@ -133,7 +132,6 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
   {
     inSubMenu = true;
     variarCantidad = true;
-
     lcd.clear();
     lcd.setCursor(3,0);
     lcd.print("AJUSTAR:");
@@ -159,7 +157,6 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     EEPROM.get(LITROS_TOTALES_DIRECCION, litrosTotales);
     displayLitrosTotales();
   }
-  
   // El SubMenu de Fecha
   if (pantalla == 10)
   {
@@ -265,6 +262,8 @@ void Menus::PantallaProgramador(uint8_t pantallaProg)
   // Pantalla de inicio del modo PROGRAMADOR
   if (pantallaProg == 0)
   {
+    menuPrincipal = false;
+    menuProgramador = true;
     lcd.clear();
     lcd.setCursor(1,0);
     lcd.print("ESTAMOS EN EL");
@@ -275,16 +274,18 @@ void Menus::PantallaProgramador(uint8_t pantallaProg)
   // Pantalla de Ajustar la cantidad del ACEITE
   if (pantallaProg == 1)
   {
+    ajustarAceite = false;
     lcd.clear();
     lcd.setCursor(0,0);
     lcd.print("AJUSTAR CANTIDAD");
-    lcd.setCursor(2,1);
+    lcd.setCursor(0,1);
     lcd.print("DE : ACEITE");
   }
 
   // Pantalla de Ajustar la cantidad del SOUJI
   if (pantallaProg == 2)
   {
+    ajustarSouji = false ;
     lcd.clear();
     lcd.setCursor(0,0);
     lcd.print("AJUSTAR CANTIDAD");
@@ -315,6 +316,7 @@ void Menus::PantallaProgramador(uint8_t pantallaProg)
   // SUBMENU de Ajustar la cantidad del ACEITE
   if (pantallaProg == 5)
   {
+    ajustarAceite = true;
     lcd.clear();
     lcd.setCursor(3,0);
     lcd.print("AJUSTANDO");
@@ -325,6 +327,7 @@ void Menus::PantallaProgramador(uint8_t pantallaProg)
   // SUBMENU de Ajustar la cantidad del SOUJI
   if (pantallaProg == 6)
   {
+    ajustarSouji = true;
     lcd.clear();
     lcd.setCursor(3,0);
     lcd.print("AJUSTANDO");
@@ -355,19 +358,16 @@ void Menus::PantallaProgramador(uint8_t pantallaProg)
   }
 }
 
-void Menus::modificarProg()
+void Menus::entrarMenuProg()
 {
-  if(menuProgramador)
-  {
-    PantallaProgramador(0);
-  }
-  else if(!menuProgramador)
-  {
-    menuPrincipal = true;
-    menuProgramador = false;
-    PantallaSeleccionada(0);
-  }
-  
+  PantallaProgramador(0);
+}
+
+void Menus::salirMenuProg()
+{
+  menuPrincipal = true;
+  menuProgramador = false;
+  PantallaSeleccionada(0);
 }
 
 void Menus::entrarSubMenuProg()
@@ -487,7 +487,20 @@ void Menus::modificarBotonSel()
     else if(accederRpms)
     {
       mostrarRpms();
-    }    
+    }
+    else if (ajustarAceite)
+    {
+      Serial.println("AjutarAceite");
+
+      SubMenuProgamador = false;
+      mezcla.Pantallamezcla(8);
+    } 
+    else if (ajustarSouji)
+    {
+      SubMenuProgamador = false;
+      mezcla.Pantallamezcla(9);
+    } 
+    else {}  
   } 
 }
 
@@ -518,10 +531,19 @@ void Menus::decrementandoIndex()
       }
       displayLitrosMensuales();
     }
-    else if(menuProgramador && !inSubMenuProg && menuProgIndex < 4)
+    else if(menuProgramador && !inSubMenuProg && menuProgIndex < 4 && !ajustarAceite && !ajustarSouji)
     {
       menuProgIndex++;
       updateMenuProgDisplay(); 
+    }
+    else if(ajustarAceite)
+    {
+      Serial.println("decremantoAceite");
+      mezcla.bajarPorcentajeAceite();   
+    }
+    else if(ajustarSouji)
+    {
+      mezcla.bajarPorcentajeSouji();    
     }
     else{}
 }
@@ -561,10 +583,19 @@ void Menus::incrementandoIndex()
       }
       displayLitrosMensuales();
     }
-    else if(menuProgramador && !inSubMenuProg && menuProgIndex > 0)
+    else if(menuProgramador && !inSubMenuProg && menuProgIndex > 0 && !ajustarAceite && !ajustarSouji)
     {
       menuProgIndex--;
       updateMenuProgDisplay(); 
+    }
+    else if(ajustarAceite)
+    {
+      Serial.println("incremantoAceite");
+      mezcla.subirPorcentajeAceite();   
+    }
+    else if(ajustarSouji)
+    {
+      mezcla.subirPorcentajeSouji();    
     }
     else{}
 }
@@ -588,13 +619,6 @@ void Menus::updateCantidadSouji()
   lcd.print(Cantidad_Souji[IndexCantidad]);
 }
 
-void Menus::volverMenu()
-{
-  lcd.clear();
-  inSubMenu = false;
-  variarCantidad = false;
-  PantallaSeleccionada(menuIndex);
-}
 
 void Menus::incrementarCantidad(int cantidad) 
 {
@@ -612,7 +636,6 @@ void Menus::incrementarCantidad(int cantidad)
     EEPROM.put(direccion, litrosMensuales[i]);
   }
 }
-
 
 void Menus::displayLitrosMensuales()
 {
