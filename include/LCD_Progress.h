@@ -13,6 +13,7 @@ extern byte three[];
 extern byte four[];
 extern byte five[];
 extern byte Character1[];
+extern byte Character2[];
 
 void lcdBarInit();
 

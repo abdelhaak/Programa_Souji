@@ -47,9 +47,13 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     lcd.setCursor(0,0);
     lcd.print("CANTIDAD SOUJI");
     lcd.setCursor(0,1);
-    lcd.print("LOS LITROS");
-    lcd.setCursor(12,1);
+    lcd.print("LITROS:");
+    lcd.setCursor(9,1);
     lcd.print(Cantidad_Souji[IndexCantidad]);
+    lcd.setCursor(11,1);
+    lcd.print("/");
+    lcd.setCursor(12,1);
+    lcd.print("25");
   }
 
   // Pantalla de Litros Mensuales

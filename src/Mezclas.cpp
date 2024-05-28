@@ -145,8 +145,10 @@ void Mezclas::Pantallamezcla(uint8_t pantallamezcla)
     lcd.clear();
     lcd.setCursor(1,0);
     lcd.print("AHORA EMPEZAMOS");
-    lcd.setCursor(0,4);
+    lcd.setCursor(0,1);
     lcd.print("LA MEZCLA");
+    lcd.setCursor(12,1);
+    lcd.createChar(0, Character2);
   }
   // Pantalla hechando Aceite
   if (pantallamezcla == 1)
@@ -203,7 +205,6 @@ void Mezclas::Pantallamezcla(uint8_t pantallamezcla)
   if (pantallamezcla == 8)
   {
     EEPROM.get(PORCENTAJE_ACEITE_ADRESS, porcentajeAceite);
-    Serial.println("pantalla 8");
     lcd.clear();
     lcd.setCursor(0,0);
     lcd.print("AJUSTANDO ACEITE");

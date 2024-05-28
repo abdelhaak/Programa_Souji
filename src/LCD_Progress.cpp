@@ -102,6 +102,18 @@ byte Character1[] =
   0b10001
 };
 
+byte Character2[] =
+{
+0b11111,
+0b10101,
+0b11111,
+0b10001,
+0b11111,
+0b01010,
+0b01010,
+0b01010
+};
+
 void lcdBarInit() 
 {
   // initialize the LCD and allocate the 5 arrays to a number.
@@ -112,6 +124,8 @@ void lcdBarInit()
   lcd.createChar(4, four);
   lcd.createChar(5, five);
   lcd.createChar(6, vacio); 
+  lcd.createChar(7, Character1); 
+  lcd.createChar(8, Character2); 
 }
 
 
