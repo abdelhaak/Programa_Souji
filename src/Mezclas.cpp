@@ -34,7 +34,7 @@ Mezclas::Mezclas()
 }
 void Mezclas::init()
 {
-    parado();
+  parado();
 
 }
 
@@ -202,6 +202,7 @@ void Mezclas::Pantallamezcla(uint8_t pantallamezcla)
   // Pantalla Ajustar porcentaje Aceite
   if (pantallamezcla == 8)
   {
+    EEPROM.get(PORCENTAJE_ACEITE_ADRESS, porcentajeAceite);
     Serial.println("pantalla 8");
     lcd.clear();
     lcd.setCursor(0,0);
@@ -215,6 +216,7 @@ void Mezclas::Pantallamezcla(uint8_t pantallamezcla)
   // Pantalla Ajustar porcentaje Souji
   if (pantallamezcla == 9)
   {
+    EEPROM.get(PORCENTAJE_SOUJI_ADRESS, porcentajeSouji);
     lcd.clear();
     lcd.setCursor(0,0);
     lcd.print("AJUSTANDO SOUJI");
@@ -224,8 +226,6 @@ void Mezclas::Pantallamezcla(uint8_t pantallamezcla)
     lcd.print("%");
   }
 }
-
-
 
 void Mezclas::mezclaVacio()
 {
@@ -261,11 +261,15 @@ void Mezclas::mezclaVacio()
 void Mezclas::calcularVolumen()
 {
   // Calculos de la cantidad de Aceite
+  EEPROM.get(PORCENTAJE_ACEITE_ADRESS, porcentajeAceite);
   pesoAceiteDeseado = porcentajeAceite * CAPACIDAD_TOTAL / 100.0;
   volumenAceite = pesoAceiteDeseado / DENSIDAD_ACEITE;
+
   // Calculos de la cantidad de Souji
+  EEPROM.get(PORCENTAJE_SOUJI_ADRESS, porcentajeSouji);
   pesoSoujiDeseado = porcentajeSouji * CAPACIDAD_TOTAL /100.0;
   volumenSouji = pesoSoujiDeseado / DENSIDAD_SOUJI;
+
   // Calculos de la cantidad de Agua que es lo que queda
   volumenAgua = CAPACIDAD_TOTAL - (pesoAceiteDeseado + pesoSoujiDeseado);
 }
@@ -274,7 +278,6 @@ void Mezclas::hecharLiquido(float volumen)
 {
   pesoInicioEtapa = PesoActual();
   float pesoRelativo = 0;
-
   while(pesoRelativo < volumen)
   {
     pesoRelativo = PesoActual() - pesoInicioEtapa;
@@ -285,26 +288,29 @@ void Mezclas::hecharLiquido(float volumen)
   }
 }
 
-
 void Mezclas::subirPorcentajeAceite()
 {
   porcentajeAceite++;
+  EEPROM.put(PORCENTAJE_ACEITE_ADRESS, porcentajeAceite);
   Pantallamezcla(8);
 }
 void Mezclas::subirPorcentajeSouji()
 {
   porcentajeSouji++;
+  EEPROM.put(PORCENTAJE_SOUJI_ADRESS, porcentajeSouji);
   Pantallamezcla(9);
 }
 
 void Mezclas::bajarPorcentajeAceite()
 {
   porcentajeAceite--;
+  EEPROM.put(PORCENTAJE_ACEITE_ADRESS, porcentajeAceite);
   Pantallamezcla(8);
 }
 
 void Mezclas::bajarPorcentajeSouji()
 {
   porcentajeSouji--;
+  EEPROM.put(PORCENTAJE_SOUJI_ADRESS, porcentajeSouji);
   Pantallamezcla(9);
 }

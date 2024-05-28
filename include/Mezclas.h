@@ -23,7 +23,8 @@
 #define DENSIDAD_SOUJI 0.92
 #define RPMS_INICIO 1500
 
-
+#define PORCENTAJE_ACEITE_ADRESS 20
+#define PORCENTAJE_SOUJI_ADRESS 24
 
 class Mezclas
 {
@@ -65,15 +66,5 @@ class Mezclas
         void bajarPorcentajeAceite();
         void bajarPorcentajeSouji();
 };
-
-
-
-
-
-
-
-
-
-
 
 #endif
