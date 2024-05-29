@@ -48,89 +48,83 @@ void Mezclas::parado()
   motorMezclador.parar();
 }
 
-// La MEZCLA COMPLETA PARA 5 LITROS
-void Mezclas::mezclaGeneral(int cantidadSouji)
+// La MEZCLA COMPLETA 
+void Mezclas::mezclaGeneral(int mezclas)
 {
   Pantallamezcla(0);
   delay(1000);
   calcularVolumen();
+  for(int i=0; i<mezclas; i++)
+  {
+    Serial.print("Esta es la mezcla NUMERO : ");
+    Serial.println(i);
+    // Hechamos la cantidad adecuada para el Aceite
+    Serial.println("Bomba Aceite activada : ");
+    Pantallamezcla(1);
+    bombaAceite.on();
+    hecharLiquido(volumenAceite);
+    Serial.println("Apagando Bomba de Aceite");
+    bombaAceite.off();
 
-  // Hechamos la cantidad adecuada para el Aceite
-  Serial.println("Bomba Aceite activada : ");
-  Pantallamezcla(1);
-  bombaAceite.on();
-  hecharLiquido(volumenAceite);
-  Serial.println("Apagando Bomba de Aceite");
-  bombaAceite.off();
+    // Hechamos la cantidad adecuada para el SOUJI
+    Serial.println("Bomba Souji activada : ");
+    Pantallamezcla(2);
+    bombaSouji.on();
+    hecharLiquido(volumenSouji);
+    Serial.println("Apagando Bomba de Souji");
+    bombaSouji.off();
 
-  // Hechamos la cantidad adecuada para el SOUJI
-  Serial.println("Bomba Souji activada : ");
-  Pantallamezcla(2);
-  bombaSouji.on();
-  hecharLiquido(volumenSouji);
-  Serial.println("Apagando Bomba de Souji");
-  bombaSouji.off();
+    // Pasamos a la primera etapa de mezcla con el motor 
+    Serial.println("Ahora activamos el motor mezclador");
+    delay(1000);
+    Serial.print("Motor mezclador activo en :  ");
+    Serial.print(RPMS_INICIO);
+    Serial.println(" RPMs");
+    Pantallamezcla(4);
+    // Activamos el motor con los RPMs guardados y el tiempo adecuado
+    motorMezclador.ajustarRpms(RPMS_INICIO,tiempoMezcla1);
+    // Apagar el motor y pasar a la siguiente etapa
+    motorMezclador.parar();
 
-  // Pasamos a la primera etapa de mezcla con el motor 
-  Serial.println("Ahora activamos el motor mezclador");
-  delay(1000);
-  Serial.print("Motor mezclador activo en :  ");
-  Serial.print(RPMS_INICIO);
-  Serial.println(" RPMs");
-  Pantallamezcla(4);
-  // Activamos el motor con los RPMs guardados y el tiempo adecuado
-  motorMezclador.ajustarRpms(RPMS_INICIO,tiempoMezcla1);
-  // Apagar el motor y pasar a la siguiente etapa
-  motorMezclador.parar();
+    // Hechamos la cantidad adecuada de AGUA
+    Serial.println("Bomba Agua activada : ");
+    Pantallamezcla(3);
+    bombaAgua.on();
+    hecharLiquido(volumenAgua);
+    Serial.println("Apagando Bomba de Agua");
+    bombaAgua.off();
 
-  // Hechamos la cantidad adecuada de AGUA
-  Serial.println("Bomba Agua activada : ");
-  Pantallamezcla(3);
-  bombaAgua.on();
-  hecharLiquido(volumenAgua);
-  Serial.println("Apagando Bomba de Agua");
-  bombaAgua.off();
+    // Pasamos a la segunda etapa de mezcla con el motor 
+    Serial.println("Ahora activamos el motor mezclador por la segunda vez");
+    delay(1000);
+    Serial.print("Motor mezclador activo en :  ");
+    Serial.print(RPMS_INICIO);
+    Serial.println(" RPMs");
+    Pantallamezcla(5);
+    // Activamos el motor con los RPMs guardados y el tiempo adecuado
+    motorMezclador.ajustarRpms(RPMS_INICIO,tiempoMezcla2);
+    // Apagar el motor y pasar a la siguiente etapa
+    motorMezclador.parar();
 
-  // Pasamos a la segunda etapa de mezcla con el motor 
-  Serial.println("Ahora activamos el motor mezclador por la segunda vez");
-  delay(1000);
-  Serial.print("Motor mezclador activo en :  ");
-  Serial.print(RPMS_INICIO);
-  Serial.println(" RPMs");
-  Pantallamezcla(5);
-  // Activamos el motor con los RPMs guardados y el tiempo adecuado
-  motorMezclador.ajustarRpms(RPMS_INICIO,tiempoMezcla2);
-  // Apagar el motor y pasar a la siguiente etapa
-  motorMezclador.parar();
-
-  // Pasamos a la etapa del vacio
-  Serial.println("Empezamos el vacio....");
-  Pantallamezcla(6);
-  mezclaVacio();
-  Serial.println("Vacio finalizado");
+    // Pasamos a la etapa del vacio
+    Serial.println("Empezamos el vacio....");
+    Pantallamezcla(6);
+    mezclaVacio();
+    Serial.println("Vacio finalizado");
+    lcd.clear();
+    lcd.setCursor(1,0);
+    lcd.print("MEZCLA NUM : ");
+    lcd.setCursor(14,0);
+    lcd.print(i+1);
+    lcd.setCursor(2,1);
+    lcd.print("FINALIZADA");
+    delay(2000);   
+  }
   Serial.println("Mezcla terminada.");
   Pantallamezcla(7);
   delay(2000);
   menus.PantallaSeleccionada(0);
 }
-
-
-/*
-void Mezclas::mezclaGeneralizada(int cantidadTotal) {
-  int cantidadDeCincoLitros = cantidadTotal / 5;
-  
-  for (int i = 0; i < cantidadDeCincoLitros; i++) {
-    laMezcla(5);
-  }
-  
-  int cantidadRestante = cantidadTotal % 5;
-  if (cantidadRestante) {
-    laMezcla(cantidadRestante);
-  }
-  Serial.println("Mezcla terminada.");
-  menus.PantallaSeleccionada(0);
-}
-*/
 
 void Mezclas::Pantallamezcla(uint8_t pantallamezcla)
 {
@@ -204,10 +198,10 @@ void Mezclas::Pantallamezcla(uint8_t pantallamezcla)
   if (pantallamezcla == 7)
   {
     lcd.clear();
-    lcd.setCursor(5,0);
-    lcd.print("MEZCLA");
+    lcd.setCursor(1,0);
+    lcd.print("MEZCLA TOTAL");
     lcd.setCursor(3,1);
-    lcd.print("FINALIZADA");
+    lcd.print("COMPLETADA");
   }
 
   // Pantalla Ajustar porcentaje Aceite

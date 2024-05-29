@@ -52,7 +52,7 @@ class Mezclas
         void parado();
         void Pantallamezcla(uint8_t pantallamezcla);
         void laMezcla(int cantidadSouji);  
-        void mezclaGeneral(int cantidadTotal);
+        void mezclaGeneral(int mezclas);
         void calcularVolumen();
         void hecharLiquido(float volumen);
         void mezclaVacio();   

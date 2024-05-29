@@ -84,9 +84,9 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     lcd.setCursor(0,0);
     lcd.print("LITROS TOTALES");
     lcd.setCursor(0,1);
-    lcd.print("LOS LITROS");
-    lcd.setCursor(12,1);
     lcd.print(litrosTotales);
+    lcd.setCursor(7,1);
+    lcd.print("LITROS");
   }
 
   // El Menu de la FECHA
@@ -145,10 +145,12 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     inSubMenu = true;
     variarCantidad = true;
     lcd.clear();
-    lcd.setCursor(3,0);
-    lcd.print("AJUSTAR:");
-    lcd.setCursor(4,1);
-    lcd.print(Cantidad_Souji[IndexCantidad]);
+    lcd.setCursor(0,0);
+    lcd.print("ELIGE CANTIDAD:");
+    lcd.setCursor(3,1);
+    lcd.print(Cantidad_Souji[IndexCantidad]);  
+    lcd.setCursor(7,1);
+    lcd.print("LITROS");
   }
 
   // El SubMenu de Litros Mensuales
@@ -188,10 +190,10 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     //vacioAutomatico = true;
     mostrarPeso = true;
     lcd.clear();
-    lcd.setCursor(3,0);
-    lcd.print("INICIAR");
-    lcd.setCursor(5,1);
-    lcd.print("VACIO");
+    lcd.setCursor(1,0);
+    lcd.print("INICIAR VACIO");
+    lcd.setCursor(3,1);
+    lcd.print("PULSE SEL");
   }
   
   // El SubMenu de Calibracion
@@ -201,7 +203,7 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     lcd.setCursor(1,0);
     lcd.print("INICIAR CALIB.");
     lcd.setCursor(3,1);
-    lcd.print("PULSA SEL");
+    lcd.print("PULSE SEL");
     iniciarCalibracion = true;
   }
   
@@ -626,10 +628,12 @@ void Menus::incrementandoIndexRapido()
 void Menus::updateCantidadSouji()
 {
   lcd.clear();
-  lcd.setCursor(3,0);
-  lcd.print("AJUSTAR:");
-  lcd.setCursor(4,1);
+  lcd.setCursor(0,0);
+  lcd.print("ELIGE CANTIDAD:");
+  lcd.setCursor(3,1);
   lcd.print(Cantidad_Souji[IndexCantidad]);
+  lcd.setCursor(7,1);
+  lcd.print("LITROS");
 }
 
 
@@ -736,24 +740,23 @@ void Menus::ejecutarMezcla(int Cantidad_Souji)
   switch (Cantidad_Souji)
   {
   case 5:
-    mezcla.mezclaGeneral(5);
+    mezcla.mezclaGeneral(1);
     incrementarCantidad(5);
   break;
   case 10:
-    //mezcla.mezclaGeneral(10);;
+    mezcla.mezclaGeneral(2);;
     incrementarCantidad(10);
   break;
   case 15:
-    //mezcla.mezclaGeneral(15);
+    mezcla.mezclaGeneral(3);
     incrementarCantidad(15);
   break;
   case 20:
-    mezcla.mezclaGeneral(20);
+    mezcla.mezclaGeneral(4);
     incrementarCantidad(20);
-
   break;
   case 25:
-    mezcla.mezclaGeneral(25);
+    mezcla.mezclaGeneral(5);
     incrementarCantidad(25);
   break;
   }
