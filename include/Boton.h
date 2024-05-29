@@ -3,7 +3,6 @@
 
 #include <Arduino.h>
 
-
 // Definición de Botones
 const uint8_t PIN_BOTON_SET = 6;
 const uint8_t PIN_BOTON_UP = 7;

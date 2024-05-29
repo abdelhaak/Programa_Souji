@@ -12,7 +12,7 @@
 LiquidCrystal lcd(12, 11, 5, 4, 3, 2); 
 Mezclas mezcla;
 
-Menus::Menus(LiquidCrystal &display) : lcd(display) 
+Menus::Menus(LiquidCrystal &display) : lcd(display)                                           
 {
   misPantallas = 20;
   lcd_init();
@@ -58,6 +58,15 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
   // Pantalla de Litros Mensuales
   if (pantalla == 1)
   {
+    Serial.println("Litos mensuales");
+    for (int i = 0; i < 13; ++i) 
+    {
+      //int direccion = LITROS_MENSUALES_DIRECCION + i * TAMANIO_DATOS_MENSUALES;
+      Serial.print(i);
+      Serial.print(" : ");
+      Serial.println(litrosMensuales[i]);
+      //EEPROM.get(direccion, litrosMensuales[i]);
+    }
     if(mes == 0)mes =1;
     mostrarLitrosMensuales = false;
     lcd.clear();
@@ -145,7 +154,7 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
   // El SubMenu de Litros Mensuales
   if (pantalla == 8)
   {
-    for (int i = 0; i < 12; ++i) 
+    for (int i = 0; i < 13; ++i) 
     {
       int direccion = LITROS_MENSUALES_DIRECCION + i * TAMANIO_DATOS_MENSUALES;
       EEPROM.get(direccion, litrosMensuales[i]);
@@ -634,7 +643,7 @@ void Menus::incrementarCantidad(int cantidad)
   litrosMensuales[mesActual] += cantidad; 
   litrosTotales += cantidad;
   EEPROM.put(LITROS_TOTALES_DIRECCION, litrosTotales);
-  for (int i = 0; i < 12; ++i) 
+  for (int i = 0; i < 13; ++i) 
   {
     int direccion = LITROS_MENSUALES_DIRECCION + i * TAMANIO_DATOS_MENSUALES;
     EEPROM.put(direccion, litrosMensuales[i]);
@@ -643,7 +652,7 @@ void Menus::incrementarCantidad(int cantidad)
 
 void Menus::displayLitrosMensuales()
 {
-    for (int i = 0; i < 12; ++i) 
+    for (int i = 0; i < 13; ++i) 
     {
     int direccion = LITROS_MENSUALES_DIRECCION + i * TAMANIO_DATOS_MENSUALES;
     EEPROM.get(direccion, litrosMensuales[i]);
@@ -731,13 +740,12 @@ void Menus::ejecutarMezcla(int Cantidad_Souji)
     incrementarCantidad(5);
   break;
   case 10:
-    mezcla.mezclaGeneral(10);;
+    //mezcla.mezclaGeneral(10);;
     incrementarCantidad(10);
   break;
   case 15:
-    mezcla.mezclaGeneral(15);
+    //mezcla.mezclaGeneral(15);
     incrementarCantidad(15);
-
   break;
   case 20:
     mezcla.mezclaGeneral(20);
@@ -753,7 +761,7 @@ void Menus::ejecutarMezcla(int Cantidad_Souji)
 
 void Menus::resetearLitrosMensuales()
 {
-  for (int i = 0; i < 12; ++i) 
+  for (int i = 0; i < 13; ++i) 
   {
     litrosMensuales[i] = 0; // Reseteamos los litros mensuales a cero
     int direccion = LITROS_MENSUALES_DIRECCION + i * TAMANIO_DATOS_MENSUALES;

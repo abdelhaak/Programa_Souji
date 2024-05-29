@@ -3,8 +3,8 @@
 RTC_DS1307 rtc;
 DateTime Tiempo;
 
-int cantidadMezclaMes[12] = {0}; 
-int litrosMensuales[12] = {0};
+int cantidadMezclaMes[13] = {0}; 
+int litrosMensuales[13] = {0};
 uint8_t litrosTotales =0 ;
 uint8_t segundo, minuto, hora, dia, mes, diaDeLaSemana;
 uint16_t anio;
