@@ -726,6 +726,7 @@ void Menus::modificarBotonSel()
     {
       idioma = opcionLenguaje;
       cambiarIdioma = false;
+      EEPROM.put(IDIOMA_ADRESS,idioma);
       PantallaSeleccionada(0);
     }
     else{}

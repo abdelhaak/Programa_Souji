@@ -11,8 +11,10 @@ extern LiquidCrystal lcd;
 #define YEAR_ADDRESS 8  // Dirección para el año
 //#define INIT_CHECK_ADDRESS   // Dirección para verificar la inicialización
 #define LITROS_TOTALES_DIRECCION 12  // Direccion de los litros totales
-extern int idioma ;
-extern int opcionLenguaje ; 
+
+#define IDIOMA_ADRESS 26
+extern int idioma;
+extern int opcionLenguaje; 
 
 class Menus
 {

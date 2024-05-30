@@ -20,6 +20,7 @@ void setup()
 {
   Serial.begin(9600);
   Serial.println("Programa iniciado");
+  EEPROM.get(IDIOMA_ADRESS, idioma);
   menu.lcd_init();
   rtc.begin();
   litrosTotales = 0;

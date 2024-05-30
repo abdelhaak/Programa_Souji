@@ -26,6 +26,7 @@
 #define PORCENTAJE_ACEITE_ADRESS 20
 #define PORCENTAJE_SOUJI_ADRESS 24
 
+
 class Mezclas
 {
     private:
