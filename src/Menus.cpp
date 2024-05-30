@@ -12,8 +12,9 @@
 int idioma = 0 ;
 int opcionLenguaje = 0; 
 
-LiquidCrystal lcd(12, 11, 5, 4, 3, 2); 
+LiquidCrystal lcd(12, 11, 5, 4, 3, 7); 
 Mezclas mezcla;
+Motor motor(PIN_MOTOR,pin_encoder);
 
 Menus::Menus(LiquidCrystal &display) : lcd(display)                                           
 {
@@ -588,6 +589,7 @@ void Menus::PantallaProgramador(uint8_t pantallaProg)
   // Pantalla de Ajustar LA VELOCIDAD DEL MOTOR
   if (pantallaProg == 8)
   {
+    validarRpms = false ;
     accederRpms = true ;
     if(idioma==0)
     {
@@ -629,16 +631,19 @@ void Menus::entrarSubMenuProg()
     switch (menuProgIndex) 
     {
       case 0:
-        Menus::PantallaProgramador(4);
+        PantallaProgramador(4);
         break;
       case 1:
-        Menus::PantallaProgramador(5);
+        PantallaProgramador(5);
         break;
       case 2:
-        Menus::PantallaProgramador(6);
+        PantallaProgramador(6);
         break;
       case 3:
-        Menus::PantallaProgramador(7);
+        PantallaProgramador(7);
+        break;
+      case 4 :
+        PantallaProgramador(8);   
         break;
     }
   }
@@ -743,7 +748,16 @@ void Menus::modificarBotonSel()
     }
     else if(accederRpms)
     {
-      mostrarRpms();
+      accederRpms = false;
+      validarRpms= true ;
+      motor.modificarRpms();
+    }
+    else if(validarRpms)
+    {
+      Serial.println("validrRpms esta en true");
+      Serial.print("RPMS : ");
+      Serial.println(motor.rpmS());
+      motor.mostrarRpms(pin_encoder);
     }
     else if (ajustarAceite)
     {
@@ -788,7 +802,7 @@ void Menus::decrementandoIndex()
       }
       displayLitrosMensuales();
     }
-    else if(menuProgramador && !inSubMenuProg && menuProgIndex < 4 && !ajustarAceite && !ajustarSouji)
+    else if(menuProgramador && !inSubMenuProg && menuProgIndex < 4 && !ajustarAceite && !ajustarSouji && !validarRpms)
     {
       menuProgIndex++;
       updateMenuProgDisplay(); 
@@ -801,6 +815,10 @@ void Menus::decrementandoIndex()
     else if(ajustarSouji)
     {
       mezcla.bajarPorcentajeSouji();    
+    }
+    else if(validarRpms)
+    {
+      motor.bajarRpms();
     }
     else if(cambiarIdioma)
     {
@@ -845,7 +863,7 @@ void Menus::incrementandoIndex()
       }
       displayLitrosMensuales();
     }
-    else if(menuProgramador && !inSubMenuProg && menuProgIndex > 0 && !ajustarAceite && !ajustarSouji)
+    else if(menuProgramador && !inSubMenuProg && menuProgIndex > 0 && !ajustarAceite && !ajustarSouji && !validarRpms)
     {
       menuProgIndex--;
       updateMenuProgDisplay(); 
@@ -858,6 +876,10 @@ void Menus::incrementandoIndex()
     else if(ajustarSouji)
     {
       mezcla.subirPorcentajeSouji();    
+    }
+    else if(validarRpms)
+    {
+      motor.subirRpms();
     }
     else if(cambiarIdioma)
     {
@@ -981,6 +1003,7 @@ void Menus::validarMezcla()
 {
   if(variarCantidad)
   {
+    
     ejecutarMezcla(Cantidad_Souji[IndexCantidad]);
   }
 }
@@ -1077,6 +1100,7 @@ String Menus::elegirMes(uint8_t mes)
 
 void Menus::ejecutarMezcla(int Cantidad_Souji)
 {
+  motor.cargarRpms();
   switch (Cantidad_Souji)
   {
   case 5:
@@ -1474,36 +1498,6 @@ void Menus::mostrarElPeso()
     lcd.print(elPeso);
     lcd.setCursor(8,1);
     lcd.print("GRAMS");
-  }
-}
-
-
-/////////////////  CONTROL DEL MOTOR  /////////////////
-void Menus::mostrarRpms()
-{
-  if(idioma==0)
-  {
-    lcd.clear();
-    lcd.setCursor(0,0);
-    lcd.print("LA FREQ:");
-    //lcd.setCursor(10,0);
-    //lcd.print(frecuencia);
-    lcd.setCursor(2,1);
-    lcd.print("LOS RPMS:");
-    //lcd.setCursor(10,1);
-    //lcd.print(Motor::calcularRpms());
-  }
-  else
-  {
-    lcd.clear();
-    lcd.setCursor(0,0);
-    lcd.print("THE FREQ:");
-    //lcd.setCursor(10,0);
-    //lcd.print(frecuencia);
-    lcd.setCursor(2,1);
-    lcd.print("THE RPMS:");
-    //lcd.setCursor(10,1);
-    //lcd.print(Motor::calcularRpms());
   }
 }
 

@@ -9,8 +9,6 @@
 #include "Menus.h"
 #include "EEPROM.h"
 
-#define PIN_MOTOR 53
-#define PIN_SENSOR 52
 
 #define PIN_BOMBA_ACEITE 51
 #define PIN_BOMBA_SOUJI 50
@@ -25,6 +23,7 @@
 
 #define PORCENTAJE_ACEITE_ADRESS 20
 #define PORCENTAJE_SOUJI_ADRESS 24
+
 
 
 class Mezclas

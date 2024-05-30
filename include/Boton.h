@@ -5,7 +5,7 @@
 
 // Definición de Botones
 const uint8_t PIN_BOTON_SET = 6;
-const uint8_t PIN_BOTON_UP = 7;
+const uint8_t PIN_BOTON_UP = 13;
 const uint8_t PIN_BOTON_DOWN = 8;
 const uint8_t PIN_BOTON_SEL = 9;
 const uint8_t PIN_BOTON_PRO = 10;

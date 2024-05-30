@@ -1,13 +1,15 @@
 #include "Motor.h"
 
 volatile uint64_t Motor::pulsos = 0;
+int pin_encoder =2;
+int rpms=2500;
 
-Motor::Motor(uint8_t pin,uint8_t pinSensor)
+Motor::Motor(uint8_t pin,uint8_t pin_encoder)
 {
     this->pin = pin;
     tiempoInicio = 0;
     frecuencia = 0 ;
-    rpms = 0 ;
+    rpms = 2500 ;
     pulsos = 0;
     pulsos_ultimo_segundo = 0 ;
     init();
@@ -15,7 +17,8 @@ Motor::Motor(uint8_t pin,uint8_t pinSensor)
 
 void Motor::init()
 {
-    attachInterrupt(digitalPinToInterrupt(pinSensor), contarPulsos, RISING); 
+    pinMode(pin_encoder, INPUT_PULLUP);
+    attachInterrupt(digitalPinToInterrupt(pin_encoder), contarPulsos, RISING); 
     // Funcion para parar EL MOTOR
     parar();
 }
@@ -45,26 +48,147 @@ void Motor::ajustarRpms(int rpms, uint64_t tiempoMezcla)
     parar();
 }
         
-float Motor::calcularFrecuencia()
+void Motor::mostrarRpms(int pin_encoder)
 {
-  tiempoInicio = millis(); // Registra el tiempo de inicio
-  if (millis() - tiempoInicio >= 1000) 
-  { // Verifica si ha pasado 1 segu ndo
-    detachInterrupt(digitalPinToInterrupt(pinSensor)); // Detiene las interrupciones
-    pulsos_ultimo_segundo = pulsos; // Lee el contador de pulsos
-    pulsos = 0; // Reinicia el contador de pulsos
-    attachInterrupt(digitalPinToInterrupt(pinSensor), contarPulsos, RISING); // Vuelve a adjuntar la función de interrupción
-    tiempoInicio = millis(); // Reinicia el tiempo de inicio
+    Serial.println("Estamos en mostarRPMS");
+    if (millis() - tiempoInicio >= 1000) 
+    {  
+        detachInterrupt(digitalPinToInterrupt(pin_encoder)); // Detiene las interrupciones
+        pulsos_ultimo_segundo = pulsos; // Lee el contador de pulsos
+        pulsos = 0; // Reinicia el contador de pulsos
+        attachInterrupt(digitalPinToInterrupt(pin_encoder), contarPulsos, RISING); // Vuelve a adjuntar la función de interrupción
+        tiempoInicio = millis(); // Reinicia el tiempo de inicio
 
-    // Calcula la frecuencia en Hz (pulsos por segundo)
-    frecuencia = pulsos_ultimo_segundo / 1.0;
-    //rpms = abs((int(frecuencia)*60)/600);
-  }
-  return frecuencia;
+        // Calcula la frecuencia en Hz (pulsos por segundo)
+        frecuencia = pulsos_ultimo_segundo / 1.0;
+        rpms = abs((int(frecuencia)*60)/600);
+        if(idioma==0)
+        {
+            lcd.clear();
+            lcd.setCursor(0,0);
+            lcd.print("FREQ:");
+            lcd.setCursor(7,0);
+            lcd.print(frecuencia);
+            lcd.setCursor(0,1);
+            lcd.print("RPMS:");
+            lcd.setCursor(7,1);
+            lcd.print(rpms);
+        }
+        else
+        {
+            lcd.clear();
+            lcd.setCursor(0,0);
+            lcd.print("FREQ:");
+            lcd.setCursor(7,0);
+            lcd.print(frecuencia);
+            lcd.setCursor(0,1);
+            lcd.print("RPMS:");
+            lcd.setCursor(7,1);
+            lcd.print(rpms);  
+        }
+    }  
 }
 
-int Motor::calcularRpms()
+void Motor::modificarRpms()
 {
-    rpms = abs((int(frecuencia)*60)/600);
+    cargarRpms();
+    Serial.println("Estamos en modificarRpms");
+    if(idioma==0)
+    {
+        lcd.clear();
+        lcd.setCursor(0,0);
+        lcd.print("AJUSTAR RPMS:");
+        lcd.setCursor(7,1);
+        lcd.print(rpms);
+    }
+    else
+    {
+        lcd.clear();
+        lcd.setCursor(0,0);
+        lcd.print("SETTING RPMS:");
+        lcd.setCursor(7,1);
+        lcd.print(rpms);
+    }
+}
+
+void Motor::bajarRpms()
+{
+    Serial.println("bajando RPMS");
+    if(rpms == 0)
+    {
+        if(idioma==0)
+        {
+            lcd.clear();
+            lcd.setCursor(1,0);
+            lcd.print("VALOR DE RPMS");
+            lcd.setCursor(0,1);
+            lcd.print("MINIMA:");
+            lcd.setCursor(8,1);
+            lcd.print(rpms);
+        }
+        else
+        {
+            lcd.clear();
+            lcd.setCursor(1,0);
+            lcd.print("IS THE MINIMUM");
+            lcd.setCursor(0,1);
+            lcd.print("RPMS:");
+            lcd.setCursor(8,1);
+            lcd.print(rpms);
+        }
+        delay(2000);
+        modificarRpms(); 
+    }
+    else
+    {
+        rpms-=50;
+        EEPROM.put(RPMS_ADRESS, rpms); 
+        modificarRpms();
+    }
+}
+
+void Motor::subirRpms()
+{
+    Serial.println("subiendo RPMS");
+    if(rpms == RPMS_MAX)
+    {
+        if(idioma==0)
+        {
+            lcd.clear();
+            lcd.setCursor(1,0);
+            lcd.print("VALOR DE RPMS");
+            lcd.setCursor(0,1);
+            lcd.print("MAXIMA:");
+            lcd.setCursor(8,1);
+            lcd.print(rpms);
+        }
+        else
+        {
+            lcd.clear();
+            lcd.setCursor(1,0);
+            lcd.print("IS THE MAXIMUM");
+            lcd.setCursor(0,1);
+            lcd.print("RPMS:");
+            lcd.setCursor(8,1);
+            lcd.print(rpms);
+        }
+        delay(2000);
+        modificarRpms(); 
+    }
+    else
+    {
+        rpms+=50;
+        EEPROM.put(RPMS_ADRESS, rpms);
+        modificarRpms();
+    }
+}
+
+int Motor::rpmS()
+{
     return rpms;
+}
+
+void Motor::cargarRpms()
+{
+    EEPROM.get(RPMS_ADRESS, rpms);
 }

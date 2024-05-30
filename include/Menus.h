@@ -11,8 +11,8 @@ extern LiquidCrystal lcd;
 #define YEAR_ADDRESS 8  // Dirección para el año
 //#define INIT_CHECK_ADDRESS   // Dirección para verificar la inicialización
 #define LITROS_TOTALES_DIRECCION 12  // Direccion de los litros totales
-
 #define IDIOMA_ADRESS 26
+
 extern int idioma;
 extern int opcionLenguaje; 
 
@@ -45,7 +45,7 @@ class Menus
         // Variables del vacio automatico
         bool vacioAutomatico = false;
         bool iniciarVacio = false;
-
+        bool validarRpms = false;
         // Variables de las mezclas
         uint8_t misPantallasMezc = 0;
 
