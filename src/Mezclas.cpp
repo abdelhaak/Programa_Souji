@@ -8,6 +8,7 @@ Bomba bombaVacio(PIN_BOMBA_VACIO);
 Motor motorMezclador(PIN_MOTOR,PIN_SENSOR);
 Menus menus(lcd);
 
+
 // 2 minutos => 120000 ms    ::   PARA LA PRIMERA MEZCLA
 uint64_t tiempoMezcla1 = 5000;
 // 3 minutos => 180000 ms    ::   PARA LA SEGUNDA MEZCLA
@@ -111,13 +112,26 @@ void Mezclas::mezclaGeneral(int mezclas)
     Pantallamezcla(6);
     mezclaVacio();
     Serial.println("Vacio finalizado");
-    lcd.clear();
-    lcd.setCursor(1,0);
-    lcd.print("MEZCLA NUM : ");
-    lcd.setCursor(14,0);
-    lcd.print(i+1);
-    lcd.setCursor(2,1);
-    lcd.print("FINALIZADA");
+    if(idioma==0)
+    {
+      lcd.clear();
+      lcd.setCursor(1,0);
+      lcd.print("MEZCLA NUM : ");
+      lcd.setCursor(14,0);
+      lcd.print(i+1);
+      lcd.setCursor(2,1);
+      lcd.print("FINALIZADA");
+    }
+    else
+    {
+      lcd.clear();
+      lcd.setCursor(1,0);
+      lcd.print("MIX NUMBER : ");
+      lcd.setCursor(14,0);
+      lcd.print(i+1);
+      lcd.setCursor(2,1);
+      lcd.print("COMPLETED");
+    }
     delay(2000);   
   }
   Serial.println("Mezcla terminada.");
@@ -137,97 +151,201 @@ void Mezclas::Pantallamezcla(uint8_t pantallamezcla)
 
   if (pantallamezcla == 0)
   {
-    lcd.clear();
-    lcd.setCursor(1,0);
-    lcd.print("AHORA EMPEZAMOS");
-    lcd.setCursor(0,1);
-    lcd.print("LA MEZCLA");
-    lcd.setCursor(12,1);
-    lcd.createChar(0, Character2);
+    if(idioma==0)
+    {
+      lcd.clear();
+      lcd.setCursor(1,0);
+      lcd.print("AHORA EMPEZAMOS");
+      lcd.setCursor(0,1);
+      lcd.print("LA MEZCLA");
+      lcd.setCursor(12,1);
+      lcd.createChar(0, Character2);
+    }
+    else
+    {
+      lcd.clear();
+      lcd.setCursor(2,0);
+      lcd.print("NOW STARTING");
+      lcd.setCursor(3,1);
+      lcd.print("THE MIX");
+      lcd.setCursor(12,1);
+      lcd.createChar(0, Character2);
+    }
   }
 
   // Pantalla hechando Aceite
   if (pantallamezcla == 1)
   {
-    lcd.clear();
-    lcd.setCursor(0,0);
-    lcd.print("HECHANDO ACEITE");
+    if(idioma==0)
+    {
+      lcd.clear();
+      lcd.setCursor(0,0);
+      lcd.print("HECHANDO ACEITE");
+    }
+    else
+    {
+      lcd.clear();
+      lcd.setCursor(0,0);
+      lcd.print("MAKING OIL");
+    }
   }
 
   // Pantalla hechando Souji
   if (pantallamezcla == 2)
   {
-    lcd.clear();
-    lcd.setCursor(0,0);
-    lcd.print("HECHANDO SOUJI");
+    if(idioma==0)
+    {
+      lcd.clear();
+      lcd.setCursor(0,0);
+      lcd.print("HECHANDO SOUJI");
+    }
+    else
+    {
+      lcd.clear();
+      lcd.setCursor(0,0);
+      lcd.print("MAKING SOUJI");
+    }
   }
 
   // Pantalla hechando Agua
   if (pantallamezcla == 3)
   {
-    lcd.clear();
-    lcd.setCursor(0,0);
-    lcd.print("HECHANDO AGUA");
+    if(idioma==0)
+    {
+      lcd.clear();
+      lcd.setCursor(0,0);
+      lcd.print("HECHANDO AGUA");
+    }
+    else
+    {
+      lcd.clear();
+      lcd.setCursor(0,0);
+      lcd.print("MAKING WATER");
+    }
   }
 
   // Pantalla Mezclando Primera Mezcla
   if (pantallamezcla == 4)
   {
-    lcd.clear();
-    lcd.setCursor(0,0);
-    lcd.print("PRIMERA MEZCLA");
+    if(idioma==0)
+    {
+      lcd.clear();
+      lcd.setCursor(0,0);
+      lcd.print("PRIMERA MEZCLA");
+    }
+    else
+    {
+      lcd.clear();
+      lcd.setCursor(0,0);
+      lcd.print("FIRST SHAKE");
+    }
   }
 
   // Pantalla Mezclando Primera Mezcla
   if (pantallamezcla == 5)
   {
-    lcd.clear();
-    lcd.setCursor(0,0);
-    lcd.print("SEGUNDA MEZCLA");
+    if(idioma==0)
+    {
+      lcd.clear();
+      lcd.setCursor(0,0);
+      lcd.print("SEGUNDA MEZCLA");
+    }
+    else
+    {
+      lcd.clear();
+      lcd.setCursor(0,0);
+      lcd.print("SECOND SHAKE");
+    }
   }
 
   // Pantalla del VACIO
   if (pantallamezcla == 6)
   {
-    lcd.clear();
-    lcd.setCursor(0,0);
-    lcd.print("VACIANDO ....");
+    if(idioma==0)
+    {
+      lcd.clear();
+      lcd.setCursor(0,0);
+      lcd.print("VACIANDO ....");
+    }
+    else
+    {
+      lcd.clear();
+      lcd.setCursor(0,0);
+      lcd.print("EMPTYING ...");
+    }
   }
 
   // Pantalla de fin de mezcla
   if (pantallamezcla == 7)
   {
-    lcd.clear();
-    lcd.setCursor(1,0);
-    lcd.print("MEZCLA TOTAL");
-    lcd.setCursor(3,1);
-    lcd.print("COMPLETADA");
+    if(idioma==0)
+    {
+      lcd.clear();
+      lcd.setCursor(1,0);
+      lcd.print("MEZCLA TOTAL");
+      lcd.setCursor(3,1);
+      lcd.print("COMPLETADA");
+    }
+    else
+    {
+      lcd.clear();
+      lcd.setCursor(1,0);
+      lcd.print("TOTAL MIX");
+      lcd.setCursor(3,1);
+      lcd.print("COMPLETED");
+    }
   }
 
   // Pantalla Ajustar porcentaje Aceite
   if (pantallamezcla == 8)
   {
     EEPROM.get(PORCENTAJE_ACEITE_ADRESS, porcentajeAceite);
-    lcd.clear();
-    lcd.setCursor(0,0);
-    lcd.print("AJUSTANDO ACEITE");
-    lcd.setCursor(5,1);
-    lcd.print(porcentajeAceite);
-    lcd.setCursor(10,1);
-    lcd.print("%");
+    if(idioma==0)
+    {
+      lcd.clear();
+      lcd.setCursor(0,0);
+      lcd.print("AJUSTANDO ACEITE");
+      lcd.setCursor(5,1);
+      lcd.print(porcentajeAceite);
+      lcd.setCursor(10,1);
+      lcd.print("%");
+    }
+    else
+    {
+      lcd.clear();
+      lcd.setCursor(0,0);
+      lcd.print("SETTING OIL");
+      lcd.setCursor(5,1);
+      lcd.print(porcentajeAceite);
+      lcd.setCursor(10,1);
+      lcd.print("%");
+    }
   }
 
   // Pantalla Ajustar porcentaje Souji
   if (pantallamezcla == 9)
   {
     EEPROM.get(PORCENTAJE_SOUJI_ADRESS, porcentajeSouji);
-    lcd.clear();
-    lcd.setCursor(0,0);
-    lcd.print("AJUSTANDO SOUJI");
-    lcd.setCursor(5,1);
-    lcd.print(porcentajeSouji);
-    lcd.setCursor(10,1);
-    lcd.print("%");
+    if(idioma==0)
+    {
+      lcd.clear();
+      lcd.setCursor(0,0);
+      lcd.print("AJUSTANDO SOUJI");
+      lcd.setCursor(5,1);
+      lcd.print(porcentajeSouji);
+      lcd.setCursor(10,1);
+      lcd.print("%");
+    }
+    else
+    {
+      lcd.clear();
+      lcd.setCursor(0,0);
+      lcd.print("SETTING SOUJI");
+      lcd.setCursor(5,1);
+      lcd.print(porcentajeSouji);
+      lcd.setCursor(10,1);
+      lcd.print("%");
+    }
   }
 }
 
@@ -281,8 +399,6 @@ void Mezclas::hecharLiquido(float volumen)
   {
     pesoRelativo = PesoActual() - pesoInicioEtapa;
     updateProgressBar(pesoRelativo, volumen, 1);  
-    //Serial.print("El peso es : ");
-    //Serial.println(pesoRelativo);
     delay(100);
   }
 }
