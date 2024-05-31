@@ -9,7 +9,6 @@
 #include "Menus.h"
 #include "EEPROM.h"
 
-
 #define PIN_BOMBA_ACEITE 51
 #define PIN_BOMBA_SOUJI 50
 #define PIN_BOMBA_AGUA 49
@@ -22,8 +21,6 @@
 
 #define PORCENTAJE_ACEITE_ADRESS 20
 #define PORCENTAJE_SOUJI_ADRESS 24
-
-
 
 class Mezclas
 {

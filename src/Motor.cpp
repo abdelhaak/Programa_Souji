@@ -51,11 +51,11 @@ void Motor::mostrarRpms(int pin_encoder)
 {
     if (millis() - tiempoInicio >= 1000) 
     {  
-        detachInterrupt(digitalPinToInterrupt(pin_encoder)); // Detiene las interrupciones
-        pulsos_ultimo_segundo = pulsos; // Lee el contador de pulsos
-        pulsos = 0; // Reinicia el contador de pulsos
-        attachInterrupt(digitalPinToInterrupt(pin_encoder), contarPulsos, RISING); // Vuelve a adjuntar la función de interrupción
-        tiempoInicio = millis(); // Reinicia el tiempo de inicio
+        detachInterrupt(digitalPinToInterrupt(pin_encoder)); 
+        pulsos_ultimo_segundo = pulsos; 
+        pulsos = 0; 
+        attachInterrupt(digitalPinToInterrupt(pin_encoder), contarPulsos, RISING); 
+        tiempoInicio = millis();
 
         // Calcula la frecuencia en Hz (pulsos por segundo)
         frecuencia = pulsos_ultimo_segundo / 1.0;

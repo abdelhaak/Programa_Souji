@@ -129,7 +129,8 @@ void updateProgressBar(unsigned long count, unsigned long totalCount, int lineTo
     // Imprime el símbolo Unicode para la barra de progreso
     for (int i = 0; i < progress; i++) 
     {
-      lcd.write((uint8_t)0xFF); // Utiliza el símbolo Unicode para una barra gruesa (0xDB)
+      // Utiliza el símbolo Unicode para una barra gruesa (0xDB)
+      lcd.write((uint8_t)0xFF); 
     }
 
     // Imprime espacios en blanco para el resto del ancho del LCD
