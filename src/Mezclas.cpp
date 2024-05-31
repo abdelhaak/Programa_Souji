@@ -8,7 +8,6 @@ Bomba bombaVacio(PIN_BOMBA_VACIO);
 Motor motorMezclador(PIN_MOTOR,pin_encoder);
 Menus menus(lcd);
 
-
 // 2 minutos => 120000 ms    ::   PARA LA PRIMERA MEZCLA
 uint64_t tiempoMezcla1 = 5000;
 // 3 minutos => 180000 ms    ::   PARA LA SEGUNDA MEZCLA
@@ -46,10 +45,10 @@ void Mezclas::parado()
   bombaSouji.off();
   bombaAgua.off();
   bombaVacio.off();
-  motorMezclador.parar();
+  motorMezclador.pararMotor();
 }
 
-// La MEZCLA COMPLETA 
+// LA MEZCLA COMPLETA 
 void Mezclas::mezclaGeneral(int mezclas)
 {
   Pantallamezcla(0);
@@ -78,14 +77,11 @@ void Mezclas::mezclaGeneral(int mezclas)
     // Pasamos a la primera etapa de mezcla con el motor 
     Serial.println("Ahora activamos el motor mezclador");
     delay(1000);
-    Serial.print("Motor mezclador activo en :  ");
-    Serial.print(RPMS_INICIO);
-    Serial.println(" RPMs");
     Pantallamezcla(4);
     // Activamos el motor con los RPMs guardados y el tiempo adecuado
-    motorMezclador.ajustarRpms(RPMS_INICIO,tiempoMezcla1);
+    motorMezclador.ajustarRpms(tiempoMezcla1);
     // Apagar el motor y pasar a la siguiente etapa
-    motorMezclador.parar();
+    motorMezclador.pararMotor();
 
     // Hechamos la cantidad adecuada de AGUA
     Serial.println("Bomba Agua activada : ");
@@ -98,14 +94,12 @@ void Mezclas::mezclaGeneral(int mezclas)
     // Pasamos a la segunda etapa de mezcla con el motor 
     Serial.println("Ahora activamos el motor mezclador por la segunda vez");
     delay(1000);
-    Serial.print("Motor mezclador activo en :  ");
-    Serial.print(RPMS_INICIO);
-    Serial.println(" RPMs");
+
     Pantallamezcla(5);
     // Activamos el motor con los RPMs guardados y el tiempo adecuado
-    motorMezclador.ajustarRpms(RPMS_INICIO,tiempoMezcla2);
+    motorMezclador.ajustarRpms(tiempoMezcla2);
     // Apagar el motor y pasar a la siguiente etapa
-    motorMezclador.parar();
+    motorMezclador.pararMotor();
 
     // Pasamos a la etapa del vacio
     Serial.println("Empezamos el vacio....");
@@ -372,7 +366,6 @@ void Mezclas::mezclaVacio()
     }
   }  
   bombaVacio.off();
-  //Serial.println("Proceso finalizado");
 }
 
 void Mezclas::calcularVolumen()

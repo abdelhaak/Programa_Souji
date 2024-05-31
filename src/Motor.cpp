@@ -19,11 +19,10 @@ void Motor::init()
 {
     pinMode(pin_encoder, INPUT_PULLUP);
     attachInterrupt(digitalPinToInterrupt(pin_encoder), contarPulsos, RISING); 
-    // Funcion para parar EL MOTOR
-    parar();
+    pararMotor();
 }
 
-void Motor::parar()
+void Motor::pararMotor()
 {
     digitalWrite(pin, false);
 }        
@@ -33,11 +32,11 @@ void Motor::contarPulsos()
     pulsos++;
 }
         
-void Motor::ajustarRpms(int rpms, uint64_t tiempoMezcla)
+void Motor::ajustarRpms(uint64_t tiempoMezcla)
 {
     int valorPwm = map(rpms,0,3300,0,255); 
     analogWrite(pin,valorPwm);
-    uint64_t tiempoInicio = millis();
+    tiempoInicio = millis();
     uint64_t tiempoPasado;
     while(millis() - tiempoInicio < tiempoMezcla)
     {
@@ -45,12 +44,11 @@ void Motor::ajustarRpms(int rpms, uint64_t tiempoMezcla)
         updateProgressBar(tiempoPasado, tiempoMezcla, 1);  
         delay(500);
     }
-    parar();
+    pararMotor();
 }
         
 void Motor::mostrarRpms(int pin_encoder)
 {
-    Serial.println("Estamos en mostarRPMS");
     if (millis() - tiempoInicio >= 1000) 
     {  
         detachInterrupt(digitalPinToInterrupt(pin_encoder)); // Detiene las interrupciones
@@ -92,7 +90,6 @@ void Motor::mostrarRpms(int pin_encoder)
 void Motor::modificarRpms()
 {
     cargarRpms();
-    Serial.println("Estamos en modificarRpms");
     if(idioma==0)
     {
         lcd.clear();
@@ -113,7 +110,6 @@ void Motor::modificarRpms()
 
 void Motor::bajarRpms()
 {
-    Serial.println("bajando RPMS");
     if(rpms == 0)
     {
         if(idioma==0)
@@ -149,7 +145,6 @@ void Motor::bajarRpms()
 
 void Motor::subirRpms()
 {
-    Serial.println("subiendo RPMS");
     if(rpms == RPMS_MAX)
     {
         if(idioma==0)
