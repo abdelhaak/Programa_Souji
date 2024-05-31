@@ -7,6 +7,9 @@ float pesoTara = 0;
 long escala = 0;
 long adc_lecture=0;
 
+// ERRORES 
+
+
 HX711 balanza;
 
 void balanza_Setup()

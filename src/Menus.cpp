@@ -7,6 +7,10 @@
 #include "Motor.h"
 #include "Mezclas.h"
 
+// ERRORES
+
+
+
 // MENUS GENERALES
 
 int idioma = 0 ;
@@ -294,7 +298,7 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
   // El SubMenu de Vaciar Deposito
   if (pantalla == 11)
   {
-    mostrarPeso = true;
+    vacioAutomatico = true;
     if(idioma==0)
     {
       lcd.clear();
@@ -398,7 +402,6 @@ void Menus::entrarSubMenu()
     updateMenuDisplay();
   }
 }
-
 
 //////////////// PANTALLAS DEL MODO PROGRAMADOR  /////////////////
 void Menus::PantallaProgramador(uint8_t pantallaProg)
@@ -659,7 +662,6 @@ void Menus::updateMenuProgDisplay()
   PantallaProgramador(menuProgIndex);
 }
 
-
 ////////////////  Manejar los botones de entrada  /////////////////
 
 void Menus::modificarBotonSet()
@@ -717,10 +719,6 @@ void Menus::modificarBotonSel()
     }
     else if(vacioAutomatico)
     {
-      funcionVacio();
-    }
-    else if(iniciarVacio)
-    {
       vaciando();
     }
     else if(variarCantidad)
@@ -774,7 +772,6 @@ void Menus::modificarBotonSel()
     else {}  
   } 
 }
-
 
 void Menus::decrementandoIndex() 
 {
@@ -922,7 +919,6 @@ void Menus::updateCantidadSouji()
     lcd.print("LITERS");  
   }
 }
-
 
 void Menus::incrementarCantidad(int cantidad) 
 {
@@ -1501,30 +1497,7 @@ void Menus::mostrarElPeso()
   }
 }
 
-
 /////////////////  CONTROL DEL VACIO AUTOMATICO  /////////////////
-
-void Menus::funcionVacio()
-{
-  if(idioma==0)
-  {
-    lcd.clear();
-    lcd.setCursor(0,0);
-    lcd.print("INICIAMOS VACIO");
-    lcd.setCursor(0,1);
-    lcd.print("PULSE SEL");
-  }
-  else
-  {
-    lcd.clear();
-    lcd.setCursor(0,0);
-    lcd.print("TO START VACUUM");
-    lcd.setCursor(0,1);
-    lcd.print("PRESS SEL");
-  }
-  vacioAutomatico = false;
-  iniciarVacio = true;
-}
 
 void Menus::vaciando()
 {
@@ -1533,20 +1506,20 @@ void Menus::vaciando()
     lcd.clear();
     lcd.setCursor(0,0);
     lcd.print("VACIANDO...");
+    mezcla.mezclaVacio();
   }
   else
   {
     lcd.clear();
     lcd.setCursor(0,0);
     lcd.print("EMPTYING...");
+    mezcla.mezclaVacio();
   }
   delay(2000);
   PantallaSeleccionada(11);
 }
 
-
 /////////////////  CONTROL DEL RESETEO TOTAL DE DATA  /////////////////
-
 
 void Menus::ReseteoTotalVerif()
 {
@@ -1569,7 +1542,6 @@ void Menus::ReseteoTotalVerif()
     lcd.print("PRESS SEL");
   }
 }
-
 
 void Menus::ReseteoTotal()
 {

@@ -1,6 +1,9 @@
 #include "Bombas.h"
 #include "Arduino.h"
 
+
+// ERRORES
+
 Bomba::Bomba(byte pin)
 {
     this -> pin = pin ;

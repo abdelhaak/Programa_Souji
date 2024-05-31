@@ -1,5 +1,7 @@
 #include "Reloj_RTC.h"
 
+// ERRORES
+
 RTC_DS1307 rtc;
 DateTime Tiempo;
 

@@ -3,7 +3,7 @@
 #include "Menus.h"
 #include <Arduino.h>
 
-//Menus menus(lcd);
+// ERRORES
 
 byte zero[] = 
 {

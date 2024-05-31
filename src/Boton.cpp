@@ -1,6 +1,9 @@
 #include <Arduino.h>
 #include "Boton.h"
 
+
+// ERRORES
+
 Boton::Boton(byte pin)
 {
     this->pin = pin;

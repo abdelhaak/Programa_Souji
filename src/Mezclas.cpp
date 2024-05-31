@@ -8,17 +8,22 @@ Bomba bombaVacio(PIN_BOMBA_VACIO);
 Motor motorMezclador(PIN_MOTOR,pin_encoder);
 Menus menus(lcd);
 
+
+// ERRORES
+
+// El tiempo de error autorizado de la bascula 
+// iniciado en 3 minutos => 180000
+uint64_t tiempoErrorBascula = 180000;
+
+uint64_t tiempoPasado = 0;
+
 // 2 minutos => 120000 ms    ::   PARA LA PRIMERA MEZCLA
 uint64_t tiempoMezcla1 = 5000;
 // 3 minutos => 180000 ms    ::   PARA LA SEGUNDA MEZCLA
 uint64_t tiempoMezcla2 = 5000;
 // El peso minimo del vacio autorizado
 uint64_t pesoMinimo = 30.0;
-// El tiempo de error autorizado de la bascula 
-// iniciado en 3 minutos => 180000
-uint64_t tiempoErrorBascula = 180000;
 
-uint64_t tiempoPasado = 0;
 // Porcentajes de inicio de liquidos
 float porcentajeAceite = 30.0;
 float porcentajeSouji = 50.0;

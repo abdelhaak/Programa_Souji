@@ -44,7 +44,6 @@ class Menus
         float elPeso = 0.0;
         // Variables del vacio automatico
         bool vacioAutomatico = false;
-        bool iniciarVacio = false;
         bool validarRpms = false;
         // Variables de las mezclas
         uint8_t misPantallasMezc = 0;
@@ -93,7 +92,6 @@ class Menus
         void displayLitrosMensuales();
         void displayLitrosTotales();
         String elegirMes(uint8_t mes);
-        void funcionVacio();
         void vaciando();
 
         // Variables del menu programador

@@ -4,6 +4,8 @@ volatile uint64_t Motor::pulsos = 0;
 int pin_encoder =2;
 int rpms=2500;
 
+// ERRORES
+
 Motor::Motor(uint8_t pin,uint8_t pin_encoder)
 {
     this->pin = pin;
