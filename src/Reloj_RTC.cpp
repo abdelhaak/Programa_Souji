@@ -12,6 +12,15 @@ uint8_t segundo, minuto, hora, dia, mes, diaDeLaSemana;
 uint16_t anio;
 String elMes;
 
+
+void rtc_init()
+{
+  rtc.begin();
+  Tiempo = rtc.now();
+  dia = Tiempo.day();
+  mes = Tiempo.month();
+  anio = Tiempo.year();
+}
 String Fecha_actual(uint8_t dia, int8_t mes, uint16_t anio)
 {
   Tiempo = rtc.now();

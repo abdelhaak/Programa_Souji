@@ -22,7 +22,7 @@ void setup()
   Serial.println("Programa iniciado");
   EEPROM.get(IDIOMA_ADRESS, idioma);
   menu.lcd_init();
-  rtc.begin();
+  rtc_init();
   litrosTotales = 0;
   balanza_Setup();  
   menu.PantallaSeleccionada(0);

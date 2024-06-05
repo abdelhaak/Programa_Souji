@@ -27,6 +27,7 @@ extern uint8_t litrosTotales;
 extern int cantidadMezclaMes[13]; 
 extern int litrosMensuales[13];
 
+void rtc_init();
 String Fecha_actual(uint8_t dia, int8_t mes, uint16_t anio);
 String Hora_actual();
 
