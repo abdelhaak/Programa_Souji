@@ -20,39 +20,58 @@
 #define DENSIDAD_SOUJI 0.92
 
 #define PORCENTAJE_ACEITE_ADRESS 20
-#define PORCENTAJE_SOUJI_ADRESS 24
+#define PORCENTAJE_SOUJI_ADRESS 22
+#define STATUS_ADRESS 16
+#define STATUS_2_ADRESS 18
+#define NUM_MEZCLAS_ADRESS 24
+#define VOL_ACEITE_ADRESS 60
+#define VOL_SOUJI_ADRESS 62
+#define VOL_AGUA_ADRESS 64
+#define I_MEZCLAS_ADRESS 66
+#define PESO_ACEITE_ACTUAL_ADRESS 68
+#define PESO_SOUJI_ACTUAL_ADRESS 70
+#define PESO_AGUA_ACTUAL_ADRESS 72
 
+extern int numMezclas;
+extern int estado;
+extern int estado2;
+extern int i_mezclas;
+extern uint16_t porcentajeAceite;
+extern uint16_t porcentajeSouji;
+extern uint16_t pesoLiquido;
 class Mezclas
 {
     private:
         //// Aceite 
-        float pesoAceiteDeseado = 0.0;
-        float volumenAceite = 0.0;
+        uint16_t pesoAceiteDeseado = 0;
+        uint16_t volumenAceite = 0;
 
         //// Souji
-        float pesoSoujiDeseado = 0.0;
-        float volumenSouji = 0.0;
+        uint16_t pesoSoujiDeseado = 0;
+        uint16_t volumenSouji = 0;
 
         //// Agua
-        float volumenAgua = 0.0;
+        uint16_t volumenAgua = 0;
 
         //// Mezclas
-        float pesoAgregado = 0.0;
-        float pesoInicioEtapa = 0.0;
+        uint16_t pesoAgregado = 0;
+        uint16_t pesoInicioEtapa = 0;
         uint8_t misPantallasMezc = 0;
         int cantidadDeCincoLitros = 0;
-         
+        bool finMezcla = false;
+
     public:
         Mezclas();
         void init();
+        void checkStatus();  
         void parado();
         void Pantallamezcla(uint8_t pantallamezcla);
         void laMezcla(int cantidadSouji);  
         void mezclaGeneral(int mezclas);
         void calcularVolumen();
-        void hecharLiquido(float volumen);
+        void hecharLiquido(uint16_t volumen);
         void mezclaVacio();   
-
+        void resetearTodo();
         void subirPorcentajeAceite();
         void subirPorcentajeSouji();
         void bajarPorcentajeAceite();

@@ -4,7 +4,7 @@
 #include "RTClib.h"
 
 #define LITROS_MENSUALES_DIRECCION 32
-#define TAMANIO_DATOS_MENSUALES 4
+#define TAMANIO_DATOS_MENSUALES 2
 
 extern RTC_DS1307 rtc;
 extern DateTime Tiempo;

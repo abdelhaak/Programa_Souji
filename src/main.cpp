@@ -7,6 +7,7 @@
 #include "EEPROM.h"
 #include "Bascula.h"
 #include "Motor.h"
+#include "Mezclas.h"
 
 Boton botonSet(PIN_BOTON_SET);
 Boton botonUp(PIN_BOTON_UP);
@@ -15,7 +16,7 @@ Boton botonSel(PIN_BOTON_SEL);
 Boton botonPro(PIN_BOTON_PRO);
 
 Menus menu(lcd);
-
+Mezclas mezclas;
 void setup()
 {
   Serial.begin(9600);
@@ -25,6 +26,14 @@ void setup()
   rtc_init();
   litrosTotales = 0;
   balanza_Setup();  
+  /*
+  estado =0;
+  estado2=0;
+  numMezclas=0;
+  EEPROM.put(STATUS_ADRESS, estado);
+  EEPROM.put(STATUS_2_ADRESS, estado2);
+  EEPROM.put(NUM_MEZCLAS_ADRESS, numMezclas);
+  */
   menu.PantallaSeleccionada(0);
 }
 

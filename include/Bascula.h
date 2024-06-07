@@ -12,14 +12,14 @@
 
 extern HX711 balanza;
 
-extern float peso;
-extern float pesoTara;
+extern uint16_t peso;
+extern uint16_t pesoTara;
 extern long escala;
 extern long adc_lecture;
 
 void calibracion();
 void balanza_Setup();
 void finDeCalibracion();
-float PesoActual();
+uint16_t PesoActual();
 
 #endif

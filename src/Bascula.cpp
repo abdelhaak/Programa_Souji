@@ -2,8 +2,8 @@
 #include "Bascula.h"
 #include "EEPROM.h"
 
-float peso = 0 ;
-float pesoTara = 0;
+uint16_t peso = 0 ;
+uint16_t pesoTara = 0;
 long escala = 0;
 long adc_lecture=0;
 
@@ -20,12 +20,12 @@ void balanza_Setup()
     balanza.tare(VALUE_TARA);
 }
 
-float PesoActual()
+uint16_t PesoActual()
 { 
     peso = balanza.get_units(10); 
     if(peso < 0)
     {
-        peso = 0.0;                    
+        peso = 0;                    
     }
     return peso;
 }
