@@ -15,7 +15,7 @@
 #define PIN_BOMBA_VACIO 48
 
 // Capacidad total de la mezcla que seria de 5000 g que son 5L
-#define CAPACIDAD_TOTAL 500  
+#define CAPACIDAD_TOTAL 300 
 #define DENSIDAD_ACEITE 0.92
 #define DENSIDAD_SOUJI 0.92
 

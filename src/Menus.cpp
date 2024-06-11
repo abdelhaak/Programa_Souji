@@ -45,6 +45,7 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
   // Pantalla de Cantidad de Souji
   if (pantalla == 0)
   { 
+    EEPROM.get(SCALE_ADDRESS, escala);
     EEPROM.get(STATUS_ADRESS, estado);
     EEPROM.get(STATUS_2_ADRESS, estado2);
     EEPROM.get(NUM_MEZCLAS_ADRESS, numMezclas);
@@ -185,6 +186,9 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
   if (pantalla == 4)
   {
     mostrarPeso = false;
+    uint16_t pesoo = PesoActual();
+    Serial.print("El Peso es : ");
+    Serial.println(pesoo);
     if(idioma==0)
     {
       lcd.clear();
@@ -317,7 +321,8 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
   // El SubMenu de Vaciar Deposito
   if (pantalla == 11)
   {
-    vacioAutomatico = true;
+    //vacioAutomatico = true;
+    mostrarPeso = true;
     if(idioma==0)
     {
       lcd.clear();
@@ -1437,6 +1442,8 @@ void Menus::inicializarEEPROM() {
 /////////////////  CONTROL DE LA BASCULA  /////////////////
 void Menus::iniciarCaliBascula()
 {
+  Serial.println("Antes de BalanzaSetup ");
+  Serial.println("Despues de BalanzaSetup ");
   iniciarCalibracion = false;
   calibrarPeso = true;
   if(idioma==0)
@@ -1455,8 +1462,8 @@ void Menus::iniciarCaliBascula()
     lcd.setCursor(4,1);
     lcd.print("TO START");
   }
-
   calibracion(); 
+  Serial.println("Despues de calibracion() ");
 }
 
 void Menus::talarBascula()
@@ -1484,6 +1491,7 @@ void Menus::talarBascula()
 
 void Menus::calibrarEscala()
 {
+  Serial.print("Despues de calibrarEscala ");
   finDeCalibre = true;
   calibrarPeso1 = false;
   if(idioma==0)
@@ -1516,7 +1524,14 @@ void Menus::calibrarEscala()
 void Menus::finalizarCalibracion()
 {
   finDeCalibre = false;
-  balanza_Setup();
+  Serial.print("Antes ");
+  Serial.print("ElPeso es : ");
+  Serial.println(PesoActual());
+  balanza.set_scale(escala); // Establecemos la escala
+  balanza.tare(20);  //El peso actual de la base es considerado zero.
+  Serial.print("Despues ");
+  Serial.print("ElPeso es : ");
+  Serial.println(PesoActual());
 }
 
 void Menus::mostrarElPeso()
@@ -1608,11 +1623,6 @@ void Menus::ReseteoTotal()
   }
   delay(2000);  
   resetearLitrosMensuales();
-  estado =0;
-  estado2=0;
-  numMezclas=0;
-  EEPROM.put(STATUS_ADRESS, estado);
-  EEPROM.put(STATUS_2_ADRESS, estado2);
-  EEPROM.put(NUM_MEZCLAS_ADRESS, numMezclas);
+  mezcla.resetearTodo();
   PantallaProgramador(0);
 }

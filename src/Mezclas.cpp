@@ -16,8 +16,8 @@ uint16_t pesoLiquido = 0;
 // ERRORES
 
 // El tiempo de error autorizado de la bascula 
-// iniciado en 3 minutos => 180000
-uint64_t tiempoErrorBascula = 180000;
+// iniciado en 3 minutos => 180000 // POR AHORA 15 SEGUNDOS
+uint64_t tiempoErrorBascula = 15000;
 
 uint64_t tiempoPasado = 0;
 
@@ -26,7 +26,7 @@ uint64_t tiempoMezcla1 = 5000;
 // 3 minutos => 180000 ms    ::   PARA LA SEGUNDA MEZCLA
 uint64_t tiempoMezcla2 = 5000;
 // El peso minimo del vacio autorizado
-uint16_t pesoMinimo = 50;
+uint16_t pesoMinimo = 30;
 
 // Porcentajes de inicio de liquidos
 uint16_t porcentajeAceite = 30;
@@ -84,11 +84,19 @@ void Mezclas::mezclaGeneral(int mezclas)
 {
   Serial.println("Estamos en mezclaGeneral");
   EEPROM.get(I_MEZCLAS_ADRESS, i_mezclas);
-  //EEPROM.get(PESO_ACEITE_ACTUAL_ADRESS, pesoLiquido);
+  for (int i = 60; i <= 80; i++) 
+  {
+    byte value = EEPROM.read(i); // Lee el byte en la posición 'i'
+    Serial.print("Direccion ");
+    Serial.print(i);
+    Serial.print(": ");
+    Serial.println(value, DEC); // Imprime el valor como decimal
+  }
+  EEPROM.get(PESO_ACEITE_ACTUAL_ADRESS, pesoLiquido);
   // Iniciamos la mezcla 
   if(estado == 0)
   {
-    Serial.println("Estado 0");
+    Serial.println("Estamos en el estado 0");
     Pantallamezcla(0);
     delay(2000);
     estado = 1;
@@ -97,19 +105,27 @@ void Mezclas::mezclaGeneral(int mezclas)
   // Calculamos el volumen de cada liquido
   if(estado == 1)
   {
-    Serial.println("Estado 1");
+    Serial.println("Estamos en el estado 1");
     estado = 2;
     estado2 = 1;
     EEPROM.put(STATUS_ADRESS, estado);
     EEPROM.put(STATUS_2_ADRESS, estado2);
     calcularVolumen();
     delay(50);
+    for (int i = 60; i <= 80; i++) 
+    {
+    byte value = EEPROM.read(i); // Lee el byte en la posición 'i'
+    Serial.print("Direccion ");
+    Serial.print(i);
+    Serial.print(": ");
+    Serial.println(value, DEC); // Imprime el valor como decimal
+    }
   }
   // Pasamos a la mezcla general
   if(estado == 2)
   {
-    Serial.println("Estado 2");
-    for (int i = 0; i <= 128; i++) 
+    Serial.println("Estamos en el estado 2");
+    for (int i = 60; i <= 80; i++) 
     {
       byte value = EEPROM.read(i); // Lee el byte en la posición 'i'
       Serial.print("Direccion ");
@@ -119,6 +135,7 @@ void Mezclas::mezclaGeneral(int mezclas)
     }
     if(mezclas > 1)
     {
+      Serial.println("Mezclas es superior a 1");
       for(i_mezclas=1; i_mezclas<mezclas; i_mezclas++)
         {
           EEPROM.put(I_MEZCLAS_ADRESS, i_mezclas);
@@ -230,6 +247,7 @@ void Mezclas::mezclaGeneral(int mezclas)
     }
     else
     {
+      Serial.println("Mezcla es 1");
       // Hechamos la cantidad adecuada para el Aceite
       if(estado2 == 1)
       {
@@ -242,7 +260,25 @@ void Mezclas::mezclaGeneral(int mezclas)
         bombaAceite.on();
         Serial.print("volumenAceite : ");
         Serial.println(volumenAceite);
+        Serial.println("Los valores antes de hechar el aceite");
+        for (int i = 60; i <= 80; i++)
+        {
+          byte value = EEPROM.read(i); // Lee el byte en la posición 'i'
+          Serial.print("Direccion ");
+          Serial.print(i);
+          Serial.print(": ");
+          Serial.println(value, DEC); // Imprime el valor como decimal
+        }
         hecharLiquido(volumenAceite);
+        Serial.println("Los valores despues de hechar el aceite");
+        for (int i = 60; i <= 80; i++)
+        {
+          byte value = EEPROM.read(i); // Lee el byte en la posición 'i'
+          Serial.print("Direccion ");
+          Serial.print(i);
+          Serial.print(": ");
+          Serial.println(value, DEC); // Imprime el valor como decimal
+        }
         Serial.println("Apagando Bomba de Aceite");
         bombaAceite.off();
         estado2 = 2;
@@ -259,7 +295,25 @@ void Mezclas::mezclaGeneral(int mezclas)
         bombaSouji.on();
         Serial.print("volumenSouji : ");
         Serial.println(volumenSouji);
+        Serial.println("Los valores antes de hechar el Souji");
+        for (int i = 60; i <= 80; i++)
+        {
+          byte value = EEPROM.read(i); // Lee el byte en la posición 'i'
+          Serial.print("Direccion ");
+          Serial.print(i);
+          Serial.print(": ");
+          Serial.println(value, DEC); // Imprime el valor como decimal
+        }
         hecharLiquido(volumenSouji);
+        Serial.println("Los valores despues de hechar el Souji");
+        for (int i = 60; i <= 80; i++)
+        {
+          byte value = EEPROM.read(i); // Lee el byte en la posición 'i'
+          Serial.print("Direccion ");
+          Serial.print(i);
+          Serial.print(": ");
+          Serial.println(value, DEC); // Imprime el valor como decimal
+        }
         Serial.println("Apagando Bomba de Souji");
         bombaSouji.off();
         estado2 = 3;

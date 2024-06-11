@@ -18,7 +18,8 @@ Boton botonPro(PIN_BOTON_PRO);
 Menus menu(lcd);
 Mezclas mezclas;
 void setup()
-{
+{  
+  //mezclas.resetearTodo();
   Serial.begin(9600);
   Serial.println("Programa iniciado");
   EEPROM.get(IDIOMA_ADRESS, idioma);
@@ -26,14 +27,6 @@ void setup()
   rtc_init();
   litrosTotales = 0;
   balanza_Setup();  
-  /*
-  estado =0;
-  estado2=0;
-  numMezclas=0;
-  EEPROM.put(STATUS_ADRESS, estado);
-  EEPROM.put(STATUS_2_ADRESS, estado2);
-  EEPROM.put(NUM_MEZCLAS_ADRESS, numMezclas);
-  */
   menu.PantallaSeleccionada(0);
 }
 

@@ -41,7 +41,7 @@ class Menus
         bool calibrarPeso1 = false ;
         bool finDeCalibre = false;
         bool mostrarPeso = false;
-        float elPeso = 0.0;
+        uint16_t elPeso = 0.0;
         // Variables del vacio automatico
         bool vacioAutomatico = false;
         bool validarRpms = false;
