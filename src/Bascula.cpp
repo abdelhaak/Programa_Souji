@@ -6,6 +6,8 @@ uint16_t peso = 0 ;
 uint16_t pesoTara = 0;
 long escala = 0;
 long adc_lecture=0;
+float ultima_tara = 0.0 ;
+
 
 // ERRORES 
 
@@ -16,8 +18,9 @@ void balanza_Setup()
 {
     balanza.begin(DOUT,CLK);
     EEPROM.get(SCALE_ADDRESS, escala);
+    EEPROM.get(TARE_ADRESS, ultima_tara);
     balanza.set_scale(escala);
-    balanza.tare(VALUE_TARA);
+    balanza.tare(ultima_tara);
 }
 
 uint16_t PesoActual()
@@ -36,7 +39,7 @@ void calibracion()
     //La escala por defecto es 1
     balanza.set_scale(); 
     //El peso actual es considerado zero.
-    balanza.tare(VALUE_TARA); 
+    balanza.tare(20); 
 }
     
 void finDeCalibracion()
@@ -48,7 +51,5 @@ void finDeCalibracion()
     EEPROM.put(SCALE_ADDRESS, escala);
     // Escribir en la EEPROM
     delay(1000);
-    balanza.set_scale(escala); // Establecemos la escala
-    balanza.tare(VALUE_TARA);  //El peso actual de la base es considerado zero.
 }
 

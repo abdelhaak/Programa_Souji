@@ -51,6 +51,7 @@ void Motor::ajustarRpms(uint64_t tiempoMezcla)
         
 void Motor::mostrarRpms(int pin_encoder)
 {
+    /*
     if (millis() - tiempoInicio >= 1000) 
     {  
         detachInterrupt(digitalPinToInterrupt(pin_encoder)); 
@@ -86,11 +87,11 @@ void Motor::mostrarRpms(int pin_encoder)
             lcd.setCursor(7,1);
             lcd.print(rpms);  
         }
-    }  
+    }  */
 }
 
 void Motor::modificarRpms()
-{
+{   /*
     cargarRpms();
     if(idioma==0)
     {
@@ -107,11 +108,11 @@ void Motor::modificarRpms()
         lcd.print("SETTING RPMS:");
         lcd.setCursor(7,1);
         lcd.print(rpms);
-    }
+    }*/
 }
 
 void Motor::bajarRpms()
-{
+{/*
     if(rpms == 0)
     {
         if(idioma==0)
@@ -142,11 +143,11 @@ void Motor::bajarRpms()
         rpms-=50;
         EEPROM.put(RPMS_ADRESS, rpms); 
         modificarRpms();
-    }
+    }*/
 }
 
 void Motor::subirRpms()
-{
+{/*
     if(rpms == RPMS_MAX)
     {
         if(idioma==0)
@@ -177,7 +178,7 @@ void Motor::subirRpms()
         rpms+=50;
         EEPROM.put(RPMS_ADRESS, rpms);
         modificarRpms();
-    }
+    }*/
 }
 
 int Motor::rpmS()

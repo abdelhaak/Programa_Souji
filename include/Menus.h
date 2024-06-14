@@ -4,7 +4,7 @@
 #include <Wire.h> 
 #include <LiquidCrystal.h>
 
-extern LiquidCrystal lcd;
+//extern LiquidCrystal lcd;
 
 #define DAY_ADDRESS 0   // Dirección para el día
 #define MONTH_ADDRESS 4 // Dirección para el mes
@@ -15,11 +15,13 @@ extern LiquidCrystal lcd;
 
 extern int idioma;
 extern int opcionLenguaje; 
-
+extern const int PAUSE;
+extern bool enPausa;
+extern bool pausado;
 class Menus
 {
     private:
-        LiquidCrystal &lcd;
+        //LiquidCrystal &lcd;
         bool mezclar5Litros = false;
         // Variables del menu principal 
         uint8_t misPantallas=0;
@@ -62,7 +64,8 @@ class Menus
         bool cambiarIdioma = false;
        
     public:
-        Menus(LiquidCrystal &display);
+        //Menus(LiquidCrystal &display);
+        Menus();
         void lcd_init();
 
         // Variables del menu principal

@@ -105,6 +105,7 @@ byte Character2[] =
   0b01010
 };
 
+/*
 void lcdBarInit() 
 {
   // initialize the LCD and allocate the 5 arrays to a number.
@@ -139,3 +140,5 @@ void updateProgressBar(unsigned long count, unsigned long totalCount, int lineTo
       lcd.write(' ');
     }
  }
+
+ */

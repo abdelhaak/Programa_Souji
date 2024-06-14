@@ -1,13 +1,15 @@
 #ifndef MY_MEZCLADOR_H
 #define MY_MEZCLADOR_H
 
-#include "Arduino.h"
+#include <Arduino.h>
+#include <EEPROM.h>
 #include "Motor.h"
 #include "Bombas.h"
 #include "Bascula.h"
 #include "LCD_Progress.h"
 #include "Menus.h"
-#include "EEPROM.h"
+#include "Boton.h"
+
 
 #define PIN_BOMBA_ACEITE 51
 #define PIN_BOMBA_SOUJI 50
@@ -31,17 +33,13 @@
 #define PESO_ACEITE_ACTUAL_ADRESS 68
 #define PESO_SOUJI_ACTUAL_ADRESS 70
 #define PESO_AGUA_ACTUAL_ADRESS 72
+#define PESO_RELATIVO_ADDRESS 74
 
-extern int numMezclas;
-extern int estado;
-extern int estado2;
-extern int i_mezclas;
-extern uint16_t porcentajeAceite;
-extern uint16_t porcentajeSouji;
-extern uint16_t pesoLiquido;
+//extern bool enPausa;
 class Mezclas
 {
     private:
+
         //// Aceite 
         uint16_t pesoAceiteDeseado = 0;
         uint16_t volumenAceite = 0;
@@ -62,7 +60,7 @@ class Mezclas
 
     public:
         Mezclas();
-        void init();
+       /* void init();
         void checkStatus();  
         void parado();
         void Pantallamezcla(uint8_t pantallamezcla);
@@ -76,6 +74,17 @@ class Mezclas
         void subirPorcentajeSouji();
         void bajarPorcentajeAceite();
         void bajarPorcentajeSouji();
+        void pausarReanudarMezcla();
+        void esperarParaReanudar();*/
+
+        bool enPausa = false;
+        int numMezclas;
+        int estado;
+        int estado2;
+        int i_mezclas;
+        uint16_t porcentajeAceite;
+        uint16_t porcentajeSouji;
+        uint16_t pesoLiquido;
 };
 
 #endif

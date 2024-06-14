@@ -15,12 +15,18 @@
 
 int idioma = 0 ;
 int opcionLenguaje = 0; 
+const int PAUSE = 99;
+bool enPausa = false;
+bool pausado = false;
 
-LiquidCrystal lcd(12, 11, 5, 4, 3, 7); 
+const uint8_t RS = A3, EN = A2, D4 = A0, D5 = 0, D6 = 1, D7 = 2;
+LiquidCrystal lcd(RS, EN, D4, D5, D6, D7); 
+
 Mezclas mezcla;
 Motor motor(PIN_MOTOR,pin_encoder);
 
-Menus::Menus(LiquidCrystal &display) : lcd(display)                                           
+//Menus::Menus(LiquidCrystal &display) : lcd(display) 
+Menus::Menus()                                          
 {
   misPantallas = 20;
   lcd_init();
@@ -29,7 +35,8 @@ Menus::Menus(LiquidCrystal &display) : lcd(display)
 void Menus::lcd_init()
 {  
   lcd.begin(16,2);
-  lcd.clear();
+  PantallaSeleccionada(0);
+  //lcd.clear();
 }
 
 ///////////////// Pantallas del MENU Principal   /////////////////
@@ -46,25 +53,17 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
   if (pantalla == 0)
   { 
     EEPROM.get(SCALE_ADDRESS, escala);
-    EEPROM.get(STATUS_ADRESS, estado);
-    EEPROM.get(STATUS_2_ADRESS, estado2);
-    EEPROM.get(NUM_MEZCLAS_ADRESS, numMezclas);
-    EEPROM.get(PESO_ACEITE_ACTUAL_ADRESS, pesoLiquido);
-    Serial.print("estado ");
-    Serial.println(estado);
-    Serial.print("estado2 ");
-    Serial.println(estado2);
-    Serial.print("numMezclas ");
-    Serial.println(numMezclas);
+    EEPROM.get(STATUS_ADRESS, mezcla.estado);
+    EEPROM.get(STATUS_2_ADRESS, mezcla.estado2);
+    EEPROM.get(NUM_MEZCLAS_ADRESS, mezcla.numMezclas);
+    EEPROM.get(PESO_ACEITE_ACTUAL_ADRESS, mezcla.pesoLiquido);
     menuPrincipal = true;
     menuProgramador = false;
     mostrarLitrosMensuales = false;
     inSubMenu = false;
     menuIndex = 0;
-    if (estado == 0)
+    if (mezcla.estado == 0)
     {
-      lcd.clear();
-      delay(20);
       if(idioma == 0)
       {
         lcd.setCursor(0,0);
@@ -94,15 +93,15 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     }
     else
     {
-      mezcla.mezclaGeneral(numMezclas);
+      //mezcla.mezclaGeneral(mezcla.numMezclas);
     }
   }
 
   // Pantalla de Litros Mensuales
   if (pantalla == 1)
   {
-    estado = 0;
-    EEPROM.put(STATUS_ADRESS, estado);
+    mezcla.estado = 0;
+    EEPROM.put(STATUS_ADRESS, mezcla.estado);
     if(mes == 0)mes =1;
     mostrarLitrosMensuales = false;
     if(idioma == 0)
@@ -187,6 +186,8 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
   {
     mostrarPeso = false;
     uint16_t pesoo = PesoActual();
+    ultima_tara = balanza.get_offset();
+    EEPROM.put(sizeof(escala), ultima_tara);
     Serial.print("El Peso es : ");
     Serial.println(pesoo);
     if(idioma==0)
@@ -468,7 +469,7 @@ void Menus::PantallaProgramador(uint8_t pantallaProg)
   if (pantallaProg == 1)
   {
     Serial.print("porcentajeAceite : ");
-    Serial.println(porcentajeAceite);
+    Serial.println(mezcla.porcentajeAceite);
     ajustarAceite = false;
     if(idioma==0)
     {
@@ -492,7 +493,7 @@ void Menus::PantallaProgramador(uint8_t pantallaProg)
   if (pantallaProg == 2)
   {
     Serial.print("porcentajeSouji : ");
-    Serial.println(porcentajeSouji);
+    Serial.println(mezcla.porcentajeSouji);
     ajustarSouji = false ;
     if(idioma==0)
     {
@@ -765,6 +766,22 @@ void Menus::modificarBotonSel()
       EEPROM.put(IDIOMA_ADRESS,idioma);
       PantallaSeleccionada(0);
     }
+    else if(mezcla.enPausa)
+    {
+      Serial.println("enPausa es true");
+      mezcla.enPausa = !mezcla.enPausa;
+      if(mezcla.enPausa)
+      {
+        //mezcla.Pantallamezcla(8);
+      }
+      else
+      {
+        EEPROM.get(STATUS_ADRESS,mezcla.estado);
+        EEPROM.get(NUM_MEZCLAS_ADRESS, mezcla.numMezclas);
+        Serial.println("reanudando...");
+        //mezcla.mezclaGeneral(mezcla.numMezclas);
+      }
+    }
     else{}
   } 
   else if(menuProgramador)
@@ -795,12 +812,12 @@ void Menus::modificarBotonSel()
       Serial.println("AjutarAceite");
 
       SubMenuProgamador = false;
-      mezcla.Pantallamezcla(8);
+      //mezcla.Pantallamezcla(8);
     } 
     else if (ajustarSouji)
     {
       SubMenuProgamador = false;
-      mezcla.Pantallamezcla(9);
+     // mezcla.Pantallamezcla(9);
     } 
     else {}  
   } 
@@ -840,11 +857,11 @@ void Menus::decrementandoIndex()
     else if(ajustarAceite)
     {
       Serial.println("decremantoAceite");
-      mezcla.bajarPorcentajeAceite();   
+     // mezcla.bajarPorcentajeAceite();   
     }
     else if(ajustarSouji)
     {
-      mezcla.bajarPorcentajeSouji();    
+      //mezcla.bajarPorcentajeSouji();    
     }
     else if(validarRpms)
     {
@@ -903,11 +920,11 @@ void Menus::incrementandoIndex()
     else if(ajustarAceite)
     {
       Serial.println("incremantoAceite");
-      mezcla.subirPorcentajeAceite();   
+      //mezcla.subirPorcentajeAceite();   
     }
     else if(ajustarSouji)
     {
-      mezcla.subirPorcentajeSouji();    
+     // mezcla.subirPorcentajeSouji();    
     }
     else if(validarRpms)
     {
@@ -1141,33 +1158,33 @@ void Menus::ejecutarMezcla(int Cantidad_Souji)
   case 5:
     incrementarCantidad(5);
     Serial.println("caso de 5");
-    numMezclas = 1;
-    EEPROM.put(NUM_MEZCLAS_ADRESS, numMezclas);
-    mezcla.mezclaGeneral(numMezclas);
+    mezcla.numMezclas = 1;
+    EEPROM.put(NUM_MEZCLAS_ADRESS, mezcla.numMezclas);
+   // mezcla.mezclaGeneral(mezcla.numMezclas);
     incrementarCantidad(5);
   break;
   case 10:
-    numMezclas = 2;
-    EEPROM.put(NUM_MEZCLAS_ADRESS, numMezclas);
-    mezcla.mezclaGeneral(numMezclas);;
+    mezcla.numMezclas = 2;
+    EEPROM.put(NUM_MEZCLAS_ADRESS, mezcla.numMezclas);
+   // mezcla.mezclaGeneral(mezcla.numMezclas);;
     incrementarCantidad(10);
   break;
   case 15:
-    numMezclas = 3;
-    EEPROM.put(NUM_MEZCLAS_ADRESS, numMezclas);
-    mezcla.mezclaGeneral(numMezclas);
+    mezcla.numMezclas = 3;
+    EEPROM.put(NUM_MEZCLAS_ADRESS, mezcla.numMezclas);
+   // mezcla.mezclaGeneral(mezcla.numMezclas);
     incrementarCantidad(15);
   break;
   case 20:
-    numMezclas = 4;
-    EEPROM.put(NUM_MEZCLAS_ADRESS, numMezclas);
-    mezcla.mezclaGeneral(numMezclas);
+    mezcla.numMezclas = 4;
+    EEPROM.put(NUM_MEZCLAS_ADRESS, mezcla.numMezclas);
+  //  mezcla.mezclaGeneral(mezcla.numMezclas);
     incrementarCantidad(20);
   break;
   case 25:
-    numMezclas = 5;
-    EEPROM.put(NUM_MEZCLAS_ADRESS, numMezclas);
-    mezcla.mezclaGeneral(numMezclas);
+    mezcla.numMezclas = 5;
+    EEPROM.put(NUM_MEZCLAS_ADRESS, mezcla.numMezclas);
+   // mezcla.mezclaGeneral(mezcla.numMezclas);
     incrementarCantidad(25);
   break;
   }
@@ -1529,6 +1546,8 @@ void Menus::finalizarCalibracion()
   Serial.println(PesoActual());
   balanza.set_scale(escala); // Establecemos la escala
   balanza.tare(20);  //El peso actual de la base es considerado zero.
+  ultima_tara = balanza.get_offset();
+  EEPROM.put(TARE_ADRESS, ultima_tara);
   Serial.print("Despues ");
   Serial.print("ElPeso es : ");
   Serial.println(PesoActual());
@@ -1536,6 +1555,8 @@ void Menus::finalizarCalibracion()
 
 void Menus::mostrarElPeso()
 {
+  ultima_tara = balanza.get_offset();
+  EEPROM.put(TARE_ADRESS, ultima_tara);
   elPeso = PesoActual();
   if(idioma)
   {
@@ -1568,14 +1589,14 @@ void Menus::vaciando()
     lcd.clear();
     lcd.setCursor(0,0);
     lcd.print("VACIANDO...");
-    mezcla.mezclaVacio();
+    //mezcla.mezclaVacio();
   }
   else
   {
     lcd.clear();
     lcd.setCursor(0,0);
     lcd.print("EMPTYING...");
-    mezcla.mezclaVacio();
+    //mezcla.mezclaVacio();
   }
   delay(2000);
   PantallaSeleccionada(11);
@@ -1623,6 +1644,6 @@ void Menus::ReseteoTotal()
   }
   delay(2000);  
   resetearLitrosMensuales();
-  mezcla.resetearTodo();
+  //mezcla.resetearTodo();
   PantallaProgramador(0);
 }

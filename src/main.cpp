@@ -1,12 +1,9 @@
 #include <Arduino.h>
-#include <Wire.h> 
-#include <LiquidCrystal.h>
+#include <avr/power.h>
 #include "Reloj_RTC.h"
 #include "Menus.h"
 #include "Boton.h"
-#include "EEPROM.h"
 #include "Bascula.h"
-#include "Motor.h"
 #include "Mezclas.h"
 
 Boton botonSet(PIN_BOTON_SET);
@@ -15,19 +12,34 @@ Boton botonDown(PIN_BOTON_DOWN);
 Boton botonSel(PIN_BOTON_SEL);
 Boton botonPro(PIN_BOTON_PRO);
 
-Menus menu(lcd);
+Menus menu;
 Mezclas mezclas;
+
 void setup()
 {  
+  //Configuro el reloj:
+  #if F_CPU == 8000000
+    delay(100);
+    clock_prescale_set(clock_div_1);
+  #endif
+
+  //Desactivo el JTAG.
+  MCUCR |= (1 << JTD);
+  MCUCR |= (1 << JTD);
+
+  menu.lcd_init();
+
+  /*
   //mezclas.resetearTodo();
   Serial.begin(9600);
   Serial.println("Programa iniciado");
   EEPROM.get(IDIOMA_ADRESS, idioma);
-  menu.lcd_init();
+  
   rtc_init();
   litrosTotales = 0;
-  balanza_Setup();  
+  balanza_Setup();
   menu.PantallaSeleccionada(0);
+  */
 }
 
 void loop()
