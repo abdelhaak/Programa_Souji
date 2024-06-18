@@ -1,15 +1,7 @@
-#include <Arduino.h>
 #include "Menus.h"
-#include "Reloj_RTC.h"
-#include "Boton.h"
-#include <EEPROM.h>
-#include "Bascula.h"
-#include "Motor.h"
-#include "Mezclas.h"
+
 
 // ERRORES
-
-
 
 // MENUS GENERALES
 
@@ -20,23 +12,22 @@ bool enPausa = false;
 bool pausado = false;
 
 const uint8_t RS = A3, EN = A2, D4 = A0, D5 = 0, D6 = 1, D7 = 2;
+//const uint8_t RS = 22, EN = 23, D4 = 31, D5 = 30, D6 = 29, D7 = 28;
 LiquidCrystal lcd(RS, EN, D4, D5, D6, D7); 
 
-Mezclas mezcla;
+Mezclas mezcla(mySerial);
 Motor motor(PIN_MOTOR,pin_encoder);
 
-//Menus::Menus(LiquidCrystal &display) : lcd(display) 
-Menus::Menus()                                          
+//Menus::Menus()    
+Menus::Menus(LiquidCrystal &display, Stream &serial) : lcd(display), serial(serial)
 {
-  misPantallas = 20;
+  misPantallas = 100;
   lcd_init();
 }
  
 void Menus::lcd_init()
 {  
   lcd.begin(16,2);
-  PantallaSeleccionada(0);
-  //lcd.clear();
 }
 
 ///////////////// Pantallas del MENU Principal   /////////////////
@@ -45,27 +36,33 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
   // Limpieza de la pantalla 
   if(pantalla != misPantallas)
   {
+    serial.println("Estamos en misPantallas");
     lcd.clear();
+    delay(20);
     misPantallas = pantalla;
   }
-
+  
   // Pantalla de Cantidad de Souji
   if (pantalla == 0)
-  { 
+  {  
+    serial.println("Estamos en la pantalla 0");
     EEPROM.get(SCALE_ADDRESS, escala);
     EEPROM.get(STATUS_ADRESS, mezcla.estado);
     EEPROM.get(STATUS_2_ADRESS, mezcla.estado2);
     EEPROM.get(NUM_MEZCLAS_ADRESS, mezcla.numMezclas);
     EEPROM.get(PESO_ACEITE_ACTUAL_ADRESS, mezcla.pesoLiquido);
+    serial.println("Pasamos del EEPROM");
     menuPrincipal = true;
     menuProgramador = false;
     mostrarLitrosMensuales = false;
     inSubMenu = false;
     menuIndex = 0;
+    serial.println("Pasamos dE LA DECLARACION");
     if (mezcla.estado == 0)
     {
       if(idioma == 0)
       {
+        serial.println("Pasamos dentro");
         lcd.setCursor(0,0);
         lcd.print("CANTIDAD SOUJI");
         lcd.setCursor(0,1);
@@ -93,20 +90,20 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     }
     else
     {
-      //mezcla.mezclaGeneral(mezcla.numMezclas);
+      mezcla.mezclaGeneral(mezcla.numMezclas);
     }
   }
-
+  
   // Pantalla de Litros Mensuales
   if (pantalla == 1)
   {
+    serial.println("Estamos en la pantalla 1");
     mezcla.estado = 0;
     EEPROM.put(STATUS_ADRESS, mezcla.estado);
     if(mes == 0)mes =1;
     mostrarLitrosMensuales = false;
     if(idioma == 0)
-    {
-      lcd.clear();
+    {     
       lcd.setCursor(4,0);
       lcd.print("MOSTRAR");
       lcd.setCursor(0,1);
@@ -114,21 +111,20 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     }
     else
     {
-      lcd.clear();
       lcd.setCursor(6,0);
       lcd.print("SHOW");
       lcd.setCursor(1,1);
       lcd.print("MONTHLY LITERS");
     }
   }
-
+  
   // Pantalla de Litros Totales
   if (pantalla == 2)
   { 
+    serial.println("Estamos en la pantalla 2");
     EEPROM.get(LITROS_TOTALES_DIRECCION, litrosTotales);
     if(idioma==0)
     {
-      lcd.clear();
       lcd.setCursor(0,0);
       lcd.print("LITROS TOTALES");
       lcd.setCursor(0,1);
@@ -138,7 +134,6 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     }
     else
     {    
-      lcd.clear();
       lcd.setCursor(2,0);
       lcd.print("TOTAL LITERS");
       lcd.setCursor(0,1);
@@ -147,7 +142,7 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
       lcd.print("LITERS");
     }
   }
-
+  
   // El Menu de la FECHA
   if (pantalla == 3)
   { 
@@ -157,7 +152,6 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
 
     if(idioma==0)
     {
-      lcd.clear();
       lcd.setCursor(2,0);
       lcd.print("LA FECHA ES :");
       lcd.setCursor(4,1);
@@ -169,7 +163,6 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     }
     else
     {
-      lcd.clear();
       lcd.setCursor(1,0);
       lcd.print("THE DATE IS :");
       lcd.setCursor(4,1);
@@ -185,14 +178,13 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
   if (pantalla == 4)
   {
     mostrarPeso = false;
-    uint16_t pesoo = PesoActual();
+    /*uint16_t pesoo = PesoActual();
     ultima_tara = balanza.get_offset();
     EEPROM.put(sizeof(escala), ultima_tara);
-    Serial.print("El Peso es : ");
-    Serial.println(pesoo);
+    serial.print("El Peso es : ");
+    serial.println(pesoo);*/
     if(idioma==0)
     {
-      lcd.clear();
       lcd.setCursor(5,0);
       lcd.print("VACIAR");
       lcd.setCursor(4,1);
@@ -200,7 +192,6 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     }
     else
     {
-      lcd.clear();
       lcd.setCursor(6,0);
       lcd.print("EMPTY");
       lcd.setCursor(4,1);
@@ -213,7 +204,6 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
   {
     if(idioma==0)
     {
-      lcd.clear();
       lcd.setCursor(2,0);
       lcd.print("CALIBRACION");
       lcd.setCursor(4,1);
@@ -221,7 +211,6 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     }
     else
     {
-      lcd.clear();
       lcd.setCursor(5,0);
       lcd.print("SCALE ");
       lcd.setCursor(2,1);
@@ -234,7 +223,6 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
   {
     if(idioma==0)
     {
-      lcd.clear();
       lcd.setCursor(2,0);
       lcd.print("SELECCIONAR");
       lcd.setCursor(4,1);
@@ -242,7 +230,6 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     }
     else
     {
-      lcd.clear();
       lcd.setCursor(5,0);
       lcd.print("SELECT");
       lcd.setCursor(4,1);
@@ -258,6 +245,7 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     if(idioma==0)
     {
       lcd.clear();
+      delay(20);
       lcd.setCursor(0,0);
       lcd.print("ELIGE CANTIDAD:");
       lcd.setCursor(3,1);
@@ -268,6 +256,7 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     else
     {
       lcd.clear();
+      delay(20);
       lcd.setCursor(0,0);
       lcd.print("CHOOSE QUANTITY:");
       lcd.setCursor(3,1);
@@ -304,6 +293,7 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     if(idioma==0)
     {
       lcd.clear();
+      delay(20);
       lcd.setCursor(2,0);
       lcd.print("AJUSTAR FECHA ");
       lcd.setCursor(3,1);
@@ -312,6 +302,7 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     else
     {
       lcd.clear();
+      delay(20);
       lcd.setCursor(4,0);
       lcd.print("SET DATE ");
       lcd.setCursor(3,1);
@@ -327,6 +318,7 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     if(idioma==0)
     {
       lcd.clear();
+      delay(20);
       lcd.setCursor(1,0);
       lcd.print("INICIAR VACIO");
       lcd.setCursor(3,1);
@@ -335,6 +327,7 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     else
     {
       lcd.clear();
+      delay(20);
       lcd.setCursor(2,0);
       lcd.print("START VACUUM");
       lcd.setCursor(3,1);
@@ -349,6 +342,7 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     if(idioma==0)
     {
       lcd.clear();
+      delay(20);
       lcd.setCursor(1,0);
       lcd.print("INICIAR CALIB.");
       lcd.setCursor(3,1);
@@ -357,6 +351,7 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     else
     {
       lcd.clear();
+      delay(20);
       lcd.setCursor(2,0);
       lcd.print("START CALIB.");
       lcd.setCursor(3,1);
@@ -369,6 +364,7 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
   {
     cambiarIdioma = true;
     lcd.clear();
+    delay(20);
     if (opcionLenguaje == 0) {
     lcd.setCursor(2, 0);
     lcd.print(">");
@@ -385,6 +381,9 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
 
 void Menus::updateMenuDisplay()
 {
+  serial.println("Estamos en decrementandoIndex");
+  serial.print("menuIndex antes: ");
+  serial.println(menuIndex);
   PantallaSeleccionada(menuIndex);
 }
 
@@ -394,6 +393,7 @@ void Menus::entrarSubMenu()
   {
     inSubMenu = true;
     lcd.clear();
+    delay(20);
     switch (menuIndex) 
     {
       case 0:
@@ -435,6 +435,7 @@ void Menus::PantallaProgramador(uint8_t pantallaProg)
   if(pantallaProg != misPantallasProg)
   {
     lcd.clear();
+    delay(20);
     misPantallasProg = pantallaProg;
   }
 
@@ -447,9 +448,10 @@ void Menus::PantallaProgramador(uint8_t pantallaProg)
     ajustarSouji = false;
     accederRpms = false;
     resetearTodo = false;
+    lcd.clear();
+    delay(20);
     if(idioma==0)
     {
-      lcd.clear();
       lcd.setCursor(1,0);
       lcd.print("ESTAMOS EN EL");
       lcd.setCursor(0,1);
@@ -457,7 +459,6 @@ void Menus::PantallaProgramador(uint8_t pantallaProg)
     }
     else
     {
-      lcd.clear();
       lcd.setCursor(1,0);
       lcd.print("THIS IS THE");
       lcd.setCursor(0,1);
@@ -468,12 +469,11 @@ void Menus::PantallaProgramador(uint8_t pantallaProg)
   // Pantalla de Ajustar la cantidad del ACEITE
   if (pantallaProg == 1)
   {
-    Serial.print("porcentajeAceite : ");
-    Serial.println(mezcla.porcentajeAceite);
+    serial.print("porcentajeAceite : ");
+    serial.println(mezcla.porcentajeAceite);
     ajustarAceite = false;
     if(idioma==0)
     {
-      lcd.clear();
       lcd.setCursor(0,0);
       lcd.print("AJUSTAR CANTIDAD");
       lcd.setCursor(0,1);
@@ -481,7 +481,6 @@ void Menus::PantallaProgramador(uint8_t pantallaProg)
     }
     else
     {
-      lcd.clear();
       lcd.setCursor(0,0);
       lcd.print("SETTING THE");
       lcd.setCursor(0,1);
@@ -492,12 +491,11 @@ void Menus::PantallaProgramador(uint8_t pantallaProg)
   // Pantalla de Ajustar la cantidad del SOUJI
   if (pantallaProg == 2)
   {
-    Serial.print("porcentajeSouji : ");
-    Serial.println(mezcla.porcentajeSouji);
+    serial.print("porcentajeSouji : ");
+    serial.println(mezcla.porcentajeSouji);
     ajustarSouji = false ;
     if(idioma==0)
     {
-      lcd.clear();
       lcd.setCursor(0,0);
       lcd.print("AJUSTAR CANTIDAD");
       lcd.setCursor(2,1);
@@ -505,7 +503,6 @@ void Menus::PantallaProgramador(uint8_t pantallaProg)
     }
     else
     {
-      lcd.clear();
       lcd.setCursor(0,0);
       lcd.print("SETTING THE");
       lcd.setCursor(2,1);
@@ -519,7 +516,6 @@ void Menus::PantallaProgramador(uint8_t pantallaProg)
     resetearTodo = false;
     if(idioma==0)
     {
-      lcd.clear();
       lcd.setCursor(2,0);
       lcd.print("RESETEAR LOS");
       lcd.setCursor(1,1);
@@ -527,7 +523,6 @@ void Menus::PantallaProgramador(uint8_t pantallaProg)
     }
     else
     {
-      lcd.clear();
       lcd.setCursor(2,0);
       lcd.print("RESET THE");
       lcd.setCursor(1,1);
@@ -540,7 +535,6 @@ void Menus::PantallaProgramador(uint8_t pantallaProg)
   {
     if(idioma==0)
     {
-      lcd.clear();
       lcd.setCursor(3,0);
       lcd.print("AJUSTAR RPMS");
       lcd.setCursor(5,1);
@@ -548,7 +542,6 @@ void Menus::PantallaProgramador(uint8_t pantallaProg)
     }
     else
     {
-      lcd.clear();
       lcd.setCursor(1,0);
       lcd.print("SETTING THE :");
       lcd.setCursor(3,1);
@@ -562,7 +555,6 @@ void Menus::PantallaProgramador(uint8_t pantallaProg)
     ajustarAceite = true;
     if(idioma==0)
     {
-      lcd.clear();
       lcd.setCursor(3,0);
       lcd.print("AJUSTANDO");
       lcd.setCursor(5,1);
@@ -570,7 +562,6 @@ void Menus::PantallaProgramador(uint8_t pantallaProg)
     }
     else
     {
-      lcd.clear();
       lcd.setCursor(3,0);
       lcd.print("SETTING ");
       lcd.setCursor(5,1);
@@ -584,7 +575,6 @@ void Menus::PantallaProgramador(uint8_t pantallaProg)
     ajustarSouji = true;
     if(idioma==0)
     {
-      lcd.clear();
       lcd.setCursor(3,0);
       lcd.print("AJUSTANDO");
       lcd.setCursor(5,1);
@@ -592,7 +582,6 @@ void Menus::PantallaProgramador(uint8_t pantallaProg)
     }
     else
     {
-      lcd.clear();
       lcd.setCursor(3,0);
       lcd.print("SETTING ");
       lcd.setCursor(5,1);
@@ -606,7 +595,6 @@ void Menus::PantallaProgramador(uint8_t pantallaProg)
     resetearTodo = true;
     if(idioma==0)
     {
-      lcd.clear();
       lcd.setCursor(0,0);
       lcd.print("PARA BORRAR TODO");
       lcd.setCursor(3,1);
@@ -614,7 +602,6 @@ void Menus::PantallaProgramador(uint8_t pantallaProg)
     }
     else
     {
-      lcd.clear();
       lcd.setCursor(1,0);
       lcd.print("TO DELETE ALL");
       lcd.setCursor(3,1);
@@ -629,7 +616,6 @@ void Menus::PantallaProgramador(uint8_t pantallaProg)
     accederRpms = true;
     if(idioma==0)
     {
-      lcd.clear();
       lcd.setCursor(3,0);
       lcd.print("PULSE SEL");
       lcd.setCursor(2,1);
@@ -637,7 +623,6 @@ void Menus::PantallaProgramador(uint8_t pantallaProg)
     }
     else
     {
-      lcd.clear();
       lcd.setCursor(3,0);
       lcd.print("PRESS SEL");
       lcd.setCursor(4,1);
@@ -664,6 +649,7 @@ void Menus::entrarSubMenuProg()
   {
     SubMenuProgamador = true;
     lcd.clear();
+    delay(20);
     switch (menuProgIndex) 
     {
       case 0:
@@ -694,6 +680,11 @@ void Menus::updateMenuProgDisplay()
 {
   PantallaProgramador(menuProgIndex);
 }
+
+
+//////////////// PANTALLAS DEL MODO PROGRAMADOR  /////////////////
+
+
 
 ////////////////  Manejar los botones de entrada  /////////////////
 
@@ -756,7 +747,7 @@ void Menus::modificarBotonSel()
     }
     else if(variarCantidad)
     {
-      Serial.println("variar cantidad true");
+      serial.println("variar cantidad true");
       ejecutarMezcla(Cantidad_Souji[IndexCantidad]);
     } 
     else if(cambiarIdioma)
@@ -768,18 +759,18 @@ void Menus::modificarBotonSel()
     }
     else if(mezcla.enPausa)
     {
-      Serial.println("enPausa es true");
+      serial.println("enPausa es true");
       mezcla.enPausa = !mezcla.enPausa;
       if(mezcla.enPausa)
       {
-        //mezcla.Pantallamezcla(8);
+        mezcla.Pantallamezcla(8);
       }
       else
       {
         EEPROM.get(STATUS_ADRESS,mezcla.estado);
         EEPROM.get(NUM_MEZCLAS_ADRESS, mezcla.numMezclas);
-        Serial.println("reanudando...");
-        //mezcla.mezclaGeneral(mezcla.numMezclas);
+        serial.println("reanudando...");
+        mezcla.mezclaGeneral(mezcla.numMezclas);
       }
     }
     else{}
@@ -802,22 +793,18 @@ void Menus::modificarBotonSel()
     }
     else if(validarRpms)
     {
-      Serial.println("validrRpms esta en true");
-      Serial.print("RPMS : ");
-      Serial.println(motor.rpmS());
       motor.mostrarRpms(pin_encoder);
     }
     else if (ajustarAceite)
     {
-      Serial.println("AjutarAceite");
-
+      serial.println("AjutarAceite");
       SubMenuProgamador = false;
-      //mezcla.Pantallamezcla(8);
+      mezcla.Pantallamezcla(8);
     } 
     else if (ajustarSouji)
     {
       SubMenuProgamador = false;
-     // mezcla.Pantallamezcla(9);
+      mezcla.Pantallamezcla(9);
     } 
     else {}  
   } 
@@ -827,7 +814,12 @@ void Menus::decrementandoIndex()
 {
     if (!inSubMenu && menuPrincipal && menuIndex < 6) 
     {
+      serial.println("Estamos en decrementandoIndex");
+      serial.print("menuIndex antes: ");
+      serial.println(menuIndex);
       menuIndex++;
+      serial.print("menuIndex despues: ");
+      serial.println(menuIndex);
       updateMenuDisplay();
     }
     else if(inSubMenu && variarCantidad && IndexCantidad > 0)
@@ -856,12 +848,12 @@ void Menus::decrementandoIndex()
     }
     else if(ajustarAceite)
     {
-      Serial.println("decremantoAceite");
-     // mezcla.bajarPorcentajeAceite();   
+      serial.println("decremantoAceite");
+      mezcla.bajarPorcentajeAceite();   
     }
     else if(ajustarSouji)
     {
-      //mezcla.bajarPorcentajeSouji();    
+      mezcla.bajarPorcentajeSouji();    
     }
     else if(validarRpms)
     {
@@ -890,7 +882,12 @@ void Menus::incrementandoIndex()
 {
     if (!inSubMenu && menuPrincipal && menuIndex > 0)
     {
+      serial.println("Estamos en incrementandoIndex");
+      serial.print("menuIndex antes: ");
+      serial.println(menuIndex);
       menuIndex--;
+      serial.print("menuIndex despues: ");
+      serial.println(menuIndex);
       updateMenuDisplay(); 
     }
     else if(inSubMenu && variarCantidad && IndexCantidad < 4)
@@ -919,12 +916,12 @@ void Menus::incrementandoIndex()
     }
     else if(ajustarAceite)
     {
-      Serial.println("incremantoAceite");
-      //mezcla.subirPorcentajeAceite();   
+      serial.println("incremantoAceite");
+      mezcla.subirPorcentajeAceite();   
     }
     else if(ajustarSouji)
     {
-     // mezcla.subirPorcentajeSouji();    
+      mezcla.subirPorcentajeSouji();    
     }
     else if(validarRpms)
     {
@@ -955,6 +952,7 @@ void Menus::updateCantidadSouji()
   if(idioma==0)
   {
     lcd.clear();
+    delay(20);
     lcd.setCursor(0,0);
     lcd.print("ELIGE CANTIDAD:");
     lcd.setCursor(3,1);
@@ -965,6 +963,7 @@ void Menus::updateCantidadSouji()
   else
   {
     lcd.clear();
+    delay(20);
     lcd.setCursor(0,0);
     lcd.print("CHOOSE QUANTITY:");
     lcd.setCursor(3,1);
@@ -1001,6 +1000,7 @@ void Menus::displayLitrosMensuales()
     if(idioma==0)
     {
       lcd.clear();
+      delay(20);
       lcd.setCursor(0,0);
       lcd.print(elegirMes(mes)); // Muestra el nombre del mes actual
       lcd.print(" HAY:");
@@ -1012,6 +1012,7 @@ void Menus::displayLitrosMensuales()
     else
     {
       lcd.clear();
+      delay(20);
       lcd.setCursor(0,0);
       lcd.print(elegirMes(mes)); // Muestra el nombre del mes actual
       lcd.print(" THERE");
@@ -1030,6 +1031,7 @@ void Menus::displayLitrosTotales()
   if(idioma==0)
   {
     lcd.clear();
+    delay(20);
     lcd.setCursor(0,0);
     lcd.print("HASTA AHORA HAY");
     lcd.setCursor(2,1);
@@ -1040,6 +1042,7 @@ void Menus::displayLitrosTotales()
   else
   {
     lcd.clear();
+    delay(20);
     lcd.setCursor(0,0);
     lcd.print("UNTIL NOW :");
     lcd.setCursor(2,1);
@@ -1151,40 +1154,43 @@ String Menus::elegirMes(uint8_t mes)
 
 void Menus::ejecutarMezcla(int Cantidad_Souji)
 {
-  Serial.println("Estamos en ejecutarMezcla");
+  serial.println("Estamos en ejecutarMezcla");
   motor.cargarRpms();
   switch (Cantidad_Souji)
   {
   case 5:
     incrementarCantidad(5);
-    Serial.println("caso de 5");
+    serial.println("caso de 5");
     mezcla.numMezclas = 1;
     EEPROM.put(NUM_MEZCLAS_ADRESS, mezcla.numMezclas);
-   // mezcla.mezclaGeneral(mezcla.numMezclas);
+    serial.println("vAMOS A L AMEZCLA");
+    serial.print("nUM DE MEZCLA: ");
+    serial.println(mezcla.numMezclas);
+    mezcla.mezclaGeneral(mezcla.numMezclas);
     incrementarCantidad(5);
   break;
   case 10:
     mezcla.numMezclas = 2;
     EEPROM.put(NUM_MEZCLAS_ADRESS, mezcla.numMezclas);
-   // mezcla.mezclaGeneral(mezcla.numMezclas);;
+    mezcla.mezclaGeneral(mezcla.numMezclas);;
     incrementarCantidad(10);
   break;
   case 15:
     mezcla.numMezclas = 3;
     EEPROM.put(NUM_MEZCLAS_ADRESS, mezcla.numMezclas);
-   // mezcla.mezclaGeneral(mezcla.numMezclas);
+    mezcla.mezclaGeneral(mezcla.numMezclas);
     incrementarCantidad(15);
   break;
   case 20:
     mezcla.numMezclas = 4;
     EEPROM.put(NUM_MEZCLAS_ADRESS, mezcla.numMezclas);
-  //  mezcla.mezclaGeneral(mezcla.numMezclas);
+    mezcla.mezclaGeneral(mezcla.numMezclas);
     incrementarCantidad(20);
   break;
   case 25:
     mezcla.numMezclas = 5;
     EEPROM.put(NUM_MEZCLAS_ADRESS, mezcla.numMezclas);
-   // mezcla.mezclaGeneral(mezcla.numMezclas);
+    mezcla.mezclaGeneral(mezcla.numMezclas);
     incrementarCantidad(25);
   break;
   }
@@ -1212,6 +1218,7 @@ void Menus::displayFecha()
   if(idioma==0)
   {
     lcd.clear();
+    delay(20);
     lcd.setCursor(0, 0);
     lcd.print("AJUSTANDO ..."); 
     lcd.setCursor(0, 1);
@@ -1219,6 +1226,7 @@ void Menus::displayFecha()
   else
   {
     lcd.clear();
+    delay(20);
     lcd.setCursor(0, 0);
     lcd.print("SETTING ..."); 
     lcd.setCursor(0, 1);
@@ -1285,6 +1293,7 @@ void Menus::validarFecha()
   if(idioma==0)
   {
     lcd.clear();
+    delay(20);
     lcd.setCursor(0, 0);
     lcd.print("FECHA AJUSTADA A");
     lcd.setCursor(0, 1);
@@ -1297,6 +1306,7 @@ void Menus::validarFecha()
   else
   {
     lcd.clear();
+    delay(20);
     lcd.setCursor(0, 0);
     lcd.print("DATE SET TO :");
     lcd.setCursor(0, 1);
@@ -1443,29 +1453,41 @@ void Menus::bajaFechaRapido()
 
 
 /////////////////  CONTROL DE LA EEPROM   /////////////////
-/*
-void Menus::inicializarEEPROM() {
+
+void Menus::inicializarEEPROM() 
+{
     int initCheck;
     EEPROM.get(INIT_CHECK_ADDRESS, initCheck);
-    if (initCheck != 12345) {
-        EEPROM.put(DAY_ADDRESS, 1); // Día inicial
-        EEPROM.put(MONTH_ADDRESS, 1); // Mes inicial
+    if (initCheck != 12345) 
+    {
+        EEPROM.put(DAY_ADDRESS, 15); // Día inicial
+        EEPROM.put(MONTH_ADDRESS, 6); // Mes inicial
         EEPROM.put(YEAR_ADDRESS, 2024); // Año inicial
-        EEPROM.put(INIT_CHECK_ADDRESS, 12345); // Marcar como inicializado
+        EEPROM.put(RPMS_ADRESS, 1500); // RPMs del motor inicial
+        EEPROM.put(LITROS_TOTALES_DIRECCION, 0); // Litros totales iniciales
+        EEPROM.put(IDIOMA_ADRESS, 0); // Idioma por defecto es español
+        EEPROM.put(PORCENTAJE_ACEITE_ADRESS, 30); // Porcentaje de aceite inicial
+        EEPROM.put(PORCENTAJE_SOUJI_ADRESS, 50); // Porcentaje de Souji inicial
+        EEPROM.put(STATUS_ADRESS, 0); // Estado inicial
+        EEPROM.put(STATUS_2_ADRESS, 0); // Estado 2 inicial
+        EEPROM.put(NUM_MEZCLAS_ADRESS, 1); // Numero de mezclas inicial
+        EEPROM.put(PESO_ACEITE_ACTUAL_ADRESS, 0);
+        resetearLitrosMensuales();
     }
 }
 
-*/
+
 /////////////////  CONTROL DE LA BASCULA  /////////////////
 void Menus::iniciarCaliBascula()
 {
-  Serial.println("Antes de BalanzaSetup ");
-  Serial.println("Despues de BalanzaSetup ");
+  serial.println("Antes de BalanzaSetup ");
+  serial.println("Despues de BalanzaSetup ");
   iniciarCalibracion = false;
   calibrarPeso = true;
   if(idioma==0)
   {
     lcd.clear();
+    delay(20);
     lcd.setCursor(3,0);
     lcd.print("PULSE SEL :");
     lcd.setCursor(2,1);
@@ -1474,13 +1496,14 @@ void Menus::iniciarCaliBascula()
   else
   {
     lcd.clear();
+    delay(20);
     lcd.setCursor(3,0);
     lcd.print("PRESS SEL :");
     lcd.setCursor(4,1);
     lcd.print("TO START");
   }
   calibracion(); 
-  Serial.println("Despues de calibracion() ");
+  serial.println("Despues de calibracion() ");
 }
 
 void Menus::talarBascula()
@@ -1490,6 +1513,7 @@ void Menus::talarBascula()
   if(idioma==0)
   {
     lcd.clear();
+    delay(20);
     lcd.setCursor(1,0);
     lcd.print("PONGA EL PESO :");
     lcd.setCursor(4,1);
@@ -1498,6 +1522,7 @@ void Menus::talarBascula()
   else
   {
     lcd.clear();
+    delay(20);
     lcd.setCursor(1,0);
     lcd.print("PUT THE WEIGHT");
     lcd.setCursor(4,1);
@@ -1508,16 +1533,18 @@ void Menus::talarBascula()
 
 void Menus::calibrarEscala()
 {
-  Serial.print("Despues de calibrarEscala ");
+  serial.print("Despues de calibrarEscala ");
   finDeCalibre = true;
   calibrarPeso1 = false;
   if(idioma==0)
   {
     lcd.clear();
+    delay(20);
     lcd.setCursor(0,0);
     lcd.print("ESPERE....");
     finDeCalibracion();
     lcd.clear();
+    delay(20);
     lcd.setCursor(0,0);
     lcd.print("RETIRE EL PESO");
     lcd.setCursor(2,1);
@@ -1526,10 +1553,12 @@ void Menus::calibrarEscala()
   else
   {
     lcd.clear();
+    delay(20);
     lcd.setCursor(0,0);
     lcd.print("WAIT....");
     finDeCalibracion();
     lcd.clear();
+    delay(20);
     lcd.setCursor(1,0);
     lcd.print("REMOVE WEIGHT");
     lcd.setCursor(3,1);
@@ -1541,26 +1570,29 @@ void Menus::calibrarEscala()
 void Menus::finalizarCalibracion()
 {
   finDeCalibre = false;
-  Serial.print("Antes ");
-  Serial.print("ElPeso es : ");
-  Serial.println(PesoActual());
+  serial.print("Antes ");
+  /*Serial.print("ElPeso es : ");
+  Serial.println(PesoActual());*/
   balanza.set_scale(escala); // Establecemos la escala
   balanza.tare(20);  //El peso actual de la base es considerado zero.
   ultima_tara = balanza.get_offset();
   EEPROM.put(TARE_ADRESS, ultima_tara);
-  Serial.print("Despues ");
-  Serial.print("ElPeso es : ");
-  Serial.println(PesoActual());
+  EEPROM.put(PESO_ACEITE_ACTUAL_ADRESS, 0);
+  serial.print("Despues ");
+
+  /*Serial.print("ElPeso es : ");
+  Serial.println(PesoActual());*/
 }
 
 void Menus::mostrarElPeso()
 {
-  ultima_tara = balanza.get_offset();
-  EEPROM.put(TARE_ADRESS, ultima_tara);
+  /*ultima_tara = balanza.get_offset();
+  EEPROM.put(TARE_ADRESS, ultima_tara);*/
   elPeso = PesoActual();
-  if(idioma)
+  if(idioma==0)
   {
     lcd.clear();
+    delay(20);
     lcd.setCursor(0,0);
     lcd.print("EL PESO ES :");
     lcd.setCursor(0,1);
@@ -1571,6 +1603,7 @@ void Menus::mostrarElPeso()
   else
   {
     lcd.clear();
+    delay(20);
     lcd.setCursor(0,0);
     lcd.print("THE WEIGHT IS:");
     lcd.setCursor(0,1);
@@ -1587,16 +1620,18 @@ void Menus::vaciando()
   if(idioma==0)
   {
     lcd.clear();
+    delay(20);
     lcd.setCursor(0,0);
     lcd.print("VACIANDO...");
-    //mezcla.mezclaVacio();
+    mezcla.mezclaVacio();
   }
   else
   {
     lcd.clear();
+    delay(20);
     lcd.setCursor(0,0);
     lcd.print("EMPTYING...");
-    //mezcla.mezclaVacio();
+    mezcla.mezclaVacio();
   }
   delay(2000);
   PantallaSeleccionada(11);
@@ -1611,6 +1646,7 @@ void Menus::ReseteoTotalVerif()
   if(idioma==0)
   {
     lcd.clear();
+    delay(20);
     lcd.setCursor(0,0);
     lcd.print("ESTAS SEGURO ??");
     lcd.setCursor(3,1);
@@ -1619,6 +1655,7 @@ void Menus::ReseteoTotalVerif()
   else
   {
     lcd.clear();
+    delay(20);
     lcd.setCursor(0,0);
     lcd.print("ARE YOU SURE ??");
     lcd.setCursor(3,1);
@@ -1633,17 +1670,19 @@ void Menus::ReseteoTotal()
   if(idioma==0)
   {
     lcd.clear();
+    delay(20);
     lcd.setCursor(0,0);
     lcd.print("RESETEANDO...");
   }
   else
   {
     lcd.clear();
+    delay(20);
     lcd.setCursor(0,0);
     lcd.print("RESETTING...");
   }
   delay(2000);  
   resetearLitrosMensuales();
-  //mezcla.resetearTodo();
+  mezcla.resetearTodo();
   PantallaProgramador(0);
 }

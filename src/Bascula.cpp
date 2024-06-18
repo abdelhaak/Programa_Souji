@@ -26,7 +26,7 @@ void balanza_Setup()
 uint16_t PesoActual()
 { 
     peso = balanza.get_units(10); 
-    if(peso < 0)
+    if(peso < 0 || peso > 30000)
     {
         peso = 0;                    
     }

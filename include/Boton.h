@@ -4,11 +4,11 @@
 #include <Arduino.h>
 
 // Definición de Botones
-const uint8_t PIN_BOTON_SET = 6;
-const uint8_t PIN_BOTON_UP = 13;
-const uint8_t PIN_BOTON_DOWN = 8;
-const uint8_t PIN_BOTON_SEL = 9;
-const uint8_t PIN_BOTON_PRO = 10;
+const uint8_t PIN_BOTON_SET = 21;
+const uint8_t PIN_BOTON_UP = 20;
+const uint8_t PIN_BOTON_DOWN = 19;
+const uint8_t PIN_BOTON_SEL = 18;
+const uint8_t PIN_BOTON_PRO = 14;
 
 class Boton
 {
@@ -25,6 +25,7 @@ class Boton
         uint64_t t_pulsado = 0;
         uint16_t mantener = 2500;
         uint16_t mantenerDelay = 200;
+        //uint16_t ultimoCambioTiempo;
 
     public:
         Boton(byte pin);

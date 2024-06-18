@@ -6,7 +6,7 @@
 #include "Menus.h"
 #include "Mezclas.h"
 
-#define PIN_MOTOR 44
+#define PIN_MOTOR A6
 #define RPMS_MAX 3300
 #define RPMS_ADRESS 28
 

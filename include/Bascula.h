@@ -4,11 +4,11 @@
 #include "HX711.h"
 
 #define VALUE_TARA 20
-#define PesoConocido 195   // EL peso del ejemplo en gramos
+#define PesoConocido 195   // 195 // EL peso del ejemplo en gramos
 #define SCALE_ADDRESS 80   // Dirección para la escala
 #define TARE_ADRESS 84     // Dirección para la TARA
-#define DOUT  A1
-#define CLK  A0
+#define DOUT A5
+#define CLK  A4
 
 extern HX711 balanza;
 

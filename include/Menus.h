@@ -1,15 +1,23 @@
 #ifndef MENUS_H
 #define MENUS_H
 
+#include <Arduino.h>
+#include <Reloj_RTC.h>
 #include <Wire.h> 
 #include <LiquidCrystal.h>
+#include "Boton.h"
+#include "Bascula.h"
+#include "Motor.h"
+#include "Mezclas.h"
+#include <SoftwareSerial.h>
 
-//extern LiquidCrystal lcd;
+
+extern LiquidCrystal lcd;
 
 #define DAY_ADDRESS 0   // Dirección para el día
 #define MONTH_ADDRESS 4 // Dirección para el mes
 #define YEAR_ADDRESS 8  // Dirección para el año
-//#define INIT_CHECK_ADDRESS   // Dirección para verificar la inicialización
+#define INIT_CHECK_ADDRESS 30  // Dirección para verificar la inicialización
 #define LITROS_TOTALES_DIRECCION 12  // Direccion de los litros totales
 #define IDIOMA_ADRESS 26
 
@@ -21,11 +29,12 @@ extern bool pausado;
 class Menus
 {
     private:
-        //LiquidCrystal &lcd;
+        LiquidCrystal &lcd;
+        Stream &serial; 
         bool mezclar5Litros = false;
         // Variables del menu principal 
         uint8_t misPantallas=0;
-        int menuIndex = 0;   
+ 
         bool inSubMenu = false;
         bool menuPrincipal = false;
         // Variables de la cantidad SOUJI
@@ -64,10 +73,10 @@ class Menus
         bool cambiarIdioma = false;
        
     public:
-        //Menus(LiquidCrystal &display);
-        Menus();
+        Menus(LiquidCrystal &display,Stream &serial);
+        //Menus();
         void lcd_init();
-
+        int menuIndex ;  
         // Variables del menu principal
         void PantallaSeleccionada(uint8_t pantalla);
         void updateMenuDisplay();

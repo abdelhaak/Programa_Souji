@@ -9,15 +9,17 @@
 #include "LCD_Progress.h"
 #include "Menus.h"
 #include "Boton.h"
+#include "SoftwareSerial.h"
 
+extern SoftwareSerial mySerial;
 
-#define PIN_BOMBA_ACEITE 51
-#define PIN_BOMBA_SOUJI 50
-#define PIN_BOMBA_AGUA 49
-#define PIN_BOMBA_VACIO 48
+#define PIN_BOMBA_ACEITE 13
+#define PIN_BOMBA_SOUJI 12
+#define PIN_BOMBA_AGUA 10
+#define PIN_BOMBA_VACIO 11
 
 // Capacidad total de la mezcla que seria de 5000 g que son 5L
-#define CAPACIDAD_TOTAL 300 
+#define CAPACIDAD_TOTAL 200 // 5000
 #define DENSIDAD_ACEITE 0.92
 #define DENSIDAD_SOUJI 0.92
 
@@ -57,10 +59,11 @@ class Mezclas
         uint8_t misPantallasMezc = 0;
         int cantidadDeCincoLitros = 0;
         bool finMezcla = false;
+        SoftwareSerial& mySerial;
 
     public:
-        Mezclas();
-       /* void init();
+        Mezclas(SoftwareSerial& serial);
+        void init();
         void checkStatus();  
         void parado();
         void Pantallamezcla(uint8_t pantallamezcla);
@@ -75,7 +78,7 @@ class Mezclas
         void bajarPorcentajeAceite();
         void bajarPorcentajeSouji();
         void pausarReanudarMezcla();
-        void esperarParaReanudar();*/
+        void esperarParaReanudar();
 
         bool enPausa = false;
         int numMezclas;
