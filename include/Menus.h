@@ -22,6 +22,7 @@ extern LiquidCrystal lcd;
 #define IDIOMA_ADRESS 26
 
 extern int idioma;
+extern int opcionCalibre;
 extern int opcionLenguaje; 
 extern const int PAUSE;
 extern bool enPausa;
@@ -34,9 +35,9 @@ class Menus
         bool mezclar5Litros = false;
         // Variables del menu principal 
         uint8_t misPantallas=0;
- 
         bool inSubMenu = false;
         bool menuPrincipal = false;
+        bool cambiarIdioma = false;
         // Variables de la cantidad SOUJI
         int IndexCantidad = 0;
         bool variarCantidad = false;        
@@ -53,13 +54,17 @@ class Menus
         bool finDeCalibre = false;
         bool mostrarPeso = false;
         uint16_t elPeso = 0.0;
+        bool elegirCalibracion = false;
         // Variables del vacio automatico
-        bool vacioAutomatico = false;
+        
+        bool vaciando = false;
         bool validarRpms = false;
+
         // Variables de las mezclas
         uint8_t misPantallasMezc = 0;
-
-        // Variables del menu programador
+        
+        
+        // Variables del menu programador 
         uint8_t misPantallasProg=0;
         bool menuProgramador = false;
         bool SubMenuProgamador = false;
@@ -70,13 +75,14 @@ class Menus
         bool resetearTodo = false;
         bool ajustarAceite = false;
         bool ajustarSouji = false;
-        bool cambiarIdioma = false;
+
        
     public:
         Menus(LiquidCrystal &display,Stream &serial);
         //Menus();
         void lcd_init();
         int menuIndex ;  
+        bool vacioAutomatico = false;
         // Variables del menu principal
         void PantallaSeleccionada(uint8_t pantalla);
         void updateMenuDisplay();
@@ -104,7 +110,8 @@ class Menus
         void displayLitrosMensuales();
         void displayLitrosTotales();
         String elegirMes(uint8_t mes);
-        void vaciando();
+        void iniciando();
+        void vaciandoDeposito();
 
         // Variables del menu programador
         void PantallaProgramador(uint8_t pantallaProg);

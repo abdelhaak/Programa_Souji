@@ -26,7 +26,7 @@ void Motor::init()
 
 void Motor::pararMotor()
 {
-    digitalWrite(pin, false);
+    digitalWrite(pin, LOW);
 }        
 
 void Motor::contarPulsos()

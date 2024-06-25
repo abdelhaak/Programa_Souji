@@ -19,7 +19,7 @@ extern SoftwareSerial mySerial;
 #define PIN_BOMBA_VACIO 11
 
 // Capacidad total de la mezcla que seria de 5000 g que son 5L
-#define CAPACIDAD_TOTAL 200 // 5000
+#define CAPACIDAD_TOTAL 5000 // 5000
 #define DENSIDAD_ACEITE 0.92
 #define DENSIDAD_SOUJI 0.92
 
@@ -51,6 +51,7 @@ class Mezclas
         uint16_t volumenSouji = 0;
 
         //// Agua
+        uint16_t pesoAguaDeseado = 0;
         uint16_t volumenAgua = 0;
 
         //// Mezclas
@@ -59,6 +60,7 @@ class Mezclas
         uint8_t misPantallasMezc = 0;
         int cantidadDeCincoLitros = 0;
         bool finMezcla = false;
+        uint64_t tiempoInicioVacio=0;
         SoftwareSerial& mySerial;
 
     public:
@@ -70,7 +72,7 @@ class Mezclas
         void laMezcla(int cantidadSouji);  
         void mezclaGeneral(int mezclas);
         void calcularVolumen();
-        void hecharLiquido(uint16_t volumen);
+        void hecharLiquido(uint16_t pesoPorHechar);
         void mezclaVacio();   
         void resetearTodo();
         void subirPorcentajeAceite();
@@ -79,6 +81,7 @@ class Mezclas
         void bajarPorcentajeSouji();
         void pausarReanudarMezcla();
         void esperarParaReanudar();
+        void vacioGeneral();
 
         bool enPausa = false;
         int numMezclas;

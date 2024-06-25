@@ -7,8 +7,8 @@
 #include "Mezclas.h"
 #include <SoftwareSerial.h>
 
-#define rxPin 3
-#define txPin 4
+#define rxPin 17
+#define txPin 22
 SoftwareSerial mySerial(rxPin, txPin);
 
 Boton botonSet(PIN_BOTON_SET);
@@ -38,11 +38,14 @@ void setup()
   delay(100);
   mySerial.println("Programa INIICADO");
   menu.lcd_init();
-  //mezclas.resetearTodo();
+  menu.iniciando();
+  delay(1000);
+  mezclas.resetearTodo();
   rtc_init();
   balanza_Setup();
   menu.inicializarEEPROM();
-  delay(100);
+  menu.iniciando();
+  delay(2000);
   menu.PantallaSeleccionada(0);
 }
 
@@ -52,13 +55,11 @@ void loop()
   {
     mySerial.println("Boton Up Pulsado");
     menu.incrementandoIndex(); 
-    //menu.PantallaSeleccionada(1);
   }
   if (botonDown.pulsado()) 
   {
     mySerial.println("Boton Down Pulsado");
     menu.decrementandoIndex();
-    //menu.PantallaSeleccionada(2);
   }
   if (botonSet.pulsado()) 
   {
@@ -73,6 +74,10 @@ void loop()
   {
     menu.entrarMenuProg();
   }/*
+  if(botonPro.pulsadoLargo())
+  {
+    menu.salirMenuProg();
+  }
   if (botonUp.pulsadoLargo()) 
   {
     menu.incrementandoIndexRapido();
@@ -81,8 +86,5 @@ void loop()
   {
     menu.decrementandoIndexRapido();
   }
-  if(botonPro.pulsadoLargo())
-  {
-    menu.salirMenuProg();
-  }*/
+  */
 }

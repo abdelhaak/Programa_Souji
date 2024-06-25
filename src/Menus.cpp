@@ -7,10 +7,15 @@
 
 int idioma = 0 ;
 int opcionLenguaje = 0; 
+int opcionCalibre = 0;
 const int PAUSE = 99;
 bool enPausa = false;
 bool pausado = false;
-
+/*menuIndex = 0; 
+numMezclas = 0;
+estado = 0;
+estado2 = 0;
+i_mezclas = 0;*/
 const uint8_t RS = A3, EN = A2, D4 = A0, D5 = 0, D6 = 1, D7 = 2;
 //const uint8_t RS = 22, EN = 23, D4 = 31, D5 = 30, D6 = 29, D7 = 28;
 LiquidCrystal lcd(RS, EN, D4, D5, D6, D7); 
@@ -18,10 +23,11 @@ LiquidCrystal lcd(RS, EN, D4, D5, D6, D7);
 Mezclas mezcla(mySerial);
 Motor motor(PIN_MOTOR,pin_encoder);
 
+
 //Menus::Menus()    
 Menus::Menus(LiquidCrystal &display, Stream &serial) : lcd(display), serial(serial)
 {
-  misPantallas = 100;
+  misPantallas = 100; 
   lcd_init();
 }
  
@@ -177,12 +183,7 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
   // El Menu de Vaciar Deposito
   if (pantalla == 4)
   {
-    mostrarPeso = false;
-    /*uint16_t pesoo = PesoActual();
-    ultima_tara = balanza.get_offset();
-    EEPROM.put(sizeof(escala), ultima_tara);
-    serial.print("El Peso es : ");
-    serial.println(pesoo);*/
+    vacioAutomatico = false;
     if(idioma==0)
     {
       lcd.setCursor(5,0);
@@ -202,6 +203,7 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
   // El Menu de Calibracion de Bascula
   if (pantalla == 5)
   {
+    //mostrarPeso = false;
     if(idioma==0)
     {
       lcd.setCursor(2,0);
@@ -313,8 +315,8 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
   // El SubMenu de Vaciar Deposito
   if (pantalla == 11)
   {
-    //vacioAutomatico = true;
-    mostrarPeso = true;
+    vacioAutomatico = true;
+    //vaciando = false;
     if(idioma==0)
     {
       lcd.clear();
@@ -338,7 +340,28 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
   // El SubMenu de Calibracion
   if (pantalla == 12)
   {
-    iniciarCalibracion = true;
+    elegirCalibracion = true;
+    /*ultima_tara = balanza.get_offset();
+    EEPROM.put(sizeof(escala), ultima_tara);*/
+    lcd.clear();
+    delay(20);
+    if (opcionCalibre == 0) 
+    {
+      lcd.setCursor(2, 0);
+      lcd.print(">");
+    } 
+    else 
+    {
+      lcd.setCursor(2, 1);
+      lcd.print(">");
+    }
+    lcd.setCursor(4, 0);
+    lcd.print("CALIBRAR");
+    lcd.setCursor(4, 1);
+    lcd.print("PESAR");
+  }
+
+    /*iniciarCalibracion = true;
     if(idioma==0)
     {
       lcd.clear();
@@ -356,8 +379,8 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
       lcd.print("START CALIB.");
       lcd.setCursor(3,1);
       lcd.print("PULSE SEL");
-    } 
-  }
+    } */
+  
   
   // El SubMenu de lenguaje
   if (pantalla == 13)
@@ -365,17 +388,20 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     cambiarIdioma = true;
     lcd.clear();
     delay(20);
-    if (opcionLenguaje == 0) {
-    lcd.setCursor(2, 0);
-    lcd.print(">");
-  } else {
-    lcd.setCursor(2, 1);
-    lcd.print(">");
-  }
-  lcd.setCursor(4, 0);
-  lcd.print("ESPANOL");
-  lcd.setCursor(4, 1);
-  lcd.print("INGLES");
+    if (opcionLenguaje == 0) 
+    {
+      lcd.setCursor(2, 0);
+      lcd.print(">");
+    } 
+    else 
+    {
+      lcd.setCursor(2, 1);
+      lcd.print(">");
+    }
+    lcd.setCursor(4, 0);
+    lcd.print("ESPANOL");
+    lcd.setCursor(4, 1);
+    lcd.print("INGLES");
   }
 }
 
@@ -725,10 +751,10 @@ void Menus::modificarBotonSel()
     {
       pasarFecha();
     }
-    else if(iniciarCalibracion)
+    /*else if(iniciarCalibracion)
     {
       iniciarCaliBascula();
-    }
+    }*/
     else if(calibrarPeso)
     {
       talarBascula();
@@ -737,13 +763,13 @@ void Menus::modificarBotonSel()
     {
       calibrarEscala();
     }
-    else if(mostrarPeso)
+    /*else if(mostrarPeso)
     {
       mostrarElPeso();
-    }
+    }*/
     else if(vacioAutomatico)
     {
-      vaciando();
+      vaciandoDeposito();
     }
     else if(variarCantidad)
     {
@@ -756,6 +782,18 @@ void Menus::modificarBotonSel()
       cambiarIdioma = false;
       EEPROM.put(IDIOMA_ADRESS,idioma);
       PantallaSeleccionada(0);
+    }
+    else if(elegirCalibracion)
+    {
+      elegirCalibracion = false;
+      if(opcionCalibre == 0)
+      {
+        iniciarCaliBascula();
+      }
+      else
+      {
+        mostrarElPeso();
+      }
     }
     else if(mezcla.enPausa)
     {
@@ -864,6 +902,11 @@ void Menus::decrementandoIndex()
       opcionLenguaje = 1;
       PantallaSeleccionada(13);
     }
+    else if(elegirCalibracion)
+    {
+      opcionCalibre = 1;
+      PantallaSeleccionada(12);
+    }
     else
     {
     }
@@ -931,6 +974,11 @@ void Menus::incrementandoIndex()
     {
       opcionLenguaje = 0 ;
       PantallaSeleccionada(13);
+    }
+    else if(elegirCalibracion)
+    {
+      opcionCalibre = 0;
+      PantallaSeleccionada(12);
     }
     else
     {
@@ -1460,7 +1508,7 @@ void Menus::inicializarEEPROM()
     EEPROM.get(INIT_CHECK_ADDRESS, initCheck);
     if (initCheck != 12345) 
     {
-        EEPROM.put(DAY_ADDRESS, 15); // Día inicial
+        EEPROM.put(DAY_ADDRESS, 24); // Día inicial
         EEPROM.put(MONTH_ADDRESS, 6); // Mes inicial
         EEPROM.put(YEAR_ADDRESS, 2024); // Año inicial
         EEPROM.put(RPMS_ADRESS, 1500); // RPMs del motor inicial
@@ -1615,15 +1663,16 @@ void Menus::mostrarElPeso()
 
 /////////////////  CONTROL DEL VACIO AUTOMATICO  /////////////////
 
-void Menus::vaciando()
+void Menus::vaciandoDeposito()
 {
+  //vaciando = true;
   if(idioma==0)
   {
     lcd.clear();
     delay(20);
     lcd.setCursor(0,0);
     lcd.print("VACIANDO...");
-    mezcla.mezclaVacio();
+    mezcla.vacioGeneral();
   }
   else
   {
@@ -1631,7 +1680,7 @@ void Menus::vaciando()
     delay(20);
     lcd.setCursor(0,0);
     lcd.print("EMPTYING...");
-    mezcla.mezclaVacio();
+    mezcla.vacioGeneral();
   }
   delay(2000);
   PantallaSeleccionada(11);
@@ -1685,4 +1734,12 @@ void Menus::ReseteoTotal()
   resetearLitrosMensuales();
   mezcla.resetearTodo();
   PantallaProgramador(0);
+}
+
+void Menus::iniciando()
+{
+  lcd.clear();
+  delay(20);
+  lcd.setCursor(0,0);
+  lcd.print("INICIANDO...");
 }
