@@ -23,17 +23,17 @@ uint16_t pesoLiquido = 0;
 // ERRORES
 
 // El tiempo de error autorizado de la bascula 
-// iniciado en 3 minutos => 180000 // POR AHORA 15 SEGUNDOS
-uint64_t tiempoErrorBascula = 360000;
-uint64_t tiempoErrorBomba = 360000;
+// iniciado en 7 minutos => 500000 // POR AHORA 15 SEGUNDOS
+uint64_t tiempoErrorBascula = 500000;
+uint64_t tiempoErrorBomba = 500000;
 uint64_t tiempoPasado = 0;
 
 // 2 minutos => 120000 ms    ::   PARA LA PRIMERA MEZCLA
-uint64_t tiempoMezcla1 = 15000;
+uint64_t tiempoMezcla1 = 120000;
 // 3 minutos => 180000 ms    ::   PARA LA SEGUNDA MEZCLA
-uint64_t tiempoMezcla2 = 20000;
-// 2 minutos => 120000 ms    ::   PARA EL VACIO POR AHORA 
-uint64_t tiempoVacio = 120000;
+uint64_t tiempoMezcla2 = 180000;
+// 3 minutos => 120000 ms    ::   PARA EL VACIO POR AHORA 
+uint64_t tiempoVacio = 180000;
 // El peso minimo del vacio autorizado
 //uint16_t pesoMinimo = 20;
 
@@ -226,7 +226,7 @@ void Mezclas::mezclaGeneral(int mezclas)
         if(estado2 == 1)
         {
           EEPROM.get(VOL_ACEITE_ADRESS, pesoAceiteDeseado);
-          delay(50);
+          //delay(50);
           lcd.clear();
           delay(10);
           lcd.setCursor(0,0);
@@ -237,7 +237,7 @@ void Mezclas::mezclaGeneral(int mezclas)
           lcd.print("MG");
           delay(3000);
           Pantallamezcla(1);
-          delay(100);
+          delay(20);
           hecharLiquido(pesoAceiteDeseado);
           estado2 = 2;
           EEPROM.put(STATUS_2_ADRESS, estado2);
@@ -571,11 +571,9 @@ void Mezclas::Pantallamezcla(uint8_t pantallamezcla)
 
 void Mezclas::mezclaVacio()
 {
-  uint16_t elPesoMinimo = 20;
+  uint16_t elPesoMinimo = 15;
   if (PesoActual() <= elPesoMinimo)
   {
-    // Error de vacio, es obligatorio hacer un vacio de forma individual 
-    mySerial.println("Peso actual ya está por debajo del mínimo, no se necesita vaciar más.");
     if(idioma==0)
     {
       lcd.clear();
@@ -584,7 +582,7 @@ void Mezclas::mezclaVacio()
       lcd.print("PESO MINIMO");
       lcd.setCursor(0,1);
       lcd.print("ADQUIRIDO");
-      delay(2500);
+      delay(3000);
     }
     else
     {
@@ -594,7 +592,7 @@ void Mezclas::mezclaVacio()
       lcd.print("WHEIGHT LIMIT");
       lcd.setCursor(3,1);
       lcd.print("ARRIVED");
-      delay(2500);
+      delay(3000);
     }
     return;
   }
@@ -612,28 +610,32 @@ void Mezclas::mezclaVacio()
   lcd.setCursor(6,1);
   lcd.print("ML");
   delay(3000);
+  
   bombaVacio.on();
-  lcd.clear();
-  delay(20);
-  lcd.setCursor(0,0);
-  lcd.print("VACIANDO ....");
+  
   while(PesoActual() > elPesoMinimo)
   {
+    lcd.setCursor(0,0);
+    lcd.print("VACIANDO ....");
     pesoActual = PesoActual();
     pesoVaciado = pesoInicial - pesoActual; 
-    updateProgressBar(pesoVaciado, pesoTotalAVaciar, 1); // Actualizar la barra de progreso
-    delay(50);
-    if (millis() - tiempoInicio > tiempoErrorBascula)
+    
+    if (millis() - tiempoInicio > tiempoErrorBomba)
     {
-      mySerial.println("Error de la bascula : Tiempo máximo de espera alcanzado");
       lcd.clear();
       delay(20);
       lcd.setCursor(1,0);
-      lcd.print("ERROR BASCULA");
-      delay(2000);
+      lcd.print("ERROR BOMBA");
+      lcd.setCursor(1,0);
+      lcd.print("TIEMPO MAXIMO");
+      delay(3000);
       bombaVacio.off();
       return;
     }
+    updateProgressBar(pesoVaciado, pesoTotalAVaciar, 1); // Actualizar la barra de progreso
+    delay(1000);
+    lcd.clear();
+    delay(20);
   }  
   bombaVacio.off();
 }
@@ -648,11 +650,11 @@ void Mezclas::calcularVolumen()
   lcd.clear();
   delay(20);
   lcd.setCursor(0,0);
-  lcd.print("POR OIL: ");
+  lcd.print("% DE OIL: ");
   lcd.setCursor(12,0);
   lcd.print(porcentajeAceite);
   lcd.setCursor(0,1);
-  lcd.print("VOL OIL: ");
+  lcd.print("VOLUMEN: ");
   lcd.setCursor(10,1);
   lcd.print(pesoAceiteDeseado);
   lcd.setCursor(14,1);
@@ -667,11 +669,11 @@ void Mezclas::calcularVolumen()
   lcd.clear();
   delay(20);
   lcd.setCursor(0,0);
-  lcd.print("POR SOUJI: ");
+  lcd.print("% DE SOUJI: ");
   lcd.setCursor(12,0);
   lcd.print(porcentajeSouji);
   lcd.setCursor(0,1);
-  lcd.print("VOL SOUJI: ");
+  lcd.print("VOLUMEN: ");
   lcd.setCursor(10,1);
   lcd.print(pesoSoujiDeseado);
   lcd.setCursor(14,1);
@@ -687,11 +689,11 @@ void Mezclas::calcularVolumen()
   lcd.clear();
   delay(20);
   lcd.setCursor(0,0);
-  lcd.print("POR AGUA: ");
+  lcd.print("% DE AGUA: ");
   lcd.setCursor(12,0);
   lcd.print(porcentajeAgua);
   lcd.setCursor(0,1);
-  lcd.print("VOL AGUA: ");
+  lcd.print("VOLUMEN: ");
   lcd.setCursor(10,1);
   lcd.print(pesoAguaDeseado);
   lcd.setCursor(14,1);
@@ -703,26 +705,56 @@ void Mezclas::calcularVolumen()
 
 void Mezclas::hecharLiquido(uint16_t pesoPorHechar)
 {
-  if(estado2 == 1)
+   // Encender la bomba correspondiente
+  switch (estado2)
   {
-    bombaAceite.on();
+    case 1:
+      bombaAceite.on();
+      break;
+    case 2:
+      bombaSouji.on();
+      break;
+    case 4:
+      bombaAgua.on();
+      break;
+    default:
+      return; 
   }
-  else if(estado2 == 2)
-  {
-    bombaSouji.on();
-  }
-  else if(estado2 == 4)
-  {
-    bombaAgua.on();
-  }
+
   unsigned long tiempoInicioMezcla = millis(); 
   pesoLiquido = PesoActual();
   uint16_t pesoRelative = 0;
-  while(pesoRelative < pesoPorHechar)
+
+  // Mostrar el mensaje adecuado en el LCD
+  lcd.clear();
+  delay(20);
+  lcd.setCursor(0,0);
+  switch (estado2)
+  {
+    case 1:
+      lcd.clear();
+      delay(20);
+      lcd.setCursor(0,0);
+      lcd.print("HECHANDO ACEITE");
+      break;
+    case 2:
+      lcd.clear();
+      delay(20);
+      lcd.setCursor(0,0);
+      lcd.print("HECHANDO SOUJI");
+      break;
+    case 4:
+      lcd.clear();
+      delay(20);
+      lcd.setCursor(0,0);
+      lcd.print("HECHANDO AGUA");
+      break;
+  }
+
+  while (pesoRelative < pesoPorHechar)
   {
     if (millis() - tiempoInicioMezcla > tiempoErrorBomba)
     {
-      //mySerial.println("Error de la bomba : Tiempo máximo de actividad alcanzado");
       lcd.clear();
       delay(20);
       lcd.setCursor(1,0);
@@ -733,39 +765,49 @@ void Mezclas::hecharLiquido(uint16_t pesoPorHechar)
       bombaAgua.off();
       return;
     }
-    if(estado2 == 1)
+     if(estado2 == 1)
     {
+      lcd.clear();
+      delay(20);
       lcd.setCursor(0,0);
       lcd.print("HECHANDO ACEITE");
     }
-    else if(estado2 == 2)
+    if(estado2 == 2)
     {
+      lcd.clear();
+      delay(20);
       lcd.setCursor(0,0);
       lcd.print("HECHANDO SOUJI");
     }
-    else if(estado2 == 4)
+    if(estado2 == 4)
     {
+      lcd.clear();
+      delay(20);
       lcd.setCursor(0,0);
       lcd.print("HECHANDO AGUA");
     }
     pesoRelative = PesoActual() - pesoLiquido;
     updateProgressBar(pesoRelative, pesoPorHechar, 1); 
-    delay(3000);
+    delay(2500);
   }
+
   pesoLiquido = PesoActual();
   EEPROM.put(PESO_ACEITE_ACTUAL_ADRESS, pesoLiquido);
-  if(estado2 == 1)
+
+  // Apagar la bomba correspondiente
+  switch (estado2)
   {
-    bombaAceite.off();
+    case 1:
+      bombaAceite.off();
+      break;
+    case 2:
+      bombaSouji.off();
+      break;
+    case 4:
+      bombaAgua.off();
+      break;
   }
-  else if(estado2 == 2)
-  {
-    bombaSouji.off();
-  }
-  else if(estado2 == 4)
-  {
-    bombaAgua.off();
-  }
+
   delay(1000);
   /*
   mySerial.println("Estamos en hecharLiquido");
@@ -899,35 +941,43 @@ void Mezclas::esperarParaReanudar()
 
 void Mezclas::vacioGeneral()
 {
-  mySerial.print("Vaciando : ");
-  lcd.setCursor(0, 0);
+  lcd.setCursor(0,0);
   lcd.print("VACIANDO ....");
   tiempoInicioVacio = millis();
   uint64_t tiempoPasado = 0;
   bombaVacio.on();
-
   while (tiempoPasado < tiempoVacio)
   {
+    lcd.setCursor(0,0);
+    lcd.print("VACIANDO ....");
     tiempoPasado = millis() - tiempoInicioVacio;
-
     if (botonPausa.pulsado())
     {
       lcd.clear();
-      delay(20); // Pequeño retraso para la estabilidad de la pantalla
+      delay(20); 
       lcd.setCursor(0, 0);
       lcd.print("VACIADO");
       lcd.setCursor(0, 1);
       lcd.print("FINALIZADO");
-      delay(2000); // Mostrar el mensaje de finalización durante 2 segundos
+      delay(3000); 
       menus.vacioAutomatico = false;
-      bombaVacio.off(); // Apagar la bomba antes de salir del bucle
-      menus.PantallaSeleccionada(11); // Cambiar la pantalla del menú
+      bombaVacio.off();  
+      menus.PantallaSeleccionada(11); 
       break;
     }
     updateProgressBar(tiempoPasado, tiempoVacio, 1);
-    delay(500);  
+    delay(1000);
+    lcd.clear();
+    delay(20);
   }
-
-  mySerial.print("Vacio terminado : ");
   bombaVacio.off();
+  lcd.clear();
+  delay(20); 
+  lcd.setCursor(0, 0);
+  lcd.print("VACIADO");
+  lcd.setCursor(0, 1);
+  lcd.print("FINALIZADO");
+  delay(3000); 
+  menus.vacioAutomatico = false;
+  menus.PantallaSeleccionada(11); 
 }
