@@ -11,11 +11,7 @@ int opcionCalibre = 0;
 const int PAUSE = 99;
 bool enPausa = false;
 bool pausado = false;
-/*menuIndex = 0; 
-numMezclas = 0;
-estado = 0;
-estado2 = 0;
-i_mezclas = 0;*/
+
 const uint8_t RS = A3, EN = A2, D4 = A0, D5 = 0, D6 = 1, D7 = 2;
 //const uint8_t RS = 22, EN = 23, D4 = 31, D5 = 30, D6 = 29, D7 = 28;
 LiquidCrystal lcd(RS, EN, D4, D5, D6, D7); 
@@ -42,7 +38,6 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
   // Limpieza de la pantalla 
   if(pantalla != misPantallas)
   {
-    serial.println("Estamos en misPantallas");
     lcd.clear();
     delay(20);
     misPantallas = pantalla;
@@ -57,18 +52,15 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     EEPROM.get(STATUS_2_ADRESS, mezcla.estado2);
     EEPROM.get(NUM_MEZCLAS_ADRESS, mezcla.numMezclas);
     EEPROM.get(PESO_ACEITE_ACTUAL_ADRESS, mezcla.pesoLiquido);
-    serial.println("Pasamos del EEPROM");
     menuPrincipal = true;
     menuProgramador = false;
     mostrarLitrosMensuales = false;
     inSubMenu = false;
     menuIndex = 0;
-    serial.println("Pasamos dE LA DECLARACION");
     if (mezcla.estado == 0)
     {
       if(idioma == 0)
       {
-        serial.println("Pasamos dentro");
         lcd.setCursor(0,0);
         lcd.print("CANTIDAD SOUJI");
         lcd.setCursor(0,1);
@@ -203,6 +195,7 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
   // El Menu de Calibracion de Bascula
   if (pantalla == 5)
   {
+    elegirCalibracion = false;
     //mostrarPeso = false;
     if(idioma==0)
     {
@@ -223,6 +216,7 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
   // El Menu de Lenguaje
   if (pantalla == 6)
   {
+    cambiarIdioma = false;
     if(idioma==0)
     {
       lcd.setCursor(2,0);
@@ -361,27 +355,26 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     lcd.print("PESAR");
   }
 
-    /*iniciarCalibracion = true;
-    if(idioma==0)
-    {
-      lcd.clear();
-      delay(20);
-      lcd.setCursor(1,0);
-      lcd.print("INICIAR CALIB.");
-      lcd.setCursor(3,1);
-      lcd.print("PULSE SEL");
-    }
-    else
-    {
-      lcd.clear();
-      delay(20);
-      lcd.setCursor(2,0);
-      lcd.print("START CALIB.");
-      lcd.setCursor(3,1);
-      lcd.print("PULSE SEL");
-    } */
-  
-  
+  /*iniciarCalibracion = true;
+  if(idioma==0)
+  {
+    lcd.clear();
+    delay(20);
+    lcd.setCursor(1,0);
+    lcd.print("INICIAR CALIB.");
+    lcd.setCursor(3,1);
+    lcd.print("PULSE SEL");
+  }
+  else
+  {
+    lcd.clear();
+    delay(20);
+    lcd.setCursor(2,0);
+    lcd.print("START CALIB.");
+    lcd.setCursor(3,1);
+    lcd.print("PULSE SEL");
+  } */
+    
   // El SubMenu de lenguaje
   if (pantalla == 13)
   {
@@ -398,10 +391,20 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
       lcd.setCursor(2, 1);
       lcd.print(">");
     }
-    lcd.setCursor(4, 0);
-    lcd.print("ESPANOL");
-    lcd.setCursor(4, 1);
-    lcd.print("INGLES");
+    if(idioma == 0)
+    {
+      lcd.setCursor(4, 0);
+      lcd.print("ESPANOL");
+      lcd.setCursor(4, 1);
+      lcd.print("INGLES");
+    }
+    else
+    {
+      lcd.setCursor(4, 0);
+      lcd.print("SPANISH");
+      lcd.setCursor(4, 1);
+      lcd.print("ENGLISH");
+    }
   }
 }
 
@@ -468,6 +471,7 @@ void Menus::PantallaProgramador(uint8_t pantallaProg)
   // Pantalla de inicio del modo PROGRAMADOR
   if (pantallaProg == 0)
   {
+    serial.println("Estamos en la pantalla 0 del programador");
     menuProgramador = true;
     menuPrincipal = false;
     ajustarAceite = false;
@@ -664,6 +668,7 @@ void Menus::entrarMenuProg()
 
 void Menus::salirMenuProg()
 {
+  serial.println("Estamos en la salirMenuProg");
   menuPrincipal = true;
   menuProgramador = false;
   PantallaSeleccionada(0);
@@ -1581,9 +1586,8 @@ void Menus::talarBascula()
 
 void Menus::calibrarEscala()
 {
-  serial.print("Despues de calibrarEscala ");
-  finDeCalibre = true;
   calibrarPeso1 = false;
+  finDeCalibre = true;
   if(idioma==0)
   {
     lcd.clear();
@@ -1618,18 +1622,11 @@ void Menus::calibrarEscala()
 void Menus::finalizarCalibracion()
 {
   finDeCalibre = false;
-  serial.print("Antes ");
-  /*Serial.print("ElPeso es : ");
-  Serial.println(PesoActual());*/
-  balanza.set_scale(escala); // Establecemos la escala
-  balanza.tare(20);  //El peso actual de la base es considerado zero.
-  ultima_tara = balanza.get_offset();
-  EEPROM.put(TARE_ADRESS, ultima_tara);
-  EEPROM.put(PESO_ACEITE_ACTUAL_ADRESS, 0);
-  serial.print("Despues ");
-
-  /*Serial.print("ElPeso es : ");
-  Serial.println(PesoActual());*/
+  balanza.set_scale(escala); 
+  balanza.tare(20);
+  //ultima_tara = balanza.get_offset();
+  //EEPROM.put(TARE_ADRESS, ultima_tara);
+  //EEPROM.put(PESO_ACEITE_ACTUAL_ADRESS, 0);
 }
 
 void Menus::mostrarElPeso()
@@ -1733,6 +1730,7 @@ void Menus::ReseteoTotal()
   delay(2000);  
   resetearLitrosMensuales();
   mezcla.resetearTodo();
+  inicializarEEPROM();
   PantallaProgramador(0);
 }
 

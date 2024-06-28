@@ -45,7 +45,7 @@ void Motor::ajustarRpms(uint64_t tiempoMezcla)
     {
         tiempoPasado = millis() - tiempoInicio;
         updateProgressBar(tiempoPasado, tiempoMezcla, 1);  
-        delay(500);
+        delay(1000);
     }
     pararMotor();
 }

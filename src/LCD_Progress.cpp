@@ -1,7 +1,4 @@
-#include <Wire.h> 
 #include "LCD_Progress.h"
-#include "Menus.h"
-#include <Arduino.h>
 
 // ERRORES
 

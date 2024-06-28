@@ -3,6 +3,7 @@
 
 #include <LiquidCrystal.h>
 #include <Arduino.h>
+#include "Menus.h"
 
 // Caracteres de la LCD por añadir
 extern byte zero[];

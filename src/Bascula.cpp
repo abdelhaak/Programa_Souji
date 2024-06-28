@@ -53,6 +53,6 @@ void finDeCalibracion()
     escala = adc_lecture / PesoConocido; 
     EEPROM.put(SCALE_ADDRESS, escala);
     // Escribir en la EEPROM
-    delay(1000);
+    delay(100);
 }
 
