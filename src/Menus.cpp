@@ -335,6 +335,10 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
   if (pantalla == 12)
   {
     elegirCalibracion = true;
+    iniciarCalibracion = false;
+    calibrarPeso = false;
+    calibrarPeso1 = false;
+    finDeCalibre = false;
     /*ultima_tara = balanza.get_offset();
     EEPROM.put(sizeof(escala), ultima_tara);*/
     lcd.clear();
@@ -410,9 +414,6 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
 
 void Menus::updateMenuDisplay()
 {
-  serial.println("Estamos en decrementandoIndex");
-  serial.print("menuIndex antes: ");
-  serial.println(menuIndex);
   PantallaSeleccionada(menuIndex);
 }
 
@@ -471,7 +472,7 @@ void Menus::PantallaProgramador(uint8_t pantallaProg)
   // Pantalla de inicio del modo PROGRAMADOR
   if (pantallaProg == 0)
   {
-    serial.println("Estamos en la pantalla 0 del programador");
+    modoProg=true;
     menuProgramador = true;
     menuPrincipal = false;
     ajustarAceite = false;
@@ -499,21 +500,21 @@ void Menus::PantallaProgramador(uint8_t pantallaProg)
   // Pantalla de Ajustar la cantidad del ACEITE
   if (pantallaProg == 1)
   {
-    serial.print("porcentajeAceite : ");
-    serial.println(mezcla.porcentajeAceite);
+    validarAjusteAceite = false;
+    modoProg=false;
     ajustarAceite = false;
     if(idioma==0)
     {
       lcd.setCursor(0,0);
       lcd.print("AJUSTAR CANTIDAD");
-      lcd.setCursor(0,1);
+      lcd.setCursor(2,1);
       lcd.print("DE : ACEITE");
     }
     else
     {
       lcd.setCursor(0,0);
       lcd.print("SETTING THE");
-      lcd.setCursor(0,1);
+      lcd.setCursor(2,1);
       lcd.print("OIL QUANTITY");
     }
   }
@@ -521,8 +522,8 @@ void Menus::PantallaProgramador(uint8_t pantallaProg)
   // Pantalla de Ajustar la cantidad del SOUJI
   if (pantallaProg == 2)
   {
-    serial.print("porcentajeSouji : ");
-    serial.println(mezcla.porcentajeSouji);
+    validarAjusteSouji = false;
+    modoProg=false;
     ajustarSouji = false ;
     if(idioma==0)
     {
@@ -543,6 +544,7 @@ void Menus::PantallaProgramador(uint8_t pantallaProg)
   // Pantalla de RESETEAR LA CANTIDAD DE LITROS ACUMULADA
   if (pantallaProg == 3)
   {
+    modoProg=false;
     resetearTodo = false;
     if(idioma==0)
     {
@@ -563,6 +565,8 @@ void Menus::PantallaProgramador(uint8_t pantallaProg)
   // Pantalla de Ajustar LA VELOCIDAD DEL MOTOR
   if (pantallaProg == 4)
   {
+    modoProg=false;
+    accederRpms = false;
     if(idioma==0)
     {
       lcd.setCursor(3,0);
@@ -585,17 +589,17 @@ void Menus::PantallaProgramador(uint8_t pantallaProg)
     ajustarAceite = true;
     if(idioma==0)
     {
-      lcd.setCursor(3,0);
-      lcd.print("AJUSTANDO");
-      lcd.setCursor(5,1);
-      lcd.print("ACEITE ...");
+      lcd.setCursor(1,0);
+      lcd.print("AJUSTAR ACEITE");
+      lcd.setCursor(3,1);
+      lcd.print("PULSE SEL");
     }
     else
     {
-      lcd.setCursor(3,0);
-      lcd.print("SETTING ");
-      lcd.setCursor(5,1);
-      lcd.print("OIL ...");
+      lcd.setCursor(1,0);
+      lcd.print("SETTING OIL");
+      lcd.setCursor(3,1);
+      lcd.print("PRESS SEL");
     }
   }
 
@@ -605,17 +609,17 @@ void Menus::PantallaProgramador(uint8_t pantallaProg)
     ajustarSouji = true;
     if(idioma==0)
     {
-      lcd.setCursor(3,0);
-      lcd.print("AJUSTANDO");
-      lcd.setCursor(5,1);
-      lcd.print("SOUJI ...");
+      lcd.setCursor(1,0);
+      lcd.print("AJUSTAR SOUJI");
+      lcd.setCursor(3,1);
+      lcd.print("PULSE SEL");
     }
     else
     {
-      lcd.setCursor(3,0);
-      lcd.print("SETTING ");
-      lcd.setCursor(5,1);
-      lcd.print("SOUJI ...");
+      lcd.setCursor(1,0);
+      lcd.print("SETTING SOUJI");
+      lcd.setCursor(3,1);
+      lcd.print("PRESS SEL");
     }
   }
 
@@ -628,7 +632,7 @@ void Menus::PantallaProgramador(uint8_t pantallaProg)
       lcd.setCursor(0,0);
       lcd.print("PARA BORRAR TODO");
       lcd.setCursor(3,1);
-      lcd.print("PRESS SEL");
+      lcd.print("PULSE SEL");
     }
     else
     {
@@ -646,64 +650,74 @@ void Menus::PantallaProgramador(uint8_t pantallaProg)
     accederRpms = true;
     if(idioma==0)
     {
-      lcd.setCursor(3,0);
-      lcd.print("PULSE SEL");
+      lcd.setCursor(1,0);
+      lcd.print("PARA MODIFICAR");
       lcd.setCursor(2,1);
-      lcd.print("MODIFICAR");
+      lcd.print("PULSE SEL");
     }
     else
     {
-      lcd.setCursor(3,0);
-      lcd.print("PRESS SEL");
-      lcd.setCursor(4,1);
+      lcd.setCursor(4,0);
       lcd.print("TO MODIFY");
+      lcd.setCursor(3,1);
+      lcd.print("PRESS SEL");
     }
   }
 }
 
 void Menus::entrarMenuProg()
 {
+  menuProgramador = true;
   PantallaProgramador(0);
 }
 
 void Menus::salirMenuProg()
 {
-  serial.println("Estamos en la salirMenuProg");
   menuPrincipal = true;
   menuProgramador = false;
+  lcd.clear();
+  delay(20);
   PantallaSeleccionada(0);
 }
 
 void Menus::entrarSubMenuProg()
 {
-  if(!SubMenuProgamador)
+  if(!modoProg)
   {
-    SubMenuProgamador = true;
-    lcd.clear();
-    delay(20);
-    switch (menuProgIndex) 
+    if(!SubMenuProgamador)
     {
-      case 0:
-        PantallaProgramador(4);
-        break;
-      case 1:
-        PantallaProgramador(5);
-        break;
-      case 2:
-        PantallaProgramador(6);
-        break;
-      case 3:
-        PantallaProgramador(7);
-        break;
-      case 4 :
-        PantallaProgramador(8);   
-        break;
+      SubMenuProgamador = true;
+      lcd.clear();
+      delay(20);
+      switch (menuProgIndex) 
+      {
+        case 0:
+          PantallaProgramador(4);
+          break;
+        case 1:
+          PantallaProgramador(5);
+          break;
+        case 2:
+          PantallaProgramador(6);
+          break;
+        case 3:
+          PantallaProgramador(7);
+          break;
+        case 4 :
+          PantallaProgramador(8);   
+          break;
+      }
     }
-  }
-  else
-  {
-    SubMenuProgamador = false;
-    updateMenuProgDisplay();
+    else
+    {
+      menuPrincipal = false;
+      ajustarAceite = false;
+      ajustarSouji = false;
+      accederRpms = false;
+      resetearTodo = false;
+      SubMenuProgamador = false;
+      updateMenuProgDisplay();
+    }
   }
 }
 
@@ -712,8 +726,6 @@ void Menus::updateMenuProgDisplay()
   PantallaProgramador(menuProgIndex);
 }
 
-
-//////////////// PANTALLAS DEL MODO PROGRAMADOR  /////////////////
 
 
 
@@ -740,7 +752,10 @@ void Menus::modificarBotonSet()
   {
     entrarSubMenuProg();
   }
-  else{}
+  else
+  {
+    PantallaProgramador(0);
+  }
 }
 
 void Menus::modificarBotonSel()
@@ -838,31 +853,55 @@ void Menus::modificarBotonSel()
     {
       motor.mostrarRpms(pin_encoder);
     }
-    else if (ajustarAceite)
+    else if (ajustarAceite && !validarAjusteAceite)
     {
-      serial.println("AjutarAceite");
+      serial.println("Estamos en ajustarAceite ");
+      validarAjusteAceite = true;
       SubMenuProgamador = false;
-      mezcla.Pantallamezcla(8);
+      mezcla.Pantallamezcla(10);
     } 
-    else if (ajustarSouji)
+    else if (ajustarSouji && !validarAjusteSouji)
     {
+      serial.println("Estamos en ajustarSouji ");
+      validarAjusteSouji = true;
       SubMenuProgamador = false;
-      mezcla.Pantallamezcla(9);
+      mezcla.Pantallamezcla(11);
     } 
+    else if(validarAjusteAceite)
+    {
+      serial.println("Estamos en validarAjusteAceite ");
+      validarAjusteAceite = false;
+      PantallaProgramador(1);
+    }
+    else if(validarAjusteSouji)
+    {
+      serial.println("Estamos en validarAjusteSouji ");
+      validarAjusteSouji = false;
+      PantallaProgramador(2);
+    }
     else {}  
   } 
 }
 
+void Menus::modificarBotonPro()
+{
+  if(!menuProgramador)
+  {
+    entrarMenuProg();
+  }
+  else
+  {
+    salirMenuProg();
+  }
+}
+
 void Menus::decrementandoIndex() 
 {
-    if (!inSubMenu && menuPrincipal && menuIndex < 6) 
+  if(menuPrincipal)
+  {
+    if(!inSubMenu && menuIndex < 6) 
     {
-      serial.println("Estamos en decrementandoIndex");
-      serial.print("menuIndex antes: ");
-      serial.println(menuIndex);
       menuIndex++;
-      serial.print("menuIndex despues: ");
-      serial.println(menuIndex);
       updateMenuDisplay();
     }
     else if(inSubMenu && variarCantidad && IndexCantidad > 0)
@@ -875,7 +914,7 @@ void Menus::decrementandoIndex()
       bajaFecha();
       displayFecha(); 
     }
-    else if (mostrarLitrosMensuales)
+    else if(mostrarLitrosMensuales)
     {
       mes++;
       if (mes > 12) 
@@ -883,24 +922,6 @@ void Menus::decrementandoIndex()
         mes = 1;
       }
       displayLitrosMensuales();
-    }
-    else if(menuProgramador && !inSubMenuProg && menuProgIndex < 4 && !ajustarAceite && !ajustarSouji && !validarRpms)
-    {
-      menuProgIndex++;
-      updateMenuProgDisplay(); 
-    }
-    else if(ajustarAceite)
-    {
-      serial.println("decremantoAceite");
-      mezcla.bajarPorcentajeAceite();   
-    }
-    else if(ajustarSouji)
-    {
-      mezcla.bajarPorcentajeSouji();    
-    }
-    else if(validarRpms)
-    {
-      motor.bajarRpms();
     }
     else if(cambiarIdioma)
     {
@@ -913,8 +934,28 @@ void Menus::decrementandoIndex()
       PantallaSeleccionada(12);
     }
     else
+    {}
+  }
+  else if(menuProgramador)
+  {
+    if(!inSubMenuProg && menuProgIndex < 4 && !ajustarAceite && !ajustarSouji && !validarRpms)
     {
+      menuProgIndex++;
+      updateMenuProgDisplay(); 
     }
+    else if(ajustarAceite)
+    {
+      mezcla.bajarPorcentajeAceite();   
+    }
+    else if(ajustarSouji)
+    {
+      mezcla.bajarPorcentajeSouji();    
+    }
+    else if(validarRpms)
+    {
+      motor.bajarRpms();
+    }
+  } 
 }
 
 void Menus::decrementandoIndexRapido()
@@ -928,14 +969,11 @@ void Menus::decrementandoIndexRapido()
 
 void Menus::incrementandoIndex() 
 {
-    if (!inSubMenu && menuPrincipal && menuIndex > 0)
+  if(menuPrincipal)
+  {
+    if(!inSubMenu && menuIndex > 0)
     {
-      serial.println("Estamos en incrementandoIndex");
-      serial.print("menuIndex antes: ");
-      serial.println(menuIndex);
       menuIndex--;
-      serial.print("menuIndex despues: ");
-      serial.println(menuIndex);
       updateMenuDisplay(); 
     }
     else if(inSubMenu && variarCantidad && IndexCantidad < 4)
@@ -957,24 +995,6 @@ void Menus::incrementandoIndex()
       }
       displayLitrosMensuales();
     }
-    else if(menuProgramador && !inSubMenuProg && menuProgIndex > 0 && !ajustarAceite && !ajustarSouji && !validarRpms)
-    {
-      menuProgIndex--;
-      updateMenuProgDisplay(); 
-    }
-    else if(ajustarAceite)
-    {
-      serial.println("incremantoAceite");
-      mezcla.subirPorcentajeAceite();   
-    }
-    else if(ajustarSouji)
-    {
-      mezcla.subirPorcentajeSouji();    
-    }
-    else if(validarRpms)
-    {
-      motor.subirRpms();
-    }
     else if(cambiarIdioma)
     {
       opcionLenguaje = 0 ;
@@ -988,6 +1008,29 @@ void Menus::incrementandoIndex()
     else
     {
     }
+  }
+  else if(menuProgramador)
+  {
+    if(!inSubMenuProg && menuProgIndex > 0 && !ajustarAceite && !ajustarSouji && !validarRpms)
+    {
+      menuProgIndex--;
+      updateMenuProgDisplay(); 
+    }
+    else if(ajustarAceite)
+    {
+      mezcla.subirPorcentajeAceite();   
+    }
+    else if(ajustarSouji)
+    {
+      mezcla.subirPorcentajeSouji();    
+    }
+    else if(validarRpms)
+    {
+      motor.subirRpms();
+    }
+    else
+    {}
+  }
 }
 
 void Menus::incrementandoIndexRapido()
@@ -1212,13 +1255,8 @@ void Menus::ejecutarMezcla(int Cantidad_Souji)
   switch (Cantidad_Souji)
   {
   case 5:
-    incrementarCantidad(5);
-    serial.println("caso de 5");
     mezcla.numMezclas = 1;
     EEPROM.put(NUM_MEZCLAS_ADRESS, mezcla.numMezclas);
-    serial.println("vAMOS A L AMEZCLA");
-    serial.print("nUM DE MEZCLA: ");
-    serial.println(mezcla.numMezclas);
     mezcla.mezclaGeneral(mezcla.numMezclas);
     incrementarCantidad(5);
   break;
@@ -1513,8 +1551,8 @@ void Menus::inicializarEEPROM()
     EEPROM.get(INIT_CHECK_ADDRESS, initCheck);
     if (initCheck != 12345) 
     {
-        EEPROM.put(DAY_ADDRESS, 24); // Día inicial
-        EEPROM.put(MONTH_ADDRESS, 6); // Mes inicial
+        EEPROM.put(DAY_ADDRESS, 3); // Día inicial
+        EEPROM.put(MONTH_ADDRESS, 7); // Mes inicial
         EEPROM.put(YEAR_ADDRESS, 2024); // Año inicial
         EEPROM.put(RPMS_ADRESS, 1500); // RPMs del motor inicial
         EEPROM.put(LITROS_TOTALES_DIRECCION, 0); // Litros totales iniciales
@@ -1533,8 +1571,6 @@ void Menus::inicializarEEPROM()
 /////////////////  CONTROL DE LA BASCULA  /////////////////
 void Menus::iniciarCaliBascula()
 {
-  serial.println("Antes de BalanzaSetup ");
-  serial.println("Despues de BalanzaSetup ");
   iniciarCalibracion = false;
   calibrarPeso = true;
   if(idioma==0)
@@ -1556,7 +1592,6 @@ void Menus::iniciarCaliBascula()
     lcd.print("TO START");
   }
   calibracion(); 
-  serial.println("Despues de calibracion() ");
 }
 
 void Menus::talarBascula()
@@ -1581,7 +1616,6 @@ void Menus::talarBascula()
     lcd.setCursor(4,1);
     lcd.print("PRESS SEL");
   }
-
 }
 
 void Menus::calibrarEscala()
@@ -1624,9 +1658,11 @@ void Menus::finalizarCalibracion()
   finDeCalibre = false;
   balanza.set_scale(escala); 
   balanza.tare(20);
-  //ultima_tara = balanza.get_offset();
-  //EEPROM.put(TARE_ADRESS, ultima_tara);
-  //EEPROM.put(PESO_ACEITE_ACTUAL_ADRESS, 0);
+  ultima_tara = balanza.get_offset();
+  EEPROM.put(TARE_ADRESS, ultima_tara);
+  EEPROM.put(PESO_ACEITE_ACTUAL_ADRESS, 0);
+  delay(100);
+  PantallaSeleccionada(5);
 }
 
 void Menus::mostrarElPeso()

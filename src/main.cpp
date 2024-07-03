@@ -1,11 +1,11 @@
 #include <Arduino.h>
 #include <avr/power.h>
+#include <SoftwareSerial.h>
 #include "Reloj_RTC.h"
 #include "Menus.h"
 #include "Boton.h"
 #include "Bascula.h"
 #include "Mezclas.h"
-#include <SoftwareSerial.h>
 
 #define rxPin 17
 #define txPin 22
@@ -39,10 +39,11 @@ void setup()
   mySerial.println("Programa INIICADO");
   menu.lcd_init();
   menu.iniciando();
-  mezclas.resetearTodo();
+  //mezclas.resetearTodo();
   rtc_init();
   balanza_Setup();
-  menu.inicializarEEPROM();
+  delay(500);
+  //menu.inicializarEEPROM();
   delay(500);
   menu.PantallaSeleccionada(0);
 }
@@ -70,8 +71,9 @@ void loop()
   }
   if(botonPro.pulsado())
   {
-    menu.entrarMenuProg();
-  }/*
+    menu.modificarBotonPro();
+  }
+  /*
   if(botonPro.pulsadoLargo())
   {
     menu.salirMenuProg();

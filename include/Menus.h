@@ -66,6 +66,7 @@ class Menus
         
         // Variables del menu programador 
         uint8_t misPantallasProg=0;
+        bool modoProg=false;
         bool menuProgramador = false;
         bool SubMenuProgamador = false;
         int menuProgIndex = 0;
@@ -75,7 +76,7 @@ class Menus
         bool resetearTodo = false;
         bool ajustarAceite = false;
         bool ajustarSouji = false;
-
+        
        
     public:
         Menus(LiquidCrystal &display,Stream &serial);
@@ -83,6 +84,8 @@ class Menus
         void lcd_init();
         int menuIndex ;  
         bool vacioAutomatico = false;
+        bool validarAjusteAceite = false;
+        bool validarAjusteSouji = false;
         // Variables del menu principal
         void PantallaSeleccionada(uint8_t pantalla);
         void updateMenuDisplay();
@@ -115,6 +118,7 @@ class Menus
 
         // Variables del menu programador
         void PantallaProgramador(uint8_t pantallaProg);
+        void modificarBotonPro();
         void entrarMenuProg();
         void salirMenuProg();
         void entrarSubMenuProg();

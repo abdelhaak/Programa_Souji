@@ -2,7 +2,7 @@
 #define RELOJ_RTC_H
 
 #include "RTClib.h"
-
+#include "Menus.h"
 #define LITROS_MENSUALES_DIRECCION 32
 #define TAMANIO_DATOS_MENSUALES 2
 
@@ -28,7 +28,7 @@ extern int cantidadMezclaMes[13];
 extern int litrosMensuales[13];
 
 void rtc_init();
-String Fecha_actual(uint8_t dia, int8_t mes, uint16_t anio);
+String Fecha_actual();
 String Hora_actual();
 
 #endif

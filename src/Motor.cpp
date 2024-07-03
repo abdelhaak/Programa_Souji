@@ -67,6 +67,7 @@ void Motor::mostrarRpms(int pin_encoder)
         if(idioma==0)
         {
             lcd.clear();
+            delay(20);
             lcd.setCursor(0,0);
             lcd.print("FREQ:");
             lcd.setCursor(7,0);
@@ -79,6 +80,7 @@ void Motor::mostrarRpms(int pin_encoder)
         else
         {
             lcd.clear();
+            delay(20);
             lcd.setCursor(0,0);
             lcd.print("FREQ:");
             lcd.setCursor(7,0);
@@ -97,16 +99,18 @@ void Motor::modificarRpms()
     if(idioma==0)
     {
         lcd.clear();
+        delay(20);
         lcd.setCursor(0,0);
-        lcd.print("AJUSTAR RPMS:");
+        lcd.print("AJUSTANDO RPMS:");
         lcd.setCursor(7,1);
         lcd.print(rpms);
     }
     else
     {
         lcd.clear();
+        delay(20);
         lcd.setCursor(0,0);
-        lcd.print("SETTING RPMS:");
+        lcd.print("ADJUSTING RPMS:");
         lcd.setCursor(7,1);
         lcd.print(rpms);
     }
@@ -119,6 +123,7 @@ void Motor::bajarRpms()
         if(idioma==0)
         {
             lcd.clear();
+            delay(20);
             lcd.setCursor(1,0);
             lcd.print("VALOR DE RPMS");
             lcd.setCursor(0,1);
@@ -129,6 +134,7 @@ void Motor::bajarRpms()
         else
         {
             lcd.clear();
+            delay(20);
             lcd.setCursor(1,0);
             lcd.print("IS THE MINIMUM");
             lcd.setCursor(0,1);
@@ -154,6 +160,7 @@ void Motor::subirRpms()
         if(idioma==0)
         {
             lcd.clear();
+            delay(20);
             lcd.setCursor(1,0);
             lcd.print("VALOR DE RPMS");
             lcd.setCursor(0,1);
@@ -164,6 +171,7 @@ void Motor::subirRpms()
         else
         {
             lcd.clear();
+            delay(20);
             lcd.setCursor(1,0);
             lcd.print("IS THE MAXIMUM");
             lcd.setCursor(0,1);
@@ -182,12 +190,13 @@ void Motor::subirRpms()
     }
 }
 
+void Motor::cargarRpms()
+{
+    EEPROM.get(RPMS_ADRESS, rpms);
+}
+
 int Motor::rpmS()
 {
     return rpms;
 }
 
-void Motor::cargarRpms()
-{
-    EEPROM.get(RPMS_ADRESS, rpms);
-}

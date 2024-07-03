@@ -4,9 +4,10 @@
 #include "HX711.h"
 
 #define VALUE_TARA 20
-#define PesoConocido 107   // 195 // EL peso del ejemplo en gramos
+#define PesoConocido 195   // 107 // EL peso del ejemplo en gramos
 #define SCALE_ADDRESS 80   // Dirección para la escala
-#define TARE_ADRESS 84     // Dirección para la TARA
+#define TARE_ADRESS 90     // Dirección para la TARA
+#define PESO_ADRESS 32
 #define DOUT A5
 #define CLK  A4
 

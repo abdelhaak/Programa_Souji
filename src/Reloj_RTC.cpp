@@ -16,12 +16,16 @@ String elMes;
 void rtc_init()
 {
   rtc.begin();
+  //rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
   Tiempo = rtc.now();
   dia = Tiempo.day();
   mes = Tiempo.month();
   anio = Tiempo.year();
+  EEPROM.put(DAY_ADDRESS, dia); 
+  EEPROM.put(MONTH_ADDRESS, mes); 
+  EEPROM.put(YEAR_ADDRESS, anio); 
 }
-String Fecha_actual(uint8_t dia, int8_t mes, uint16_t anio)
+String Fecha_actual()
 {
   Tiempo = rtc.now();
   dia = Tiempo.day();
