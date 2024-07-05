@@ -47,6 +47,9 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
   if (pantalla == 0)
   {  
     serial.println("Estamos en la pantalla 0");
+    EEPROM.get(PESO_RELATIVO_ADDRESS, mezcla.pesoRelative);
+    serial.print("pesoRelative :");
+    serial.println(mezcla.pesoRelative);
     EEPROM.get(SCALE_ADDRESS, escala);
     EEPROM.get(STATUS_ADRESS, mezcla.estado);
     EEPROM.get(STATUS_2_ADRESS, mezcla.estado2);
@@ -98,8 +101,8 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     serial.println("Estamos en la pantalla 1");
     mezcla.estado = 0;
     EEPROM.put(STATUS_ADRESS, mezcla.estado);
-    if(mes == 0)mes =1;
     mostrarLitrosMensuales = false;
+    if(mes == 0)mes =1;
     if(idioma == 0)
     {     
       lcd.setCursor(4,0);
@@ -310,7 +313,6 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
   if (pantalla == 11)
   {
     vacioAutomatico = true;
-    //vaciando = false;
     if(idioma==0)
     {
       lcd.clear();
@@ -358,26 +360,6 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     lcd.setCursor(4, 1);
     lcd.print("PESAR");
   }
-
-  /*iniciarCalibracion = true;
-  if(idioma==0)
-  {
-    lcd.clear();
-    delay(20);
-    lcd.setCursor(1,0);
-    lcd.print("INICIAR CALIB.");
-    lcd.setCursor(3,1);
-    lcd.print("PULSE SEL");
-  }
-  else
-  {
-    lcd.clear();
-    delay(20);
-    lcd.setCursor(2,0);
-    lcd.print("START CALIB.");
-    lcd.setCursor(3,1);
-    lcd.print("PULSE SEL");
-  } */
     
   // El SubMenu de lenguaje
   if (pantalla == 13)
@@ -1558,11 +1540,12 @@ void Menus::inicializarEEPROM()
         EEPROM.put(LITROS_TOTALES_DIRECCION, 0); // Litros totales iniciales
         EEPROM.put(IDIOMA_ADRESS, 0); // Idioma por defecto es español
         EEPROM.put(PORCENTAJE_ACEITE_ADRESS, 30); // Porcentaje de aceite inicial
-        EEPROM.put(PORCENTAJE_SOUJI_ADRESS, 50); // Porcentaje de Souji inicial
-        EEPROM.put(STATUS_ADRESS, 0); // Estado inicial
-        EEPROM.put(STATUS_2_ADRESS, 0); // Estado 2 inicial
-        EEPROM.put(NUM_MEZCLAS_ADRESS, 1); // Numero de mezclas inicial
-        EEPROM.put(PESO_ACEITE_ACTUAL_ADRESS, 0);
+        EEPROM.put(PORCENTAJE_SOUJI_ADRESS, 50); // Porcentaje de Souji inicial.
+        EEPROM.put(PESO_RELATIVO_ADDRESS, 0);
+        //EEPROM.put(STATUS_ADRESS, 0); // Estado inicial
+        //EEPROM.put(STATUS_2_ADRESS, 0); // Estado 2 inicial
+        //EEPROM.put(NUM_MEZCLAS_ADRESS, 1); // Numero de mezclas inicial
+        //EEPROM.put(PESO_ACEITE_ACTUAL_ADRESS, 0);
         resetearLitrosMensuales();
     }
 }

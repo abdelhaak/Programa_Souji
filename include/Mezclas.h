@@ -92,6 +92,7 @@ class Mezclas
         uint16_t porcentajeAceite;
         uint16_t porcentajeSouji;
         uint16_t pesoLiquido;
+        uint16_t pesoRelative;
 };
 
 #endif

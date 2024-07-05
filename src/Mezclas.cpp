@@ -28,12 +28,12 @@ uint64_t tiempoErrorBascula = 500000;
 uint64_t tiempoErrorBomba = 500000;
 uint64_t tiempoPasado = 0;
 
-// 2 minutos => 120000 ms    ::   PARA LA PRIMERA MEZCLA
-uint64_t tiempoMezcla1 = 240000; //5000;
-// 3 minutos => 180000 ms    ::   PARA LA SEGUNDA MEZCLA
-uint64_t tiempoMezcla2 = 360000; // 5000;
-// 3 minutos => 120000 ms    ::   PARA EL VACIO POR AHORA 
-uint64_t tiempoVacio = 240000;
+// 2 minutos => 240000 ms    ::   PARA LA PRIMERA MEZCLA
+uint64_t tiempoMezcla1 = 240000; //5000
+// 3 minutos => 360000 ms    ::   PARA LA SEGUNDA MEZCLA
+uint64_t tiempoMezcla2 = 360000; //  5000;
+// 3 minutos => 360000 ms    ::   PARA EL VACIO POR AHORA 
+uint64_t tiempoVacio = 360000;
 // El peso minimo del vacio autorizado
 //uint16_t pesoMinimo = 20;
 
@@ -184,7 +184,7 @@ void Mezclas::mezclaGeneral(int mezclas)
               lcd.print(pesoAguaDeseado);
               lcd.setCursor(6,1);
               lcd.print("G");
-              delay(10000);
+              delay(30000);
               Pantallamezcla(3);
               hecharLiquido(pesoAguaDeseado);
               estado2 = 5;
@@ -318,7 +318,7 @@ void Mezclas::mezclaGeneral(int mezclas)
           lcd.print(pesoAguaDeseado);
           lcd.setCursor(6,1);
           lcd.print("G");
-          delay(10000);
+          delay(30000);
           Pantallamezcla(3);
           hecharLiquido(pesoAguaDeseado);
           estado2 = 5;
@@ -368,9 +368,7 @@ void Mezclas::mezclaGeneral(int mezclas)
     // Finalizamos la mezcla
     if(estado == 2 && finMezcla)
     {
-      //mySerial.println("Estado 2 && fin de mezcla");
       resetearTodo();
-      //mySerial.println("Mezcla terminada.");
       Pantallamezcla(7);
       delay(10000);
       lcd.clear();
@@ -689,7 +687,7 @@ void Mezclas::Pantallamezcla(uint8_t pantallamezcla)
 
 void Mezclas::mezclaVacio()
 {
-  uint16_t elPesoMinimo = 100;
+  uint16_t elPesoMinimo = 75;
   if (PesoActual() <= elPesoMinimo)
   {
     if(idioma==0)
@@ -737,7 +735,6 @@ void Mezclas::mezclaVacio()
     lcd.print("VACIANDO ....");
     pesoActual = PesoActual();
     pesoVaciado = pesoInicial - pesoActual; 
-    
     if (millis() - tiempoInicio > tiempoErrorBomba)
     {
       lcd.clear();
@@ -751,7 +748,7 @@ void Mezclas::mezclaVacio()
       return;
     }
     updateProgressBar(pesoVaciado, pesoTotalAVaciar, 1); // Actualizar la barra de progreso
-    delay(500);
+    delay(1000);
     lcd.clear();
     delay(20);
   }  
@@ -764,7 +761,6 @@ void Mezclas::calcularVolumen()
 
   // Calculos de la cantidad de Aceite
   EEPROM.get(PORCENTAJE_ACEITE_ADRESS, porcentajeAceite);
- 
   volumenAceite= porcentajeAceite * 37.5;
   pesoAceiteDeseado  = volumenAceite * DENSIDAD_ACEITE;
   EEPROM.put(VOL_ACEITE_ADRESS, pesoAceiteDeseado);
@@ -803,10 +799,10 @@ void Mezclas::calcularVolumen()
 
   // Calculos de la cantidad de Agua que es lo que queda
   uint16_t porcentajeAgua = 0;
-
   porcentajeAgua  = 100 - (porcentajeAceite + porcentajeSouji);
   volumenAgua = porcentajeAgua * 37.5;
   pesoAguaDeseado = volumenAgua;
+  EEPROM.put(VOL_AGUA_ADRESS, pesoAguaDeseado);
   lcd.clear();
   delay(20);
   lcd.setCursor(0,0);
@@ -820,8 +816,6 @@ void Mezclas::calcularVolumen()
   lcd.setCursor(14,1);
   lcd.print("ML");
   delay(8000);
-  EEPROM.put(VOL_AGUA_ADRESS, pesoAguaDeseado);
-  delay(10);
 }
 
 void Mezclas::hecharLiquido(uint16_t pesoPorHechar)
@@ -844,7 +838,10 @@ void Mezclas::hecharLiquido(uint16_t pesoPorHechar)
 
   unsigned long tiempoInicioMezcla = millis(); 
   pesoLiquido = PesoActual();
-  uint16_t pesoRelative = 0;
+  pesoRelative = 0;
+  EEPROM.get(PESO_RELATIVO_ADDRESS, pesoRelative);
+  mySerial.print("pesoRelative :");
+  mySerial.println(pesoRelative);
   // Mostrar el mensaje adecuado en el LCD
   lcd.clear();
   delay(20);
@@ -852,24 +849,37 @@ void Mezclas::hecharLiquido(uint16_t pesoPorHechar)
   switch (estado2)
   {
     case 1:
-      lcd.clear();
-      delay(20);
-      lcd.setCursor(0,0);
-      lcd.print("HECHANDO ACEITE");
+      if(idioma == 0)
+      {
+        lcd.print("HECHANDO ACEITE");
+      }
+      else
+      {
+        lcd.print("MAKING OIL");
+      }
       break;
     case 2:
-      lcd.clear();
-      delay(20);
-      lcd.setCursor(0,0);
-      lcd.print("HECHANDO SOUJI");
+      if(idioma == 0)
+      {
+        lcd.print("HECHANDO SOUJI");
+      }
+      else
+      {
+        lcd.print("MAKING SOUJI");
+      }
       break;
     case 4:
-      lcd.clear();
-      delay(20);
-      lcd.setCursor(0,0);
-      lcd.print("HECHANDO AGUA");
+      if(idioma == 0)
+      {
+        lcd.print("HECHANDO AGUA");
+      }
+      else
+      {
+        lcd.print("MAKING WATER");
+      }
       break;
   }
+  delay(50);
 
   while (pesoRelative < pesoPorHechar)
   {
@@ -889,30 +899,65 @@ void Mezclas::hecharLiquido(uint16_t pesoPorHechar)
     {
       lcd.clear();
       delay(20);
-      lcd.setCursor(0,0);
-      lcd.print("HECHANDO ACEITE");
+      if(idioma == 0)
+      {
+        lcd.setCursor(0,0);
+        lcd.print("HECHANDO ACEITE");
+      }
+      else
+      {
+        lcd.setCursor(0,0);
+        lcd.print("MAKING OIL");
+      }
     }
     if(estado2 == 2)
     {
       lcd.clear();
       delay(20);
-      lcd.setCursor(0,0);
-      lcd.print("HECHANDO SOUJI");
+      if(idioma == 0)
+      {
+        lcd.setCursor(0,0);
+        lcd.print("HECHANDO SOUJI");
+      }
+      else
+      {
+        lcd.setCursor(0,0);
+        lcd.print("MAKING SOUJI");
+      }
     }
     if(estado2 == 4)
     {
       lcd.clear();
       delay(20);
-      lcd.setCursor(0,0);
-      lcd.print("HECHANDO AGUA");
+      if(idioma == 0)
+      {
+        lcd.setCursor(0,0);
+        lcd.print("HECHANDO AGUA");
+      }
+      else
+      {
+        lcd.setCursor(0,0);
+        lcd.print("MAKING WATER");
+      }
     }
-    pesoRelative = PesoActual() - pesoLiquido;
+    uint16_t nuevoPesoActual = PesoActual();
+    pesoRelative += nuevoPesoActual - pesoLiquido;
+    pesoLiquido = nuevoPesoActual;
+    mySerial.println(pesoRelative);
+    EEPROM.put(PESO_RELATIVO_ADDRESS, pesoRelative);
     updateProgressBar(pesoRelative, pesoPorHechar, 1); 
     delay(500);
   }
+
+  mySerial.print("Despues del while");
   pesoLiquido = PesoActual();
   EEPROM.put(PESO_ACEITE_ACTUAL_ADRESS, pesoLiquido);
-
+  mySerial.print("pesoRelative :");
+  mySerial.println(pesoRelative);
+  EEPROM.put(PESO_RELATIVO_ADDRESS, 0);
+  mySerial.print("pesoRelative :");
+  mySerial.println(pesoRelative);
+  
   // Apagar la bomba correspondiente
   switch (estado2)
   {
@@ -1019,6 +1064,7 @@ void Mezclas::resetearTodo()
   volumenSouji = 0;
   volumenAgua = 0;
   pesoLiquido = 0;
+  pesoRelative = 0;
   EEPROM.put(VOL_AGUA_ADRESS, volumenAgua);
   EEPROM.put(VOL_SOUJI_ADRESS, volumenSouji);
   EEPROM.put(VOL_ACEITE_ADRESS, volumenAceite);
@@ -1026,6 +1072,7 @@ void Mezclas::resetearTodo()
   EEPROM.put(STATUS_2_ADRESS, estado2);
   EEPROM.put(NUM_MEZCLAS_ADRESS, numMezclas);
   EEPROM.put(PESO_ACEITE_ACTUAL_ADRESS, pesoLiquido);
+  EEPROM.put(PESO_RELATIVO_ADDRESS, pesoRelative);
   finMezcla = false;
   enPausa = false;
 }

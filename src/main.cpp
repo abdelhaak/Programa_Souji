@@ -42,7 +42,6 @@ void setup()
   //mezclas.resetearTodo();
   rtc_init();
   balanza_Setup();
-  delay(500);
   //menu.inicializarEEPROM();
   delay(500);
   menu.PantallaSeleccionada(0);

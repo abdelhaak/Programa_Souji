@@ -16,7 +16,6 @@ String elMes;
 void rtc_init()
 {
   rtc.begin();
-  //rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
   Tiempo = rtc.now();
   dia = Tiempo.day();
   mes = Tiempo.month();
