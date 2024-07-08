@@ -16,7 +16,7 @@ int estado = 0;
 int estado2 = 0;
 int numMezclas = 0;
 int i_mezclas=0;
-uint16_t pesoLiquido = 0;
+int16_t pesoLiquido = 0;
 //bool enPausa = false;
 
 
@@ -35,12 +35,12 @@ uint64_t tiempoMezcla2 = 360000; //  5000;
 // 3 minutos => 360000 ms    ::   PARA EL VACIO POR AHORA 
 uint64_t tiempoVacio = 360000;
 // El peso minimo del vacio autorizado
-//uint16_t pesoMinimo = 20;
+//int16_t pesoMinimo = 20;
 
 
 // Porcentajes de inicio de liquidos
-uint16_t porcentajeAceite = 30;
-uint16_t porcentajeSouji = 50;
+int16_t porcentajeAceite = 30;
+int16_t porcentajeSouji = 50;
 
 Mezclas::Mezclas(SoftwareSerial& serial) : mySerial(serial)
 {
@@ -687,7 +687,7 @@ void Mezclas::Pantallamezcla(uint8_t pantallamezcla)
 
 void Mezclas::mezclaVacio()
 {
-  uint16_t elPesoMinimo = 75;
+  int16_t elPesoMinimo = 75;
   if (PesoActual() <= elPesoMinimo)
   {
     if(idioma==0)
@@ -713,10 +713,10 @@ void Mezclas::mezclaVacio()
     return;
   }
   unsigned long tiempoInicio = millis(); 
-  uint16_t pesoInicial = PesoActual();
-  uint16_t pesoVaciado;
-  uint16_t pesoActual; 
-  uint16_t pesoTotalAVaciar = pesoInicial - elPesoMinimo;
+  int16_t pesoInicial = PesoActual();
+  int16_t pesoVaciado;
+  int16_t pesoActual; 
+  int16_t pesoTotalAVaciar = pesoInicial - elPesoMinimo;
   lcd.clear();
   delay(20);
   lcd.setCursor(0,0);
@@ -798,7 +798,7 @@ void Mezclas::calcularVolumen()
   delay(8000);
 
   // Calculos de la cantidad de Agua que es lo que queda
-  uint16_t porcentajeAgua = 0;
+  int16_t porcentajeAgua = 0;
   porcentajeAgua  = 100 - (porcentajeAceite + porcentajeSouji);
   volumenAgua = porcentajeAgua * 37.5;
   pesoAguaDeseado = volumenAgua;
@@ -818,7 +818,7 @@ void Mezclas::calcularVolumen()
   delay(8000);
 }
 
-void Mezclas::hecharLiquido(uint16_t pesoPorHechar)
+void Mezclas::hecharLiquido(int16_t pesoPorHechar)
 {
    // Encender la bomba correspondiente
   switch (estado2)
@@ -840,8 +840,6 @@ void Mezclas::hecharLiquido(uint16_t pesoPorHechar)
   pesoLiquido = PesoActual();
   pesoRelative = 0;
   EEPROM.get(PESO_RELATIVO_ADDRESS, pesoRelative);
-  mySerial.print("pesoRelative :");
-  mySerial.println(pesoRelative);
   // Mostrar el mensaje adecuado en el LCD
   lcd.clear();
   delay(20);
@@ -940,23 +938,17 @@ void Mezclas::hecharLiquido(uint16_t pesoPorHechar)
         lcd.print("MAKING WATER");
       }
     }
-    uint16_t nuevoPesoActual = PesoActual();
+    int16_t nuevoPesoActual = PesoActual();
     pesoRelative += nuevoPesoActual - pesoLiquido;
     pesoLiquido = nuevoPesoActual;
-    mySerial.println(pesoRelative);
     EEPROM.put(PESO_RELATIVO_ADDRESS, pesoRelative);
     updateProgressBar(pesoRelative, pesoPorHechar, 1); 
     delay(500);
   }
 
-  mySerial.print("Despues del while");
   pesoLiquido = PesoActual();
   EEPROM.put(PESO_ACEITE_ACTUAL_ADRESS, pesoLiquido);
-  mySerial.print("pesoRelative :");
-  mySerial.println(pesoRelative);
   EEPROM.put(PESO_RELATIVO_ADDRESS, 0);
-  mySerial.print("pesoRelative :");
-  mySerial.println(pesoRelative);
   
   // Apagar la bomba correspondiente
   switch (estado2)
@@ -977,7 +969,7 @@ void Mezclas::hecharLiquido(uint16_t pesoPorHechar)
   mySerial.println("Estamos en hecharLiquido");
   mySerial.print("enPausa : ");
   mySerial.println(enPausa);
-  uint16_t pesoRelativo = 0;
+  int16_t pesoRelativo = 0;
 
   EEPROM.get(PESO_ACEITE_ACTUAL_ADRESS, pesoLiquido);
   EEPROM.get(PESO_RELATIVO_ADDRESS, pesoRelativo); 
@@ -987,7 +979,7 @@ void Mezclas::hecharLiquido(uint16_t pesoPorHechar)
   mySerial.print("pesoActual : ");
   mySerial.println(PesoActual());
   
-  uint16_t pesoBase = PesoActual() - pesoRelativo;
+  int16_t pesoBase = PesoActual() - pesoRelativo;
 
   while(pesoRelativo < volumen)
   {
@@ -1079,18 +1071,13 @@ void Mezclas::resetearTodo()
 
 void Mezclas::pausarReanudarMezcla()
 {
-  mySerial.println("Estamos en pausarReanudarMezcla");
-  mySerial.print("enPausa : ");
-  mySerial.println(enPausa);
   enPausa = !enPausa;
   if (enPausa)
   {
-    mySerial.println("Pausado");
     Pantallamezcla(8);
   }
   else
   {
-    mySerial.println("Reanudado");
     Pantallamezcla(9);
     delay(1000);
   }
@@ -1098,9 +1085,6 @@ void Mezclas::pausarReanudarMezcla()
 
 void Mezclas::esperarParaReanudar()
 {
-  mySerial.println("Estamos en esperarParaReanudar");
-  mySerial.print("enPausa : ");
-  mySerial.println(enPausa);
   while (enPausa)
   {
     // Esperar hasta que se reanude la mezcla

@@ -14,8 +14,8 @@
 
 extern HX711 balanza;
 
-extern uint16_t peso;
-extern uint16_t pesoTara;
+extern int16_t peso;
+extern int16_t pesoTara;
 extern long escala;
 extern long adc_lecture;
 extern float ultima_tara;
@@ -24,6 +24,6 @@ extern float ultima_tara;
 void calibracion();
 void balanza_Setup();
 void finDeCalibracion();
-uint16_t PesoActual();
+int16_t PesoActual();
 
 #endif

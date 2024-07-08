@@ -2,8 +2,8 @@
 #include "Bascula.h"
 #include "EEPROM.h"
 
-uint16_t peso = 0 ;
-uint16_t pesoTara = 0;
+int16_t peso = 0 ;
+int16_t pesoTara = 0;
 long escala = 0;
 long adc_lecture=0;
 float ultima_tara = 0.0 ;
@@ -28,7 +28,7 @@ void balanza_Setup()
     balanza.set_offset(balanza.get_offset() - (peso * balanza.get_scale()));
 }
 
-uint16_t PesoActual()
+int16_t PesoActual()
 {
     peso = balanza.get_units(10); // Obtener una sola lectura
     if (peso < 0 || peso > 30000)

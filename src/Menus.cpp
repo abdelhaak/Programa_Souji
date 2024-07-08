@@ -49,7 +49,6 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     serial.println("Estamos en la pantalla 0");
     EEPROM.get(PESO_RELATIVO_ADDRESS, mezcla.pesoRelative);
     serial.print("pesoRelative :");
-    serial.println(mezcla.pesoRelative);
     EEPROM.get(SCALE_ADDRESS, escala);
     EEPROM.get(STATUS_ADRESS, mezcla.estado);
     EEPROM.get(STATUS_2_ADRESS, mezcla.estado2);
@@ -98,7 +97,6 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
   // Pantalla de Litros Mensuales
   if (pantalla == 1)
   {
-    serial.println("Estamos en la pantalla 1");
     mezcla.estado = 0;
     EEPROM.put(STATUS_ADRESS, mezcla.estado);
     mostrarLitrosMensuales = false;
@@ -122,7 +120,6 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
   // Pantalla de Litros Totales
   if (pantalla == 2)
   { 
-    serial.println("Estamos en la pantalla 2");
     EEPROM.get(LITROS_TOTALES_DIRECCION, litrosTotales);
     if(idioma==0)
     {
@@ -775,7 +772,6 @@ void Menus::modificarBotonSel()
     }
     else if(variarCantidad)
     {
-      serial.println("variar cantidad true");
       ejecutarMezcla(Cantidad_Souji[IndexCantidad]);
     } 
     else if(cambiarIdioma)
@@ -799,7 +795,6 @@ void Menus::modificarBotonSel()
     }
     else if(mezcla.enPausa)
     {
-      serial.println("enPausa es true");
       mezcla.enPausa = !mezcla.enPausa;
       if(mezcla.enPausa)
       {
@@ -809,7 +804,6 @@ void Menus::modificarBotonSel()
       {
         EEPROM.get(STATUS_ADRESS,mezcla.estado);
         EEPROM.get(NUM_MEZCLAS_ADRESS, mezcla.numMezclas);
-        serial.println("reanudando...");
         mezcla.mezclaGeneral(mezcla.numMezclas);
       }
     }
@@ -837,27 +831,23 @@ void Menus::modificarBotonSel()
     }
     else if (ajustarAceite && !validarAjusteAceite)
     {
-      serial.println("Estamos en ajustarAceite ");
       validarAjusteAceite = true;
       SubMenuProgamador = false;
       mezcla.Pantallamezcla(10);
     } 
     else if (ajustarSouji && !validarAjusteSouji)
     {
-      serial.println("Estamos en ajustarSouji ");
       validarAjusteSouji = true;
       SubMenuProgamador = false;
       mezcla.Pantallamezcla(11);
     } 
     else if(validarAjusteAceite)
     {
-      serial.println("Estamos en validarAjusteAceite ");
       validarAjusteAceite = false;
       PantallaProgramador(1);
     }
     else if(validarAjusteSouji)
     {
-      serial.println("Estamos en validarAjusteSouji ");
       validarAjusteSouji = false;
       PantallaProgramador(2);
     }
@@ -1232,7 +1222,6 @@ String Menus::elegirMes(uint8_t mes)
 
 void Menus::ejecutarMezcla(int Cantidad_Souji)
 {
-  serial.println("Estamos en ejecutarMezcla");
   motor.cargarRpms();
   switch (Cantidad_Souji)
   {

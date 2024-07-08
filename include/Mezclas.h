@@ -43,20 +43,20 @@ class Mezclas
     private:
 
         //// Aceite 
-        uint16_t pesoAceiteDeseado = 0;
-        uint16_t volumenAceite = 0;
+        int16_t pesoAceiteDeseado = 0;
+        int16_t volumenAceite = 0;
 
         //// Souji
-        uint16_t pesoSoujiDeseado = 0;
-        uint16_t volumenSouji = 0;
+        int16_t pesoSoujiDeseado = 0;
+        int16_t volumenSouji = 0;
 
         //// Agua
-        uint16_t pesoAguaDeseado = 0;
-        uint16_t volumenAgua = 0;
+        int16_t pesoAguaDeseado = 0;
+        int16_t volumenAgua = 0;
 
         //// Mezclas
-        uint16_t pesoAgregado = 0;
-        uint16_t pesoInicioEtapa = 0;
+        int16_t pesoAgregado = 0;
+        int16_t pesoInicioEtapa = 0;
         uint8_t misPantallasMezc = 0;
         int cantidadDeCincoLitros = 0;
         bool finMezcla = false;
@@ -72,7 +72,7 @@ class Mezclas
         void laMezcla(int cantidadSouji);  
         void mezclaGeneral(int mezclas);
         void calcularVolumen();
-        void hecharLiquido(uint16_t pesoPorHechar);
+        void hecharLiquido(int16_t pesoPorHechar);
         void mezclaVacio();   
         void resetearTodo();
         void subirPorcentajeAceite();
@@ -89,10 +89,10 @@ class Mezclas
         int estado;
         int estado2;
         int i_mezclas;
-        uint16_t porcentajeAceite;
-        uint16_t porcentajeSouji;
-        uint16_t pesoLiquido;
-        uint16_t pesoRelative;
+        int16_t porcentajeAceite;
+        int16_t porcentajeSouji;
+        int16_t pesoLiquido;
+        int16_t pesoRelative;
 };
 
 #endif

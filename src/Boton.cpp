@@ -56,14 +56,22 @@ bool Boton::pulsado()
 {
     update();
     bool resultado = pulso;
-    if (pulso) pulso = false;
+    if (pulso)
+    {
+        pulso = false;
+    } 
     return resultado;
 }
 
+/*
 bool Boton::pulsadoLargo()
 {
     update();
     bool resultado = pulsado_largo;
-    if (pulsado_largo) pulsado_largo = false;
+    if (pulsado_largo) 
+    {
+        pulsado_largo = false;
+    }
     return resultado;
 }
+*/

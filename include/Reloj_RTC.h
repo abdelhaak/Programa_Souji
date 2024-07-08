@@ -19,7 +19,7 @@ extern char numeroMes[12][12];
 extern uint8_t segundo, minuto, hora, dia, mes, diaDeLaSemana;
 extern String elMes;
 
-extern uint16_t anio;
+extern int16_t anio;
 extern String La_fecha;
 extern String La_hora;
 

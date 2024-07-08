@@ -9,7 +9,7 @@ int cantidadMezclaMes[13] = {0};
 int litrosMensuales[13] = {0};
 uint8_t litrosTotales =0 ;
 uint8_t segundo, minuto, hora,diaDeLaSemana,dia,mes;
-uint16_t anio;
+int16_t anio;
 String elMes;
 
 

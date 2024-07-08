@@ -51,17 +51,14 @@ void loop()
 {
   if (botonUp.pulsado()) 
   {
-    mySerial.println("Boton Up Pulsado");
     menu.incrementandoIndex(); 
   }
   if (botonDown.pulsado()) 
   {
-    mySerial.println("Boton Down Pulsado");
     menu.decrementandoIndex();
   }
   if (botonSet.pulsado()) 
   {
-    mySerial.println("Boton Set Pulsado");
     menu.modificarBotonSet();
   }
   if (botonSel.pulsado()) 
@@ -72,18 +69,4 @@ void loop()
   {
     menu.modificarBotonPro();
   }
-  /*
-  if(botonPro.pulsadoLargo())
-  {
-    menu.salirMenuProg();
-  }
-  if (botonUp.pulsadoLargo()) 
-  {
-    menu.incrementandoIndexRapido();
-  }
-  if (botonDown.pulsadoLargo()) 
-  {
-    menu.decrementandoIndexRapido();
-  }
-  */
 }
