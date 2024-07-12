@@ -13,7 +13,7 @@ bool enPausa = false;
 bool pausado = false;
 
 const uint8_t RS = A3, EN = A2, D4 = A0, D5 = 0, D6 = 1, D7 = 2;
-//const uint8_t RS = 22, EN = 23, D4 = 31, D5 = 30, D6 = 29, D7 = 28;
+//const uint8_t RS = 22, EN = 23, D4  b = 31, D5 = 30, D6 = 29, D7 = 28;
 LiquidCrystal lcd(RS, EN, D4, D5, D6, D7); 
 
 Mezclas mezcla(mySerial);
@@ -30,6 +30,9 @@ Menus::Menus(LiquidCrystal &display, Stream &serial) : lcd(display), serial(seri
 void Menus::lcd_init()
 {  
   lcd.begin(16,2);
+  motor.pararMotor();
+  //Timer1.initialize(100);
+  //Timer1.pwm(motor.pin,512);
 }
 
 ///////////////// Pantallas del MENU Principal   /////////////////
@@ -556,7 +559,7 @@ void Menus::PantallaProgramador(uint8_t pantallaProg)
     else
     {
       lcd.setCursor(1,0);
-      lcd.print("SETTING THE :");
+      lcd.print("SETTING THE ");
       lcd.setCursor(3,1);
       lcd.print("MOTOR RPMS");
     }
@@ -1120,16 +1123,6 @@ void Menus::displayLitrosTotales()
   }
 }
 
-/*
-void Menus::validarMezcla()
-{
-  if(variarCantidad)
-  {
-    
-    ejecutarMezcla(Cantidad_Souji[IndexCantidad]);
-  }
-}
-*/
 String Menus::elegirMes(uint8_t mes)
 {
   if(idioma==0)
@@ -1379,7 +1372,7 @@ void Menus::validarFecha()
     lcd.print(anio);
   }
 
-  delay(1000);
+  delay(5000);
   bascularFecha = false;
   definirFecha = false;
   inSubMenu = false;
@@ -1522,7 +1515,7 @@ void Menus::inicializarEEPROM()
     EEPROM.get(INIT_CHECK_ADDRESS, initCheck);
     if (initCheck != 12345) 
     {
-        EEPROM.put(DAY_ADDRESS, 3); // Día inicial
+        EEPROM.put(DAY_ADDRESS, 11); // Día inicial
         EEPROM.put(MONTH_ADDRESS, 7); // Mes inicial
         EEPROM.put(YEAR_ADDRESS, 2024); // Año inicial
         EEPROM.put(RPMS_ADRESS, 1500); // RPMs del motor inicial
@@ -1550,7 +1543,7 @@ void Menus::iniciarCaliBascula()
     lcd.clear();
     delay(20);
     lcd.setCursor(3,0);
-    lcd.print("PULSE SEL :");
+    lcd.print("PULSE SEL ");
     lcd.setCursor(2,1);
     lcd.print("PARA INICIAR");
   }
@@ -1559,7 +1552,7 @@ void Menus::iniciarCaliBascula()
     lcd.clear();
     delay(20);
     lcd.setCursor(3,0);
-    lcd.print("PRESS SEL :");
+    lcd.print("PRESS SEL");
     lcd.setCursor(4,1);
     lcd.print("TO START");
   }
@@ -1575,7 +1568,7 @@ void Menus::talarBascula()
     lcd.clear();
     delay(20);
     lcd.setCursor(1,0);
-    lcd.print("PONGA EL PESO :");
+    lcd.print("PONGA EL PESO");
     lcd.setCursor(4,1);
     lcd.print("PULSE SEL");
   }

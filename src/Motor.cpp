@@ -1,8 +1,9 @@
 #include "Motor.h"
 
 volatile uint64_t Motor::pulsos = 0;
-int pin_encoder = 22;
-int rpms=2500;
+int pin_encoder = 23;
+int rpms=1500;
+//int pin_sensor =  23;
 
 // ERRORES
 
@@ -26,7 +27,7 @@ void Motor::init()
 
 void Motor::pararMotor()
 {
-    digitalWrite(pin, LOW);
+    analogWrite(pin, 0);
 }        
 
 void Motor::contarPulsos()
@@ -39,12 +40,17 @@ void Motor::ajustarRpms(uint64_t tiempoMezcla)
     //int valorPwm = map(rpms,0,3300,0,255); 
     
     analogWrite(pin,130);
+    
+    //Timer1.setPwmDuty(pin, 512);
     tiempoInicio = millis();
     uint64_t tiempoPasado;
     while(millis() - tiempoInicio < tiempoMezcla)
     {
         tiempoPasado = millis() - tiempoInicio;
         updateProgressBar(tiempoPasado, tiempoMezcla, 1);  
+        //serial.print("Corriente : ");
+        ///serial.print(amp);
+
         delay(1000);
     }
     pararMotor();

@@ -1,14 +1,16 @@
 #include <Arduino.h>
 #include <avr/power.h>
 #include <SoftwareSerial.h>
+#include <TimerOne.h>
 #include "Reloj_RTC.h"
 #include "Menus.h"
 #include "Boton.h"
 #include "Bascula.h"
 #include "Mezclas.h"
+#include "Motor.h"
 
 #define rxPin 17
-#define txPin 22
+#define txPin 23
 SoftwareSerial mySerial(rxPin, txPin);
 
 Boton botonSet(PIN_BOTON_SET);

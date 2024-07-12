@@ -19,7 +19,7 @@ extern SoftwareSerial mySerial;
 #define PIN_BOMBA_VACIO 11
 
 // Capacidad total de la mezcla que seria de 5000 g que son 5L
-#define CAPACIDAD_TOTAL 200 // 5000
+#define CAPACIDAD_TOTAL 5000 // 5000
 #define DENSIDAD_ACEITE 0.92
 #define DENSIDAD_SOUJI 0.92
 
@@ -72,7 +72,7 @@ class Mezclas
         void laMezcla(int cantidadSouji);  
         void mezclaGeneral(int mezclas);
         void calcularVolumen();
-        void hecharLiquido(int16_t pesoPorHechar);
+        void echarLiquido(int16_t pesoPorechar);
         void mezclaVacio();   
         void resetearTodo();
         void subirPorcentajeAceite();
