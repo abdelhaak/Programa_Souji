@@ -83,7 +83,8 @@ class Mezclas
         void esperarParaReanudar();
         void vacioGeneral();
         void verificarPeso();
-
+        void cancelarMezcla();
+        
         bool enPausa = false;
         int numMezclas;
         int estado;

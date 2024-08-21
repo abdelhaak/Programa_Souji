@@ -73,8 +73,6 @@ void Mezclas::parado()
 // LA MEZCLA COMPLETA 
 void Mezclas::mezclaGeneral(int mezclas)
 {
-  if(!enPausa)
-  {
     EEPROM.get(I_MEZCLAS_ADRESS, i_mezclas);
     EEPROM.get(PESO_ACEITE_ACTUAL_ADRESS, pesoLiquido);
     /*for (int i = 0; i <= 91; i++) 
@@ -403,7 +401,6 @@ void Mezclas::mezclaGeneral(int mezclas)
     resetearTodo();
     menus.PantallaSeleccionada(0);
     }
-  }
 }
 
 void Mezclas::Pantallamezcla(uint8_t pantallamezcla)
@@ -1069,7 +1066,7 @@ void Mezclas::resetearTodo()
   enPausa = false;
 }
 
-void Mezclas::pausarReanudarMezcla()
+/*void Mezclas::pausarReanudarMezcla()
 {
   enPausa = !enPausa;
   if (enPausa)
@@ -1081,6 +1078,59 @@ void Mezclas::pausarReanudarMezcla()
     Pantallamezcla(9);
     delay(1000);
   }
+}*/
+
+void Mezclas::pausarReanudarMezcla()
+{
+  unsigned long tiempoInicio = millis();
+
+  // Esperamos a que se suelte el botón para verificar si fue pulsado más de 3 segundos
+  while (botonPausa.pulsado())
+  {
+    // Si el botón ha sido presionado por más de 3 segundos
+    if (millis() - tiempoInicio > 3000)
+    {
+      // Cancelar y regresar al menú principal
+      cancelarMezcla();
+      return;
+    }
+  }
+
+  // Si el botón no fue presionado más de 3 segundos, entonces alternamos la pausa
+  enPausa = !enPausa;
+  if (enPausa)
+  {
+    Pantallamezcla(8); // Mostrar pantalla de pausa
+  }
+  else
+  {
+    Pantallamezcla(9); // Mostrar pantalla de reanudación
+    delay(1000);
+  }
+}
+
+
+void Mezclas::cancelarMezcla()
+{
+  // Mostrar mensaje de cancelación
+  lcd.clear();
+  delay(20);
+  if (idioma == 0)
+  {
+    lcd.setCursor(0, 0);
+    lcd.print("CANCELANDO...");
+  }
+  else
+  {
+    lcd.setCursor(0, 0);
+    lcd.print("CANCELLING...");
+  }
+
+  // Aquí puedes añadir cualquier otra acción de limpieza necesaria
+
+  delay(2000); // Esperar un poco antes de regresar al menú
+  resetearTodo();
+  menus.PantallaSeleccionada(0); // Regresar al menú principal
 }
 
 void Mezclas::esperarParaReanudar()
