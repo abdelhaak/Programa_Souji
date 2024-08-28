@@ -84,7 +84,13 @@ class Mezclas
         void vacioGeneral();
         void verificarPeso();
         void cancelarMezcla();
+        void apagarBombas();
+        void encenderBombaCorrespondiente();
+        void actualizarPantallaLCD(int estado2, int idioma);
+        void mostrarLiquido();
+        void mostrarAgotado();
         
+
         bool enPausa = false;
         int numMezclas;
         int estado;

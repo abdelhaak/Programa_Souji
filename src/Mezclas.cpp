@@ -5,7 +5,6 @@ Bomba bombaSouji(PIN_BOMBA_SOUJI);
 Bomba bombaAgua(PIN_BOMBA_AGUA);
 Bomba bombaVacio(PIN_BOMBA_VACIO);
 
-
 Motor motorMezclador(PIN_MOTOR,pin_encoder);
 Menus menus(lcd,mySerial);
 
@@ -73,6 +72,8 @@ void Mezclas::parado()
 // LA MEZCLA COMPLETA 
 void Mezclas::mezclaGeneral(int mezclas)
 {
+  if(!enPausa)
+  {
     EEPROM.get(I_MEZCLAS_ADRESS, i_mezclas);
     EEPROM.get(PESO_ACEITE_ACTUAL_ADRESS, pesoLiquido);
     /*for (int i = 0; i <= 91; i++) 
@@ -401,6 +402,7 @@ void Mezclas::mezclaGeneral(int mezclas)
     resetearTodo();
     menus.PantallaSeleccionada(0);
     }
+  }
 }
 
 void Mezclas::Pantallamezcla(uint8_t pantallamezcla)
@@ -817,63 +819,16 @@ void Mezclas::calcularVolumen()
 
 void Mezclas::echarLiquido(int16_t pesoPorechar)
 {
-   // Encender la bomba correspondiente
-  switch (estado2)
-  {
-    case 1:
-      bombaAceite.on();
-      break;
-    case 2:
-      bombaSouji.on();
-      break;
-    case 4:
-      bombaAgua.on();
-      break;
-    default:
-      return; 
-  }
+  // Encender la bomba correspondiente
+  encenderBombaCorrespondiente();
 
   unsigned long tiempoInicioMezcla = millis(); 
+  unsigned long tiempoUltimaVariacion = millis();
   pesoLiquido = PesoActual();
   pesoRelative = 0;
   EEPROM.get(PESO_RELATIVO_ADDRESS, pesoRelative);
   // Mostrar el mensaje adecuado en el LCD
-  lcd.clear();
-  delay(20);
-  lcd.setCursor(0,0);
-  switch (estado2)
-  {
-    case 1:
-      if(idioma == 0)
-      {
-        lcd.print("ECHANDO ACEITE");
-      }
-      else
-      {
-        lcd.print("MAKING OIL");
-      }
-      break;
-    case 2:
-      if(idioma == 0)
-      {
-        lcd.print("ECHANDO SOUJI");
-      }
-      else
-      {
-        lcd.print("MAKING SOUJI");
-      }
-      break;
-    case 4:
-      if(idioma == 0)
-      {
-        lcd.print("ECHANDO AGUA");
-      }
-      else
-      {
-        lcd.print("MAKING WATER");
-      }
-      break;
-  }
+  mostrarLiquido();
   delay(50);
 
   while (pesoRelative < pesoPorechar)
@@ -885,57 +840,47 @@ void Mezclas::echarLiquido(int16_t pesoPorechar)
       lcd.setCursor(1,0);
       lcd.print("ERROR BOMBA");
       delay(8000);
-      bombaAceite.off();
-      bombaSouji.off();
-      bombaAgua.off();
+      apagarBombas();
       return;
     }
-    if(estado2 == 1)
+    mostrarLiquido();
+
+    /*if(botonPausa.pulsado() && !enPausa)
     {
-      lcd.clear();
-      delay(20);
-      if(idioma == 0)
-      {
-        lcd.setCursor(0,0);
-        lcd.print("ECHANDO ACEITE");
-      }
-      else
-      {
-        lcd.setCursor(0,0);
-        lcd.print("MAKING OIL");
-      }
+      pausarReanudarMezcla();
     }
-    if(estado2 == 2)
+    if(enPausa)
     {
-      lcd.clear();
-      delay(20);
-      if(idioma == 0)
-      {
-        lcd.setCursor(0,0);
-        lcd.print("ECHANDO SOUJI");
-      }
-      else
-      {
-        lcd.setCursor(0,0);
-        lcd.print("MAKING SOUJI");
-      }
+      esperarParaReanudar();
     }
-    if(estado2 == 4)
-    {
-      lcd.clear();
-      delay(20);
-      if(idioma == 0)
-      {
-        lcd.setCursor(0,0);
-        lcd.print("ECHANDO AGUA");
-      }
-      else
-      {
-        lcd.setCursor(0,0);
-        lcd.print("MAKING WATER");
-      }
-    }
+    else
+    {*/
+    
     int16_t nuevoPesoActual = PesoActual();
+    if (nuevoPesoActual != pesoLiquido)
+    {
+      tiempoUltimaVariacion = millis(); // Reiniciar el temporizador si hay cambio en el peso
+    }
+
+    if (millis() - tiempoUltimaVariacion > 10000) // Si no hay cambio en el peso por 5 segundos
+    {
+      mostrarAgotado();
+      apagarBombas();
+
+      // Esperar hasta que el usuario presione el botón de inicio para continuar
+      while (!botonPausa.pulsado())
+      {
+        delay(300);
+      }
+
+      // Reiniciar la bomba correspondiente
+      encenderBombaCorrespondiente();
+
+      // Reiniciar el tiempo de última variación
+      tiempoUltimaVariacion = millis();
+    }
+
+    nuevoPesoActual = PesoActual();
     pesoRelative += nuevoPesoActual - pesoLiquido;
     pesoLiquido = nuevoPesoActual;
     EEPROM.put(PESO_RELATIVO_ADDRESS, pesoRelative);
@@ -948,64 +893,9 @@ void Mezclas::echarLiquido(int16_t pesoPorechar)
   EEPROM.put(PESO_RELATIVO_ADDRESS, 0);
   
   // Apagar la bomba correspondiente
-  switch (estado2)
-  {
-    case 1:
-      bombaAceite.off();
-      break;
-    case 2:
-      bombaSouji.off();
-      break;
-    case 4:
-      bombaAgua.off();
-      break;
-  }
+  apagarBombas();
 
   delay(1000);
-  /*
-  mySerial.println("Estamos en echarLiquido");
-  mySerial.print("enPausa : ");
-  mySerial.println(enPausa);
-  int16_t pesoRelativo = 0;
-
-  EEPROM.get(PESO_ACEITE_ACTUAL_ADRESS, pesoLiquido);
-  EEPROM.get(PESO_RELATIVO_ADDRESS, pesoRelativo); 
- 
-  mySerial.print("pesoLiquido : ");
-  mySerial.println(pesoLiquido);
-  mySerial.print("pesoActual : ");
-  mySerial.println(PesoActual());
-  
-  int16_t pesoBase = PesoActual() - pesoRelativo;
-
-  while(pesoRelativo < volumen)
-  {
-    if(botonPausa.pulsado())
-    {
-      pausarReanudarMezcla();
-    }
-    if(enPausa)
-    {
-      esperarParaReanudar();
-    }
-    else
-    {
-      pesoRelativo = PesoActual() - pesoBase;
-      EEPROM.put(PESO_RELATIVO_ADDRESS, pesoRelativo);
-      updateProgressBar(pesoRelativo, volumen, 1);  
-      delay(100);
-    }
-  }
-  mySerial.println("Estamos despues de echarliquido");
-  mySerial.print("enPausa : ");
-  mySerial.println(enPausa);
-  enPausa = false;
-  pesoLiquido = PesoActual();
-  EEPROM.put(PESO_ACEITE_ACTUAL_ADRESS, pesoLiquido);
-  EEPROM.put(PESO_RELATIVO_ADDRESS, 0);
-  mySerial.print("peso Final : ");
-  mySerial.println(pesoLiquido);
-  */
 }
 
 void Mezclas::subirPorcentajeAceite()
@@ -1066,7 +956,7 @@ void Mezclas::resetearTodo()
   enPausa = false;
 }
 
-/*void Mezclas::pausarReanudarMezcla()
+void Mezclas::pausarReanudarMezcla()
 {
   enPausa = !enPausa;
   if (enPausa)
@@ -1076,61 +966,8 @@ void Mezclas::resetearTodo()
   else
   {
     Pantallamezcla(9);
-    delay(1000);
+    delay(3000);
   }
-}*/
-
-void Mezclas::pausarReanudarMezcla()
-{
-  unsigned long tiempoInicio = millis();
-
-  // Esperamos a que se suelte el botón para verificar si fue pulsado más de 3 segundos
-  while (botonPausa.pulsado())
-  {
-    // Si el botón ha sido presionado por más de 3 segundos
-    if (millis() - tiempoInicio > 3000)
-    {
-      // Cancelar y regresar al menú principal
-      cancelarMezcla();
-      return;
-    }
-  }
-
-  // Si el botón no fue presionado más de 3 segundos, entonces alternamos la pausa
-  enPausa = !enPausa;
-  if (enPausa)
-  {
-    Pantallamezcla(8); // Mostrar pantalla de pausa
-  }
-  else
-  {
-    Pantallamezcla(9); // Mostrar pantalla de reanudación
-    delay(1000);
-  }
-}
-
-
-void Mezclas::cancelarMezcla()
-{
-  // Mostrar mensaje de cancelación
-  lcd.clear();
-  delay(20);
-  if (idioma == 0)
-  {
-    lcd.setCursor(0, 0);
-    lcd.print("CANCELANDO...");
-  }
-  else
-  {
-    lcd.setCursor(0, 0);
-    lcd.print("CANCELLING...");
-  }
-
-  // Aquí puedes añadir cualquier otra acción de limpieza necesaria
-
-  delay(2000); // Esperar un poco antes de regresar al menú
-  resetearTodo();
-  menus.PantallaSeleccionada(0); // Regresar al menú principal
 }
 
 void Mezclas::esperarParaReanudar()
@@ -1142,6 +979,73 @@ void Mezclas::esperarParaReanudar()
     {
       pausarReanudarMezcla();
     }
+  }
+}
+
+void Mezclas::encenderBombaCorrespondiente()
+{
+  switch (estado2)
+  {
+    case 1:
+      bombaAceite.on();
+    break;
+    case 2:
+      bombaSouji.on();
+    break;
+    case 4:
+      bombaAgua.on();
+    break;
+  }
+}
+void Mezclas::apagarBombas()
+{
+   switch (estado2)
+  {
+    case 1:
+      bombaAceite.off();
+      break;
+    case 2:
+      bombaSouji.off();
+      break;
+    case 4:
+      bombaAgua.off();
+      break;
+  }
+}
+
+void Mezclas::mostrarLiquido()
+{
+  lcd.clear();
+  delay(20);
+  switch(estado2)
+  {
+    case 1:
+      idioma == 0 ? lcd.print("ECHANDO ACEITE") : lcd.print("MAKING OIL");
+      break;
+    case 2:
+      idioma == 0 ? lcd.print("ECHANDO SOUJI") : lcd.print("MAKING SOUJI");
+      break;
+    case 4:
+      idioma == 0 ? lcd.print("ECHANDO AGUA") : lcd.print("MAKING WATER");
+      break;
+  }
+}
+
+void Mezclas::mostrarAgotado()
+{
+  lcd.clear();
+  delay(20);
+  switch(estado2)
+  {
+    case 1:
+      idioma == 0 ? lcd.print("ACEITE AGOTADO") : lcd.print("OUT OF OIL");
+      break;
+    case 2:
+      idioma == 0 ? lcd.print("SOUJI AGOTADO") : lcd.print("OUT OF SOUJI");
+      break;
+    case 4:
+      idioma == 0 ? lcd.print("AGUA AGOTADO") : lcd.print("OUT OF WATER");
+      break;
   }
 }
 

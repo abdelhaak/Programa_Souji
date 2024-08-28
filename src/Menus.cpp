@@ -295,8 +295,8 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
       delay(20);
       lcd.setCursor(2,0);
       lcd.print("AJUSTAR FECHA ");
-      lcd.setCursor(3,1);
-      lcd.print("PULSE SEL ");
+      lcd.setCursor(2,1);
+      lcd.print("PULSE SELECT");
     }
     else
     {
@@ -304,8 +304,8 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
       delay(20);
       lcd.setCursor(4,0);
       lcd.print("SET DATE ");
-      lcd.setCursor(3,1);
-      lcd.print("PULSE SEL ");
+      lcd.setCursor(2,1);
+      lcd.print("PULSE SELECT");
     }
   }
   
@@ -319,8 +319,8 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
       delay(20);
       lcd.setCursor(1,0);
       lcd.print("INICIAR VACIO");
-      lcd.setCursor(3,1);
-      lcd.print("PULSE SEL");
+      lcd.setCursor(2,1);
+      lcd.print("PULSE SELECT");
     }
     else
     {
@@ -328,8 +328,8 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
       delay(20);
       lcd.setCursor(2,0);
       lcd.print("START VACUUM");
-      lcd.setCursor(3,1);
-      lcd.print("PRESS SEL");
+      lcd.setCursor(2,1);
+      lcd.print("PRESS SELECT");
     }
   }
   
@@ -573,15 +573,15 @@ void Menus::PantallaProgramador(uint8_t pantallaProg)
     {
       lcd.setCursor(1,0);
       lcd.print("AJUSTAR ACEITE");
-      lcd.setCursor(3,1);
-      lcd.print("PULSE SEL");
+      lcd.setCursor(2,1);
+      lcd.print("PULSE SELECT");
     }
     else
     {
       lcd.setCursor(1,0);
       lcd.print("SETTING OIL");
-      lcd.setCursor(3,1);
-      lcd.print("PRESS SEL");
+      lcd.setCursor(2,1);
+      lcd.print("PRESS SELECT");
     }
   }
 
@@ -593,15 +593,15 @@ void Menus::PantallaProgramador(uint8_t pantallaProg)
     {
       lcd.setCursor(1,0);
       lcd.print("AJUSTAR SOUJI");
-      lcd.setCursor(3,1);
-      lcd.print("PULSE SEL");
+      lcd.setCursor(2,1);
+      lcd.print("PULSE SELECT");
     }
     else
     {
       lcd.setCursor(1,0);
       lcd.print("SETTING SOUJI");
-      lcd.setCursor(3,1);
-      lcd.print("PRESS SEL");
+      lcd.setCursor(2,1);
+      lcd.print("PRESS SELECT");
     }
   }
 
@@ -613,15 +613,15 @@ void Menus::PantallaProgramador(uint8_t pantallaProg)
     {
       lcd.setCursor(0,0);
       lcd.print("PARA BORRAR TODO");
-      lcd.setCursor(3,1);
-      lcd.print("PULSE SEL");
+      lcd.setCursor(2,1);
+      lcd.print("PULSE SELECT");
     }
     else
     {
       lcd.setCursor(1,0);
       lcd.print("TO DELETE ALL");
-      lcd.setCursor(3,1);
-      lcd.print("PRESS SEL");
+      lcd.setCursor(2,1);
+      lcd.print("PRESS SELECT");
     }
   }
 
@@ -635,14 +635,14 @@ void Menus::PantallaProgramador(uint8_t pantallaProg)
       lcd.setCursor(1,0);
       lcd.print("PARA MODIFICAR");
       lcd.setCursor(2,1);
-      lcd.print("PULSE SEL");
+      lcd.print("PULSE SELECT");
     }
     else
     {
       lcd.setCursor(4,0);
       lcd.print("TO MODIFY");
       lcd.setCursor(3,1);
-      lcd.print("PRESS SEL");
+      lcd.print("PRESS SELECT");
     }
   }
 }
@@ -1542,8 +1542,8 @@ void Menus::iniciarCaliBascula()
   {
     lcd.clear();
     delay(20);
-    lcd.setCursor(3,0);
-    lcd.print("PULSE SEL ");
+    lcd.setCursor(2,0);
+    lcd.print("PULSE SELECT ");
     lcd.setCursor(2,1);
     lcd.print("PARA INICIAR");
   }
@@ -1551,8 +1551,8 @@ void Menus::iniciarCaliBascula()
   {
     lcd.clear();
     delay(20);
-    lcd.setCursor(3,0);
-    lcd.print("PRESS SEL");
+    lcd.setCursor(2,0);
+    lcd.print("PRESS SELECT");
     lcd.setCursor(4,1);
     lcd.print("TO START");
   }
@@ -1569,8 +1569,8 @@ void Menus::talarBascula()
     delay(20);
     lcd.setCursor(1,0);
     lcd.print("PONGA EL PESO");
-    lcd.setCursor(4,1);
-    lcd.print("PULSE SEL");
+    lcd.setCursor(2,1);
+    lcd.print("PULSE SELECT");
   }
   else
   {
@@ -1578,8 +1578,8 @@ void Menus::talarBascula()
     delay(20);
     lcd.setCursor(1,0);
     lcd.print("PUT THE WEIGHT");
-    lcd.setCursor(4,1);
-    lcd.print("PRESS SEL");
+    lcd.setCursor(2,1);
+    lcd.print("PRESS SELECT");
   }
 }
 
@@ -1696,8 +1696,8 @@ void Menus::ReseteoTotalVerif()
     delay(20);
     lcd.setCursor(0,0);
     lcd.print("ESTAS SEGURO ??");
-    lcd.setCursor(3,1);
-    lcd.print("PULSE SEL");
+    lcd.setCursor(2,1);
+    lcd.print("PULSE SELECT");
   }
   else
   {
@@ -1705,8 +1705,8 @@ void Menus::ReseteoTotalVerif()
     delay(20);
     lcd.setCursor(0,0);
     lcd.print("ARE YOU SURE ??");
-    lcd.setCursor(3,1);
-    lcd.print("PRESS SEL");
+    lcd.setCursor(2,1);
+    lcd.print("PRESS SELECT");
   }
 }
 

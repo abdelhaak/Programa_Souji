@@ -41,7 +41,7 @@ void setup()
   mySerial.println("Programa INIICADO");
   menu.lcd_init();
   menu.iniciando();
-  //mezclas.resetearTodo();
+  mezclas.resetearTodo();
   rtc_init();
   balanza_Setup();
   //menu.inicializarEEPROM();
