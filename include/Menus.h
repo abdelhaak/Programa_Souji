@@ -35,8 +35,8 @@ class Menus
         bool mezclar5Litros = false;
         // Variables del menu principal 
         uint8_t misPantallas=0;
-        bool inSubMenu = false;
-        bool menuPrincipal = false;
+        
+        
         bool cambiarIdioma = false;
         // Variables de la cantidad SOUJI
         int IndexCantidad = 0;
@@ -83,6 +83,8 @@ class Menus
         //Menus();
         void lcd_init();
         int menuIndex ;  
+        bool inSubMenu = false;
+        bool menuPrincipal = false;
         bool vacioAutomatico = false;
         bool validarAjusteAceite = false;
         bool validarAjusteSouji = false;

@@ -127,19 +127,19 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     if(idioma==0)
     {
       lcd.setCursor(0,0);
-      lcd.print("LITROS TOTALES");
+      lcd.print("LITROS TOTALES:");
       lcd.setCursor(0,1);
       lcd.print(litrosTotales);
-      lcd.setCursor(8,1);
+      lcd.setCursor(9,1);
       lcd.print("LITROS");
     }
     else
     {    
       lcd.setCursor(2,0);
-      lcd.print("TOTAL LITERS");
+      lcd.print("TOTAL LITERS :");
       lcd.setCursor(0,1);
       lcd.print(litrosTotales);
-      lcd.setCursor(8,1);
+      lcd.setCursor(9,1);
       lcd.print("LITERS");
     }
   }
@@ -178,7 +178,7 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
   // El Menu de Vaciar Deposito
   if (pantalla == 4)
   {
-    vacioAutomatico = false;
+    //vacioAutomatico = false;
     if(idioma==0)
     {
       lcd.setCursor(5,0);
@@ -286,34 +286,18 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
 
   // El SubMenu de Fecha
   if (pantalla == 10)
-  {
+  {    
     definirFecha = true;
     editIndex = 0 ;
-    if(idioma==0)
-    {
-      lcd.clear();
-      delay(20);
-      lcd.setCursor(2,0);
-      lcd.print("AJUSTAR FECHA ");
-      lcd.setCursor(2,1);
-      lcd.print("PULSE SELECT");
-    }
-    else
-    {
-      lcd.clear();
-      delay(20);
-      lcd.setCursor(4,0);
-      lcd.print("SET DATE ");
-      lcd.setCursor(2,1);
-      lcd.print("PULSE SELECT");
-    }
+    ajustarFecha();
   }
   
   // El SubMenu de Vaciar Deposito
   if (pantalla == 11)
   {
-    vacioAutomatico = true;
-    if(idioma==0)
+    //vacioAutomatico = true;
+    vaciandoDeposito();
+    /*if(idioma==0)
     {
       lcd.clear();
       delay(20);
@@ -330,7 +314,7 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
       lcd.print("START VACUUM");
       lcd.setCursor(2,1);
       lcd.print("PRESS SELECT");
-    }
+    }*/
   }
   
   // El SubMenu de Calibracion
@@ -415,7 +399,8 @@ void Menus::entrarSubMenu()
       Menus::PantallaSeleccionada(8);
       break;
       case 2:
-      Menus::PantallaSeleccionada(9);
+      inSubMenu = false;
+      Menus::PantallaSeleccionada(2);
       break;
       case 3:
       Menus::PantallaSeleccionada(10);
@@ -744,12 +729,12 @@ void Menus::modificarBotonSel()
 {
   if (menuPrincipal)
   {
-    if(definirFecha && !bascularFecha)
+    /*if(definirFecha && !bascularFecha)
     {
       //bascularFecha = true;
       ajustarFecha();
-    } 
-    else if(definirFecha && bascularFecha)
+    } */
+    if(definirFecha && bascularFecha)
     {
       pasarFecha();
     }
@@ -1680,8 +1665,8 @@ void Menus::vaciandoDeposito()
     lcd.print("EMPTYING...");
     mezcla.vacioGeneral();
   }
-  delay(2000);
-  PantallaSeleccionada(11);
+  //delay(2000);
+  //PantallaSeleccionada(11);
 }
 
 /////////////////  CONTROL DEL RESETEO TOTAL DE DATA  /////////////////

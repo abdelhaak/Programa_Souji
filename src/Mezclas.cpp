@@ -8,9 +8,11 @@ Bomba bombaVacio(PIN_BOMBA_VACIO);
 Motor motorMezclador(PIN_MOTOR,pin_encoder);
 Menus menus(lcd,mySerial);
 
+
 //SoftwareSerial mySerial(rxPin, txPin);
 
 Boton botonPausa(PIN_BOTON_SEL);
+
 int estado = 0;
 int estado2 = 0;
 int numMezclas = 0;
@@ -826,6 +828,7 @@ void Mezclas::echarLiquido(int16_t pesoPorechar)
   unsigned long tiempoUltimaVariacion = millis();
   pesoLiquido = PesoActual();
   pesoRelative = 0;
+
   EEPROM.get(PESO_RELATIVO_ADDRESS, pesoRelative);
   // Mostrar el mensaje adecuado en el LCD
   mostrarLiquido();
@@ -833,6 +836,18 @@ void Mezclas::echarLiquido(int16_t pesoPorechar)
 
   while (pesoRelative < pesoPorechar)
   {
+    mostrarLiquido();
+    if (botonPausa.pulsado()) 
+    {
+      apagarBombas();
+      while (!botonPausa.pulsado()) 
+      {
+        delay(1000);
+      }
+      encenderBombaCorrespondiente(); // Volver a encender la bomba
+      tiempoUltimaVariacion = millis(); // Reiniciar el temporizador
+    }    
+    
     if (millis() - tiempoInicioMezcla > tiempoErrorBomba)
     {
       lcd.clear();
@@ -843,49 +858,36 @@ void Mezclas::echarLiquido(int16_t pesoPorechar)
       apagarBombas();
       return;
     }
-    mostrarLiquido();
-
-    /*if(botonPausa.pulsado() && !enPausa)
-    {
-      pausarReanudarMezcla();
-    }
-    if(enPausa)
-    {
-      esperarParaReanudar();
-    }
-    else
-    {*/
-    
-    int16_t nuevoPesoActual = PesoActual();
-    if (nuevoPesoActual != pesoLiquido)
-    {
-      tiempoUltimaVariacion = millis(); // Reiniciar el temporizador si hay cambio en el peso
-    }
-
-    if (millis() - tiempoUltimaVariacion > 10000) // Si no hay cambio en el peso por 5 segundos
-    {
-      mostrarAgotado();
-      apagarBombas();
-
-      // Esperar hasta que el usuario presione el botón de inicio para continuar
-      while (!botonPausa.pulsado())
+      int16_t nuevoPesoActual = PesoActual();
+      if (nuevoPesoActual != pesoLiquido)
       {
-        delay(300);
+        tiempoUltimaVariacion = millis(); // Reiniciar el temporizador si hay cambio en el peso
       }
 
-      // Reiniciar la bomba correspondiente
-      encenderBombaCorrespondiente();
+      if (millis() - tiempoUltimaVariacion > 10000) // Si no hay cambio en el peso por 5 segundos
+      {
+        mostrarAgotado();
+        apagarBombas();
 
-      // Reiniciar el tiempo de última variación
-      tiempoUltimaVariacion = millis();
-    }
+        // Esperar hasta que el usuario presione el botón de inicio para continuar
+        while (!botonPausa.pulsado())
+        {
+          delay(300);
+        }
 
-    nuevoPesoActual = PesoActual();
-    pesoRelative += nuevoPesoActual - pesoLiquido;
-    pesoLiquido = nuevoPesoActual;
-    EEPROM.put(PESO_RELATIVO_ADDRESS, pesoRelative);
-    updateProgressBar(pesoRelative, pesoPorechar, 1); 
-    delay(500);
+        // Reiniciar la bomba correspondiente
+        encenderBombaCorrespondiente();
+
+        // Reiniciar el tiempo de última variación
+        tiempoUltimaVariacion = millis();
+      }
+
+      nuevoPesoActual = PesoActual();
+      pesoRelative += nuevoPesoActual - pesoLiquido;
+      pesoLiquido = nuevoPesoActual;
+      EEPROM.put(PESO_RELATIVO_ADDRESS, pesoRelative);
+      updateProgressBar(pesoRelative, pesoPorechar, 1); 
+      delay(500);
   }
 
   pesoLiquido = PesoActual();
@@ -1063,16 +1065,18 @@ void Mezclas::vacioGeneral()
     tiempoPasado = millis() - tiempoInicioVacio;
     if (botonPausa.pulsado())
     {
+      bombaVacio.off(); 
       lcd.clear();
       delay(20); 
       lcd.setCursor(0, 0);
       lcd.print("VACIADO");
       lcd.setCursor(0, 1);
       lcd.print("FINALIZADO");
-      delay(3000); 
-      menus.vacioAutomatico = false;
-      bombaVacio.off();  
-      menus.PantallaSeleccionada(11); 
+      delay(4000);
+      menus.PantallaSeleccionada(4);  
+      menus.inSubMenu = false;
+      menus.updateMenuDisplay();
+      //menus.vacioAutomatico = false;
       break;
     }
     updateProgressBar(tiempoPasado, tiempoVacio, 1);
@@ -1087,9 +1091,14 @@ void Mezclas::vacioGeneral()
   lcd.print("VACIADO");
   lcd.setCursor(0, 1);
   lcd.print("FINALIZADO");
-  delay(3000); 
-  menus.vacioAutomatico = false;
-  menus.PantallaSeleccionada(11); 
+  delay(4000); 
+  menus.inSubMenu = false;
+  //menus.menuPrincipal = true;
+  menus.updateMenuDisplay();
+  lcd.clear();
+  delay(20); 
+  //menus.vacioAutomatico = false;
+  menus.PantallaSeleccionada(4); 
 }
 
 void Mezclas::verificarPeso()
