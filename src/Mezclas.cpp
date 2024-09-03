@@ -630,7 +630,7 @@ void Mezclas::Pantallamezcla(uint8_t pantallamezcla)
   // Pantalla de Ajuste de PORCENTAJE ACEITE
   if (pantallamezcla == 10)
   {
-    menus.validarAjusteAceite = true;
+    //menus.validarAjusteAceite = true;
     EEPROM.get(PORCENTAJE_ACEITE_ADRESS, porcentajeAceite);
     if(idioma==0)
     {
@@ -836,17 +836,7 @@ void Mezclas::echarLiquido(int16_t pesoPorechar)
 
   while (pesoRelative < pesoPorechar)
   {
-    mostrarLiquido();
-    if (botonPausa.pulsado()) 
-    {
-      apagarBombas();
-      while (!botonPausa.pulsado()) 
-      {
-        delay(1000);
-      }
-      encenderBombaCorrespondiente(); // Volver a encender la bomba
-      tiempoUltimaVariacion = millis(); // Reiniciar el temporizador
-    }    
+    mostrarLiquido();  
     
     if (millis() - tiempoInicioMezcla > tiempoErrorBomba)
     {
@@ -858,36 +848,36 @@ void Mezclas::echarLiquido(int16_t pesoPorechar)
       apagarBombas();
       return;
     }
-      int16_t nuevoPesoActual = PesoActual();
-      if (nuevoPesoActual != pesoLiquido)
+    int16_t nuevoPesoActual = PesoActual();
+    if (nuevoPesoActual != pesoLiquido)
+    {
+      tiempoUltimaVariacion = millis(); // Reiniciar el temporizador si hay cambio en el peso
+    }
+
+    if (millis() - tiempoUltimaVariacion > 10000) // Si no hay cambio en el peso por 5 segundos
+    {
+      mostrarAgotado();
+      apagarBombas();
+
+      // Esperar hasta que el usuario presione el botón de inicio para continuar
+      while (!botonPausa.pulsado())
       {
-        tiempoUltimaVariacion = millis(); // Reiniciar el temporizador si hay cambio en el peso
+        delay(300);
       }
 
-      if (millis() - tiempoUltimaVariacion > 10000) // Si no hay cambio en el peso por 5 segundos
-      {
-        mostrarAgotado();
-        apagarBombas();
+      // Reiniciar la bomba correspondiente
+      encenderBombaCorrespondiente();
 
-        // Esperar hasta que el usuario presione el botón de inicio para continuar
-        while (!botonPausa.pulsado())
-        {
-          delay(300);
-        }
+      // Reiniciar el tiempo de última variación
+      tiempoUltimaVariacion = millis();
+    }
 
-        // Reiniciar la bomba correspondiente
-        encenderBombaCorrespondiente();
-
-        // Reiniciar el tiempo de última variación
-        tiempoUltimaVariacion = millis();
-      }
-
-      nuevoPesoActual = PesoActual();
-      pesoRelative += nuevoPesoActual - pesoLiquido;
-      pesoLiquido = nuevoPesoActual;
-      EEPROM.put(PESO_RELATIVO_ADDRESS, pesoRelative);
-      updateProgressBar(pesoRelative, pesoPorechar, 1); 
-      delay(500);
+    nuevoPesoActual = PesoActual();
+    pesoRelative += nuevoPesoActual - pesoLiquido;
+    pesoLiquido = nuevoPesoActual;
+    EEPROM.put(PESO_RELATIVO_ADDRESS, pesoRelative);
+    updateProgressBar(pesoRelative, pesoPorechar, 1); 
+    delay(500);
   }
 
   pesoLiquido = PesoActual();
@@ -896,7 +886,6 @@ void Mezclas::echarLiquido(int16_t pesoPorechar)
   
   // Apagar la bomba correspondiente
   apagarBombas();
-
   delay(1000);
 }
 
@@ -908,6 +897,7 @@ void Mezclas::subirPorcentajeAceite()
   menus.validarAjusteAceite = true;
   Pantallamezcla(10);
 }
+
 void Mezclas::subirPorcentajeSouji()
 {
   porcentajeSouji++;

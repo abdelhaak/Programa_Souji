@@ -469,7 +469,9 @@ void Menus::PantallaProgramador(uint8_t pantallaProg)
   {
     validarAjusteAceite = false;
     modoProg=false;
-    ajustarAceite = false;
+    ajustandoAceite = false;
+    ajustarSouji = false;
+    ajustarAceite = true;
     if(idioma==0)
     {
       lcd.setCursor(0,0);
@@ -491,7 +493,9 @@ void Menus::PantallaProgramador(uint8_t pantallaProg)
   {
     validarAjusteSouji = false;
     modoProg=false;
-    ajustarSouji = false ;
+    ajustandoSouji=false;
+    ajustarAceite = false;
+    ajustarSouji = true;
     if(idioma==0)
     {
       lcd.setCursor(0,0);
@@ -512,7 +516,9 @@ void Menus::PantallaProgramador(uint8_t pantallaProg)
   if (pantallaProg == 3)
   {
     modoProg=false;
+    ajustarSouji = false;
     resetearTodo = false;
+    accederRpms = false;
     if(idioma==0)
     {
       lcd.setCursor(2,0);
@@ -533,23 +539,45 @@ void Menus::PantallaProgramador(uint8_t pantallaProg)
   if (pantallaProg == 4)
   {
     modoProg=false;
-    accederRpms = false;
+    validarRpms = false;
+    accederRpms = true;
+    ajustarSouji = false;
     if(idioma==0)
     {
-      lcd.setCursor(3,0);
-      lcd.print("AJUSTAR RPMS");
-      lcd.setCursor(5,1);
-      lcd.print("DEL MOTOR");
+      lcd.setCursor(2,0);
+      lcd.print("AJUSTAR  RPMS");
+      lcd.setCursor(3,1);
+      lcd.print("DEL  MOTOR");
     }
     else
     {
       lcd.setCursor(1,0);
-      lcd.print("SETTING THE ");
-      lcd.setCursor(3,1);
-      lcd.print("MOTOR RPMS");
+      lcd.print("SETTING  THE");
+      lcd.setCursor(2,1);
+      lcd.print("RPMS  MOTOR");
+    }
+  }  
+  
+  // SUBMENU de RESETEAR LA CANTIDAD DE LITROS ACUMULADA
+  if (pantallaProg == 7)
+  {
+    resetearTodo = true;
+    if(idioma==0)
+    {
+      lcd.setCursor(0,0);
+      lcd.print("PARA BORRAR TODO");
+      lcd.setCursor(2,1);
+      lcd.print("PULSE SELECT");
+    }
+    else
+    {
+      lcd.setCursor(1,0);
+      lcd.print("TO DELETE ALL");
+      lcd.setCursor(2,1);
+      lcd.print("PRESS SELECT");
     }
   }
-
+/*
   // SUBMENU de Ajustar la cantidad del ACEITE
   if (pantallaProg == 5)
   {
@@ -588,28 +616,8 @@ void Menus::PantallaProgramador(uint8_t pantallaProg)
       lcd.setCursor(2,1);
       lcd.print("PRESS SELECT");
     }
-  }
 
-  // SUBMENU de RESETEAR LA CANTIDAD DE LITROS ACUMULADA
-  if (pantallaProg == 7)
-  {
-    resetearTodo = true;
-    if(idioma==0)
-    {
-      lcd.setCursor(0,0);
-      lcd.print("PARA BORRAR TODO");
-      lcd.setCursor(2,1);
-      lcd.print("PULSE SELECT");
-    }
-    else
-    {
-      lcd.setCursor(1,0);
-      lcd.print("TO DELETE ALL");
-      lcd.setCursor(2,1);
-      lcd.print("PRESS SELECT");
-    }
-  }
-
+ 
   // Pantalla de Ajustar LA VELOCIDAD DEL MOTOR
   if (pantallaProg == 8)
   {
@@ -629,7 +637,7 @@ void Menus::PantallaProgramador(uint8_t pantallaProg)
       lcd.setCursor(3,1);
       lcd.print("PRESS SELECT");
     }
-  }
+  }*/
 }
 
 void Menus::entrarMenuProg()
@@ -649,6 +657,8 @@ void Menus::salirMenuProg()
 
 void Menus::entrarSubMenuProg()
 {
+  lcd.clear();
+  delay(20);
   if(!modoProg)
   {
     if(!SubMenuProgamador)
@@ -659,19 +669,19 @@ void Menus::entrarSubMenuProg()
       switch (menuProgIndex) 
       {
         case 0:
-          PantallaProgramador(4);
+          PantallaProgramador(0);
           break;
         case 1:
-          PantallaProgramador(5);
+          PantallaProgramador(1);
           break;
         case 2:
-          PantallaProgramador(6);
+          PantallaProgramador(2);
           break;
         case 3:
           PantallaProgramador(7);
           break;
         case 4 :
-          PantallaProgramador(8);   
+          PantallaProgramador(4);   
           break;
       }
     }
@@ -690,11 +700,10 @@ void Menus::entrarSubMenuProg()
 
 void Menus::updateMenuProgDisplay()
 {
+  lcd.clear();
+  delay(20);
   PantallaProgramador(menuProgIndex);
 }
-
-
-
 
 ////////////////  Manejar los botones de entrada  /////////////////
 
@@ -717,7 +726,30 @@ void Menus::modificarBotonSet()
   }
   else if(menuProgramador)
   {
-    entrarSubMenuProg();
+    if(ajustarAceite && !validarAjusteAceite)
+    {
+      validarAjusteAceite = true;
+      ajustandoAceite = true;
+      SubMenuProgamador = false;
+      mezcla.Pantallamezcla(10);
+    }
+    else if(ajustarSouji && !validarAjusteSouji)
+    {
+      validarAjusteSouji = true;
+      ajustandoSouji=true;
+      SubMenuProgamador = false;
+      mezcla.Pantallamezcla(11);
+    } 
+    else if(accederRpms)
+    {
+      accederRpms = false;
+      validarRpms= true ;
+      motor.modificarRpms();
+    }
+    else
+    {
+      entrarSubMenuProg();
+    }
   }
   else
   {
@@ -815,28 +847,35 @@ void Menus::modificarBotonSel()
     }
     else if(validarRpms)
     {
-      motor.mostrarRpms(pin_encoder);
+      lcd.clear();
+      delay(20);
+      PantallaProgramador(4);
+      //motor.mostrarRpms(pin_encoder);
     }
     else if (ajustarAceite && !validarAjusteAceite)
     {
       validarAjusteAceite = true;
+      ajustandoAceite = true;
       SubMenuProgamador = false;
       mezcla.Pantallamezcla(10);
     } 
     else if (ajustarSouji && !validarAjusteSouji)
     {
       validarAjusteSouji = true;
+      ajustandoSouji = true;
       SubMenuProgamador = false;
       mezcla.Pantallamezcla(11);
     } 
     else if(validarAjusteAceite)
     {
       validarAjusteAceite = false;
+      ajustandoAceite = false;
       PantallaProgramador(1);
     }
     else if(validarAjusteSouji)
     {
       validarAjusteSouji = false;
+      ajustandoSouji = false;
       PantallaProgramador(2);
     }
     else {}  
@@ -898,20 +937,20 @@ void Menus::decrementandoIndex()
   }
   else if(menuProgramador)
   {
-    if(!inSubMenuProg && menuProgIndex < 4 && !ajustarAceite && !ajustarSouji && !validarRpms)
+    if(!inSubMenuProg && menuProgIndex < 4 && !ajustandoAceite && !ajustandoSouji && !validarRpms)
     {
       menuProgIndex++;
       updateMenuProgDisplay(); 
     }
-    else if(ajustarAceite)
+    else if(ajustandoAceite && !ajustandoSouji)
     {
       mezcla.bajarPorcentajeAceite();   
     }
-    else if(ajustarSouji)
+    else if(ajustandoSouji && !ajustandoAceite)
     {
       mezcla.bajarPorcentajeSouji();    
     }
-    else if(validarRpms)
+    else if(validarRpms )
     {
       motor.bajarRpms();
     }
@@ -971,16 +1010,16 @@ void Menus::incrementandoIndex()
   }
   else if(menuProgramador)
   {
-    if(!inSubMenuProg && menuProgIndex > 0 && !ajustarAceite && !ajustarSouji && !validarRpms)
+    if(!inSubMenuProg && menuProgIndex > 0 && !ajustandoAceite && !ajustandoSouji && !validarRpms)
     {
       menuProgIndex--;
       updateMenuProgDisplay(); 
     }
-    else if(ajustarAceite)
+    else if(ajustandoAceite && !ajustandoSouji)
     {
       mezcla.subirPorcentajeAceite();   
     }
-    else if(ajustarSouji)
+    else if(ajustandoSouji && !ajustandoAceite)
     {
       mezcla.subirPorcentajeSouji();    
     }
@@ -1717,7 +1756,7 @@ void Menus::ReseteoTotal()
   resetearLitrosMensuales();
   mezcla.resetearTodo();
   inicializarEEPROM();
-  PantallaProgramador(0);
+  PantallaProgramador(3);
 }
 
 void Menus::iniciando()

@@ -76,8 +76,9 @@ class Menus
         bool resetearTodo = false;
         bool ajustarAceite = false;
         bool ajustarSouji = false;
-        
-       
+        bool ajustandoAceite = false;
+        bool ajustandoSouji = false;
+               
     public:
         Menus(LiquidCrystal &display,Stream &serial);
         //Menus();
