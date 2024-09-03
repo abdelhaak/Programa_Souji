@@ -79,7 +79,7 @@ class Mezclas
         void subirPorcentajeSouji();
         void bajarPorcentajeAceite();
         void bajarPorcentajeSouji();
-        void pausarReanudarMezcla();
+        void pausarMezcla();
         void esperarParaReanudar();
         void vacioGeneral();
         void verificarPeso();
@@ -89,9 +89,10 @@ class Mezclas
         void actualizarPantallaLCD(int estado2, int idioma);
         void mostrarLiquido();
         void mostrarAgotado();
-        
+        void deteccionPulso();
 
         bool enPausa = false;
+        bool mezclando = false;
         int numMezclas;
         int estado;
         int estado2;

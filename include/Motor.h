@@ -5,6 +5,7 @@
 #include "LCD_Progress.h"
 #include "Menus.h"
 #include "Mezclas.h"
+#include "Boton.h"
 
 #define PIN_MOTOR A6
 #define RPMS_MAX 3300
@@ -20,7 +21,7 @@ class Motor
         float frecuencia;
         uint64_t tiempoInicio;
         static volatile uint64_t pulsos;
-       
+
     public:
         Motor(uint8_t pin,uint8_t pin_encoder);
         void init();
@@ -33,6 +34,10 @@ class Motor
         void subirRpms();   
         int rpmS();  
         void cargarRpms();
+        void pausado();
+        void cancelar();
+
+        
 };
 
 #endif

@@ -38,8 +38,7 @@ int16_t PesoActual()
     ultima_tara = balanza.get_offset();
     EEPROM.put(TARE_ADRESS, ultima_tara);
     EEPROM.put(PESO_ADRESS, peso);
-
-    delay(20);
+    delay(10);
     return peso;  
 }
 

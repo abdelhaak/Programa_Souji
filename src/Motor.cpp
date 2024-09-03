@@ -5,6 +5,9 @@ int pin_encoder = 23;
 int rpms=1500;
 //int pin_sensor =  23;
 
+Mezclas mezclado(mySerial);
+Menus menuus(lcd,mySerial);
+Boton botonPausado(PIN_BOTON_SEL);
 // ERRORES
 
 Motor::Motor(uint8_t pin,uint8_t pin_encoder)
@@ -46,12 +49,45 @@ void Motor::ajustarRpms(uint64_t tiempoMezcla)
     uint64_t tiempoPasado;
     while(millis() - tiempoInicio < tiempoMezcla)
     {
+        if(botonPausado.pulsado())
+        {
+            unsigned long tiempoPulsado = millis();
+
+            while(botonPausado.pulsado())
+            {
+                if (millis() - tiempoPulsado > 3000) 
+                {
+                    lcd.clear();
+                    delay(20);
+                    lcd.setCursor(0,0);
+                    lcd.print("CANCELADO...");
+                    delay(4000);
+                    cancelar();
+                    return;
+                }
+                delay(20);
+            }
+
+            pausado();
+
+            // Espera a que se salga del estado de pausa
+            while (enPausa) 
+            {
+                if (botonPausado.pulsado()) 
+                {
+                    delay(20); // Pequeño delay para evitar rebotes
+                    enPausa = false; // Reanuda el proceso
+                }
+                delay(100); // Pequeño delay para evitar un loop rápido y sin sentido
+            }
+            // Actualiza el tiempo de inicio para compensar el tiempo pausado
+            tiempoInicio += (millis() - tiempoInicio) - tiempoPasado;
+            mezclado.Pantallamezcla(4);
+            analogWrite(pin,130);
+        }
         tiempoPasado = millis() - tiempoInicio;
         updateProgressBar(tiempoPasado, tiempoMezcla, 1);  
-        //serial.print("Corriente : ");
-        ///serial.print(amp);
-
-        delay(1000);
+        delay(200);
     }
     pararMotor();
 }
@@ -206,3 +242,51 @@ int Motor::rpmS()
     return rpms;
 }
 
+void Motor::pausado()
+{
+    if(idioma==0)
+    {
+        lcd.clear();
+        delay(20);
+        lcd.setCursor(5,0);
+        lcd.print("MEZCLA");
+        lcd.setCursor(4,1);
+        lcd.print("PAUSADA");
+    }
+    else
+    {
+        lcd.clear();
+        delay(20);
+        lcd.setCursor(3,0);
+        lcd.print("MIXING IS");
+        lcd.setCursor(5,1);
+        lcd.print("PAUSED");
+    }
+    pararMotor();
+    enPausa = true;
+}
+
+void Motor::cancelar()
+{
+    if(idioma==0)
+    {
+      lcd.clear();
+      delay(20);
+      lcd.setCursor(3,0);
+      lcd.print("MEZCLA");
+      lcd.setCursor(5,1);
+      lcd.print("CANCELADA");
+    }
+    else
+    {
+      lcd.clear();
+      delay(20);
+      lcd.setCursor(3,0);
+      lcd.print("MIXING IS");
+      lcd.setCursor(5,1);
+      lcd.print("CANCELLED");
+    }
+    pararMotor();
+    mezclado.resetearTodo();
+    menuus.PantallaSeleccionada(0);
+}

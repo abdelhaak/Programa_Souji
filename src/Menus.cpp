@@ -49,9 +49,7 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
   // Pantalla de Cantidad de Souji
   if (pantalla == 0)
   {  
-    serial.println("Estamos en la pantalla 0");
     EEPROM.get(PESO_RELATIVO_ADDRESS, mezcla.pesoRelative);
-    serial.print("pesoRelative :");
     EEPROM.get(SCALE_ADDRESS, escala);
     EEPROM.get(STATUS_ADRESS, mezcla.estado);
     EEPROM.get(STATUS_2_ADRESS, mezcla.estado2);
@@ -61,6 +59,7 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     menuProgramador = false;
     mostrarLitrosMensuales = false;
     inSubMenu = false;
+    mezcla.mezclando = false;
     menuIndex = 0;
     if (mezcla.estado == 0)
     {

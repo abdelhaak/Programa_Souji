@@ -28,6 +28,7 @@ int16_t pesoLiquido = 0;
 uint64_t tiempoErrorBascula = 500000;
 uint64_t tiempoErrorBomba = 500000;
 uint64_t tiempoPasado = 0;
+int16_t nuevoPesoActual = 0;
 
 // 2 minutos => 240000 ms    ::   PARA LA PRIMERA MEZCLA
 uint64_t tiempoMezcla1 = 240000  ; // 10000
@@ -424,7 +425,7 @@ void Mezclas::Pantallamezcla(uint8_t pantallamezcla)
     {
       lcd.clear();
       delay(20);
-      lcd.setCursor(1,0);
+      lcd.setCursor(0,0);
       lcd.print("AHORA EMPEZAMOS");
       lcd.setCursor(0,1);
       lcd.print("LA MEZCLA");
@@ -435,9 +436,9 @@ void Mezclas::Pantallamezcla(uint8_t pantallamezcla)
     {
       lcd.clear();
       delay(20);
-      lcd.setCursor(2,0);
+      lcd.setCursor(0,0);
       lcd.print("NOW STARTING");
-      lcd.setCursor(3,1);
+      lcd.setCursor(5,1);
       lcd.print("THE MIX");
       lcd.setCursor(12,1);
       lcd.createChar(0, Character2);
@@ -588,10 +589,10 @@ void Mezclas::Pantallamezcla(uint8_t pantallamezcla)
     {
       lcd.clear();
       delay(20);
-      lcd.setCursor(1,0);
+      lcd.setCursor(3,0);
       lcd.print("ESTAMOS EN");
       lcd.setCursor(5,1);
-      lcd.print("PAUSA ...");
+      lcd.print("PAUSA ..");
     }
     else
     {
@@ -832,12 +833,14 @@ void Mezclas::echarLiquido(int16_t pesoPorechar)
   EEPROM.get(PESO_RELATIVO_ADDRESS, pesoRelative);
   // Mostrar el mensaje adecuado en el LCD
   mostrarLiquido();
-  delay(50);
-
-  while (pesoRelative < pesoPorechar)
-  {
+  
+  while(pesoRelative < pesoPorechar)
+  { 
+    deteccionPulso();
     mostrarLiquido();  
-    
+   
+    nuevoPesoActual = PesoActual();
+    /*
     if (millis() - tiempoInicioMezcla > tiempoErrorBomba)
     {
       lcd.clear();
@@ -848,7 +851,8 @@ void Mezclas::echarLiquido(int16_t pesoPorechar)
       apagarBombas();
       return;
     }
-    int16_t nuevoPesoActual = PesoActual();
+    
+    
     if (nuevoPesoActual != pesoLiquido)
     {
       tiempoUltimaVariacion = millis(); // Reiniciar el temporizador si hay cambio en el peso
@@ -871,13 +875,13 @@ void Mezclas::echarLiquido(int16_t pesoPorechar)
       // Reiniciar el tiempo de última variación
       tiempoUltimaVariacion = millis();
     }
-
-    nuevoPesoActual = PesoActual();
+    */
     pesoRelative += nuevoPesoActual - pesoLiquido;
     pesoLiquido = nuevoPesoActual;
     EEPROM.put(PESO_RELATIVO_ADDRESS, pesoRelative);
-    updateProgressBar(pesoRelative, pesoPorechar, 1); 
-    delay(500);
+    updateProgressBar(pesoRelative, pesoPorechar, 1);
+    deteccionPulso();
+    delay(20);
   }
 
   pesoLiquido = PesoActual();
@@ -948,18 +952,31 @@ void Mezclas::resetearTodo()
   enPausa = false;
 }
 
-void Mezclas::pausarReanudarMezcla()
+void Mezclas::deteccionPulso()
 {
-  enPausa = !enPausa;
-  if (enPausa)
-  {
-    Pantallamezcla(8);
-  }
-  else
-  {
-    Pantallamezcla(9);
-    delay(3000);
-  }
+    if(botonPausa.pulsado())
+    {
+      delay(20);
+      pausarMezcla();
+      // Espera a que se salga del estado de pausa
+      while (enPausa) 
+      {
+        if (botonPausa.pulsado()) 
+        {
+          delay(20); 
+          enPausa = false; 
+        }
+          delay(100); 
+      }
+      encenderBombaCorrespondiente();
+    }
+}
+
+void Mezclas::pausarMezcla()
+{
+  Pantallamezcla(8);
+  apagarBombas();
+  enPausa = true;
 }
 
 void Mezclas::esperarParaReanudar()
@@ -969,7 +986,8 @@ void Mezclas::esperarParaReanudar()
     // Esperar hasta que se reanude la mezcla
     if (botonPausa.pulsado())
     {
-      pausarReanudarMezcla();
+      lcd.clear();
+      delay(20);    
     }
   }
 }
@@ -1008,7 +1026,7 @@ void Mezclas::apagarBombas()
 void Mezclas::mostrarLiquido()
 {
   lcd.clear();
-  delay(20);
+  delay(5);
   switch(estado2)
   {
     case 1:

@@ -67,7 +67,7 @@ class Menus
         // Variables del menu programador 
         uint8_t misPantallasProg=0;
         bool modoProg=false;
-        bool menuProgramador = false;
+        
         bool SubMenuProgamador = false;
         int menuProgIndex = 0;
         bool inSubMenuProg = false;
@@ -85,6 +85,7 @@ class Menus
         void lcd_init();
         int menuIndex ;  
         bool inSubMenu = false;
+        bool menuProgramador = false;
         bool menuPrincipal = false;
         bool vacioAutomatico = false;
         bool validarAjusteAceite = false;
