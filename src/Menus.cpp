@@ -93,6 +93,7 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     else
     {
       mezcla.mezclaGeneral(mezcla.numMezclas);
+      PantallaSeleccionada(0);
     }
   }
   
@@ -296,6 +297,7 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
   {
     //vacioAutomatico = true;
     vaciandoDeposito();
+    PantallaSeleccionada(0);
     /*if(idioma==0)
     {
       lcd.clear();
@@ -717,6 +719,7 @@ void Menus::modificarBotonSet()
     else if(finDeCalibre)
     {
       finalizarCalibracion();
+      PantallaSeleccionada(0);
     }
     else
     {
@@ -1538,8 +1541,8 @@ void Menus::inicializarEEPROM()
     EEPROM.get(INIT_CHECK_ADDRESS, initCheck);
     if (initCheck != 12345) 
     {
-        EEPROM.put(DAY_ADDRESS, 11); // Día inicial
-        EEPROM.put(MONTH_ADDRESS, 7); // Mes inicial
+        EEPROM.put(DAY_ADDRESS, 4); // Día inicial
+        EEPROM.put(MONTH_ADDRESS, 9); // Mes inicial
         EEPROM.put(YEAR_ADDRESS, 2024); // Año inicial
         EEPROM.put(RPMS_ADRESS, 1500); // RPMs del motor inicial
         EEPROM.put(LITROS_TOTALES_DIRECCION, 0); // Litros totales iniciales
@@ -1547,10 +1550,6 @@ void Menus::inicializarEEPROM()
         EEPROM.put(PORCENTAJE_ACEITE_ADRESS, 30); // Porcentaje de aceite inicial
         EEPROM.put(PORCENTAJE_SOUJI_ADRESS, 50); // Porcentaje de Souji inicial.
         EEPROM.put(PESO_RELATIVO_ADDRESS, 0);
-        //EEPROM.put(STATUS_ADRESS, 0); // Estado inicial
-        //EEPROM.put(STATUS_2_ADRESS, 0); // Estado 2 inicial
-        //EEPROM.put(NUM_MEZCLAS_ADRESS, 1); // Numero de mezclas inicial
-        //EEPROM.put(PESO_ACEITE_ACTUAL_ADRESS, 0);
         resetearLitrosMensuales();
     }
 }
@@ -1650,7 +1649,7 @@ void Menus::finalizarCalibracion()
   EEPROM.put(TARE_ADRESS, ultima_tara);
   EEPROM.put(PESO_ACEITE_ACTUAL_ADRESS, 0);
   delay(100);
-  PantallaSeleccionada(5);
+  //PantallaSeleccionada(5);
 }
 
 void Menus::mostrarElPeso()

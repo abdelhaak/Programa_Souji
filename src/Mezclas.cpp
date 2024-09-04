@@ -79,15 +79,6 @@ void Mezclas::mezclaGeneral(int mezclas)
   {
     EEPROM.get(I_MEZCLAS_ADRESS, i_mezclas);
     EEPROM.get(PESO_ACEITE_ACTUAL_ADRESS, pesoLiquido);
-    /*for (int i = 0; i <= 91; i++) 
-    {
-      byte value = EEPROM.read(i); // Lee el byte en la posición 'i'
-      mySerial.print("Direccion ");
-      mySerial.print(i);
-      mySerial.print(": ");
-      mySerial.println(value, DEC); // Imprime el valor como decimal
-    }
-    */
     // Iniciamos la mezcla 
     if(estado == 0)
     {
@@ -372,10 +363,14 @@ void Mezclas::mezclaGeneral(int mezclas)
     {
       resetearTodo();
       Pantallamezcla(7);
-      delay(10000);
+      delay(8000);
       lcd.clear();
       delay(20);
-      menus.PantallaSeleccionada(0);
+      //menus.menuPrincipal = true;
+      //menus.menuProgramador = false;
+      //menus.inSubMenu = false;
+      //menus.menuIndex = 0;
+      //menus.PantallaSeleccionada(0);
     }
     // Error de verificacion y peso superior a lo normal
     if(estado == 3)
@@ -403,7 +398,7 @@ void Mezclas::mezclaGeneral(int mezclas)
     lcd.clear();
     delay(20);
     resetearTodo();
-    menus.PantallaSeleccionada(0);
+    //menus.PantallaSeleccionada(0);
     }
   }
 }
@@ -689,7 +684,7 @@ void Mezclas::Pantallamezcla(uint8_t pantallamezcla)
 
 void Mezclas::mezclaVacio()
 {
-  int16_t elPesoMinimo = 150;
+  int16_t elPesoMinimo = 120;
   if (PesoActual() <= elPesoMinimo)
   {
     if(idioma==0)
@@ -733,10 +728,13 @@ void Mezclas::mezclaVacio()
   
   while(PesoActual() > elPesoMinimo)
   {
+    deteccionPulso();
+
     lcd.setCursor(0,0);
     lcd.print("VACIANDO ....");
     pesoActual = PesoActual();
     pesoVaciado = pesoInicial - pesoActual; 
+
     if (millis() - tiempoInicio > tiempoErrorBomba)
     {
       lcd.clear();
@@ -749,8 +747,10 @@ void Mezclas::mezclaVacio()
       bombaVacio.off();
       return;
     }
+
     updateProgressBar(pesoVaciado, pesoTotalAVaciar, 1); // Actualizar la barra de progreso
-    delay(1000);
+    delay(2000);
+    deteccionPulso();
     lcd.clear();
     delay(20);
   }  
@@ -839,8 +839,6 @@ void Mezclas::echarLiquido(int16_t pesoPorechar)
     deteccionPulso();
     mostrarLiquido();  
    
-    nuevoPesoActual = PesoActual();
-    /*
     if (millis() - tiempoInicioMezcla > tiempoErrorBomba)
     {
       lcd.clear();
@@ -852,13 +850,18 @@ void Mezclas::echarLiquido(int16_t pesoPorechar)
       return;
     }
     
-    
-    if (nuevoPesoActual != pesoLiquido)
+    nuevoPesoActual = PesoActual();
+    if (abs(nuevoPesoActual - pesoLiquido) > 50) 
     {
-      tiempoUltimaVariacion = millis(); // Reiniciar el temporizador si hay cambio en el peso
+      tiempoUltimaVariacion = millis(); // Reiniciar el temporizador si hay un cambio significativo
+      pesoRelative += nuevoPesoActual - pesoLiquido;
+      pesoLiquido = nuevoPesoActual;
+      EEPROM.put(PESO_RELATIVO_ADDRESS, pesoRelative);
+      updateProgressBar(pesoRelative, pesoPorechar, 1);
     }
 
-    if (millis() - tiempoUltimaVariacion > 10000) // Si no hay cambio en el peso por 5 segundos
+    // Verificar si no ha habido cambios significativos durante más de 10 segundos
+    if (millis() - tiempoUltimaVariacion > 30000) 
     {
       mostrarAgotado();
       apagarBombas();
@@ -875,13 +878,8 @@ void Mezclas::echarLiquido(int16_t pesoPorechar)
       // Reiniciar el tiempo de última variación
       tiempoUltimaVariacion = millis();
     }
-    */
-    pesoRelative += nuevoPesoActual - pesoLiquido;
-    pesoLiquido = nuevoPesoActual;
-    EEPROM.put(PESO_RELATIVO_ADDRESS, pesoRelative);
-    updateProgressBar(pesoRelative, pesoPorechar, 1);
+    delay(700);
     deteccionPulso();
-    delay(20);
   }
 
   pesoLiquido = PesoActual();
@@ -954,9 +952,24 @@ void Mezclas::resetearTodo()
 
 void Mezclas::deteccionPulso()
 {
-    if(botonPausa.pulsado())
-    {
-      delay(20);
+  if(botonPausa.pulsado())
+  {
+      unsigned long tiempoPulsado = millis();
+      while(botonPausa.pulsado())
+      {
+        if (millis() - tiempoPulsado > 2000) 
+        {
+          lcd.clear();
+          delay(20);
+          lcd.setCursor(0,0);
+          lcd.print("CANCELADO...");
+          delay(4000);
+          motorMezclador.cancelar();
+          return;
+        }
+        delay(20);
+      }
+
       pausarMezcla();
       // Espera a que se salga del estado de pausa
       while (enPausa) 
@@ -966,10 +979,10 @@ void Mezclas::deteccionPulso()
           delay(20); 
           enPausa = false; 
         }
-          delay(100); 
+        delay(100); 
       }
       encenderBombaCorrespondiente();
-    }
+  }
 }
 
 void Mezclas::pausarMezcla()
@@ -1099,20 +1112,13 @@ void Mezclas::vacioGeneral()
   lcd.print("VACIADO");
   lcd.setCursor(0, 1);
   lcd.print("FINALIZADO");
-  delay(4000); 
-  menus.inSubMenu = false;
-  //menus.menuPrincipal = true;
-  menus.updateMenuDisplay();
-  lcd.clear();
-  delay(20); 
-  //menus.vacioAutomatico = false;
-  menus.PantallaSeleccionada(4); 
+  delay(4000);  
 }
 
 void Mezclas::verificarPeso()
 {
   peso=PesoActual();
-  if(peso>100)
+  if(peso>200)
   {
     estado = 3;
   }
