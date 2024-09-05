@@ -31,7 +31,7 @@ uint64_t tiempoPasado = 0;
 int16_t nuevoPesoActual = 0;
 
 // 2 minutos => 240000 ms    ::   PARA LA PRIMERA MEZCLA
-uint64_t tiempoMezcla1 = 240000  ; // 10000
+uint64_t tiempoMezcla1 = 240000  ; // 
 // 3 minutos => 360000 ms    ::   PARA LA SEGUNDA MEZCLA
 uint64_t tiempoMezcla2 = 360000 ; //10000   ;
 // 3 minutos => 360000 ms    ::   PARA EL VACIO POR AHORA 
@@ -119,14 +119,10 @@ void Mezclas::mezclaGeneral(int mezclas)
             {
               EEPROM.get(VOL_ACEITE_ADRESS, pesoAceiteDeseado);
               lcd.clear();
-              delay(10);
+              delay(20);
               lcd.setCursor(0,0);
-              lcd.print("PESO ACEITE :");
-              lcd.setCursor(0,1);
-              lcd.print(pesoAceiteDeseado);
-              lcd.setCursor(6,1);
-              lcd.print("G");
-              delay(10000);
+              lcd.print("ECHAMOS ACEITE :");
+              delay(4000);
               Pantallamezcla(1);
               delay(20);
               echarLiquido(pesoAceiteDeseado);
@@ -138,14 +134,10 @@ void Mezclas::mezclaGeneral(int mezclas)
             { 
               EEPROM.get(VOL_SOUJI_ADRESS, pesoSoujiDeseado);
               lcd.clear();
-              delay(10);
+              delay(20);
               lcd.setCursor(0,0);
-              lcd.print("PESO SOUJI :");
-              lcd.setCursor(0,1);
-              lcd.print(pesoSoujiDeseado);
-              lcd.setCursor(6,1);
-              lcd.print("G");
-              delay(10000);
+              lcd.print("ECHAMOS SOUJI :");
+              delay(4000);
               Pantallamezcla(2);
               delay(100);
               echarLiquido(pesoSoujiDeseado);
@@ -170,14 +162,10 @@ void Mezclas::mezclaGeneral(int mezclas)
               EEPROM.get(VOL_AGUA_ADRESS, pesoAguaDeseado);
               delay(50);
               lcd.clear();
-              delay(10);
+              delay(20);
               lcd.setCursor(0,0);
-              lcd.print("VOL AGUA :");
-              lcd.setCursor(0,1);
-              lcd.print(pesoAguaDeseado);
-              lcd.setCursor(6,1);
-              lcd.print("G");
-              delay(30000);
+              lcd.print("ECHAMOS AGUA :");
+              delay(4000);
               Pantallamezcla(3);
               echarLiquido(pesoAguaDeseado);
               estado2 = 5;
@@ -219,7 +207,7 @@ void Mezclas::mezclaGeneral(int mezclas)
                 lcd.print("PASAMOS A LA");
                 lcd.setCursor(0,1);
                 lcd.print("SIGUIENTE MEZCLA");
-                delay(6000);
+                delay(8000);
               }
               else
               {
@@ -240,7 +228,7 @@ void Mezclas::mezclaGeneral(int mezclas)
                 lcd.print("WE MOVE TO");
                 lcd.setCursor(2,1);
                 lcd.print("THE NEXT MIX");
-                delay(6000);
+                delay(8000);
               }
             }
         }
@@ -256,7 +244,7 @@ void Mezclas::mezclaGeneral(int mezclas)
           delay(20);
           lcd.setCursor(0,0);
           lcd.print("ECHAMOS ACEITE :");
-          delay(5000);
+          delay(4000);
           Pantallamezcla(1);
           delay(20);
           echarLiquido(pesoAceiteDeseado);
@@ -271,7 +259,7 @@ void Mezclas::mezclaGeneral(int mezclas)
           delay(20);
           lcd.setCursor(0,0);
           lcd.print("ECHAMOS SOUJI :");
-          delay(5000);
+          delay(4000);
           Pantallamezcla(2);
           delay(100);
           echarLiquido(pesoSoujiDeseado);
@@ -326,7 +314,7 @@ void Mezclas::mezclaGeneral(int mezclas)
           {
             lcd.clear();
             delay(10);
-            lcd.setCursor(5,0);
+            lcd.setCursor(4,0);
             lcd.print("MEZCLA ");
             lcd.setCursor(2,1);
             lcd.print("FINALIZADA");
@@ -352,12 +340,7 @@ void Mezclas::mezclaGeneral(int mezclas)
       resetearTodo();
       Pantallamezcla(7);
       delay(8000);
-      lcd.clear();
-      delay(20);
-      //menus.menuPrincipal = true;
-      //menus.menuProgramador = false;
-      //menus.inSubMenu = false;
-      //menus.menuIndex = 0;
+      menus.finalizarCiclo();
       //menus.PantallaSeleccionada(0);
     }
     // Error de verificacion y peso superior a lo normal
@@ -549,7 +532,7 @@ void Mezclas::Pantallamezcla(uint8_t pantallamezcla)
     {
       lcd.clear();
       delay(20);
-      lcd.setCursor(1,0);
+      lcd.setCursor(2,0);
       lcd.print("MEZCLA TOTAL");
       lcd.setCursor(3,1);
       lcd.print("COMPLETADA");

@@ -119,6 +119,7 @@ class Menus
         String elegirMes(uint8_t mes);
         void iniciando();
         void vaciandoDeposito();
+        void finalizarCiclo();
 
         // Variables del menu programador
         void PantallaProgramador(uint8_t pantallaProg);

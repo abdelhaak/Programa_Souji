@@ -93,7 +93,7 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     else
     {
       mezcla.mezclaGeneral(mezcla.numMezclas);
-      PantallaSeleccionada(0);
+      //finalizarCiclo();
     }
   }
   
@@ -1763,4 +1763,14 @@ void Menus::iniciando()
   delay(20);
   lcd.setCursor(0,0);
   lcd.print("INICIANDO...");
+}
+
+void Menus::finalizarCiclo()
+{
+  inSubMenu = true;
+  variarCantidad = true;
+  menuIndex = 7;  
+  lcd.clear();
+  delay(20);
+  updateMenuDisplay();
 }
