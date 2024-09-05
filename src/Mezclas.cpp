@@ -253,14 +253,10 @@ void Mezclas::mezclaGeneral(int mezclas)
         {
           EEPROM.get(VOL_ACEITE_ADRESS, pesoAceiteDeseado);
           lcd.clear();
-          delay(10);
+          delay(20);
           lcd.setCursor(0,0);
-          lcd.print("PESO ACEITE :");
-          lcd.setCursor(0,1);
-          lcd.print(pesoAceiteDeseado);
-          lcd.setCursor(6,1);
-          lcd.print("G");
-          delay(10000);
+          lcd.print("ECHAMOS ACEITE :");
+          delay(5000);
           Pantallamezcla(1);
           delay(20);
           echarLiquido(pesoAceiteDeseado);
@@ -272,14 +268,10 @@ void Mezclas::mezclaGeneral(int mezclas)
         {
           EEPROM.get(VOL_SOUJI_ADRESS, pesoSoujiDeseado);
           lcd.clear();
-          delay(10);
+          delay(20);
           lcd.setCursor(0,0);
-          lcd.print("PESO SOUJI :");
-          lcd.setCursor(0,1);
-          lcd.print(pesoSoujiDeseado);
-          lcd.setCursor(6,1);
-          lcd.print("G");
-          delay(10000);
+          lcd.print("ECHAMOS SOUJI :");
+          delay(5000);
           Pantallamezcla(2);
           delay(100);
           echarLiquido(pesoSoujiDeseado);
@@ -304,13 +296,9 @@ void Mezclas::mezclaGeneral(int mezclas)
           EEPROM.get(VOL_AGUA_ADRESS, pesoAguaDeseado);
           delay(50);
           lcd.clear();
-          delay(10);
+          delay(20);
           lcd.setCursor(0,0);
-          lcd.print("VOL AGUA :");
-          lcd.setCursor(0,1);
-          lcd.print(pesoAguaDeseado);
-          lcd.setCursor(6,1);
-          lcd.print("G");
+          lcd.print("ECHAMOS AGUA :");
           delay(30000);
           Pantallamezcla(3);
           echarLiquido(pesoAguaDeseado);
@@ -395,10 +383,10 @@ void Mezclas::mezclaGeneral(int mezclas)
         lcd.print("EMPTY TANK");
         delay(10000);
       }
-    lcd.clear();
-    delay(20);
-    resetearTodo();
-    //menus.PantallaSeleccionada(0);
+      resetearTodo();
+      lcd.clear();
+      delay(20);
+      menus.finalizarCiclo();
     }
   }
 }
@@ -772,13 +760,13 @@ void Mezclas::calcularVolumen()
   lcd.print("% DE OIL: ");
   lcd.setCursor(12,0);
   lcd.print(porcentajeAceite);
-  lcd.setCursor(0,1);
+  /*lcd.setCursor(0,1);
   lcd.print("VOLUMEN: ");
   lcd.setCursor(10,1);
   lcd.print(pesoAceiteDeseado);
   lcd.setCursor(14,1);
-  lcd.print("ML");
-  delay(8000);
+  lcd.print("ML");*/
+  delay(6000);
 
   // Calculos de la cantidad de Souji
   EEPROM.get(PORCENTAJE_SOUJI_ADRESS, porcentajeSouji);
@@ -791,13 +779,13 @@ void Mezclas::calcularVolumen()
   lcd.print("% DE SOUJI: ");
   lcd.setCursor(12,0);
   lcd.print(porcentajeSouji);
-  lcd.setCursor(0,1);
+  /*lcd.setCursor(0,1);
   lcd.print("VOLUMEN: ");
   lcd.setCursor(10,1);
   lcd.print(pesoSoujiDeseado);
   lcd.setCursor(14,1);
-  lcd.print("ML");
-  delay(8000);
+  lcd.print("ML");*/
+  delay(6000);
 
   // Calculos de la cantidad de Agua que es lo que queda
   int16_t porcentajeAgua = 0;
@@ -811,13 +799,13 @@ void Mezclas::calcularVolumen()
   lcd.print("% DE AGUA: ");
   lcd.setCursor(12,0);
   lcd.print(porcentajeAgua);
-  lcd.setCursor(0,1);
+  /*lcd.setCursor(0,1);
   lcd.print("VOLUMEN: ");
   lcd.setCursor(10,1);
   lcd.print(pesoAguaDeseado);
   lcd.setCursor(14,1);
-  lcd.print("ML");
-  delay(8000);
+  lcd.print("ML");*/
+  delay(6000);
 }
 
 void Mezclas::echarLiquido(int16_t pesoPorechar)
