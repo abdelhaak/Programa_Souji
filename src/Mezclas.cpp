@@ -24,10 +24,13 @@ int16_t pesoLiquido = 0;
 // ERRORES
 
 // El tiempo de error autorizado de la bascula 
-// iniciado en 7 minutos => 500000 // POR AHORA 15 SEGUNDOS
-uint64_t tiempoErrorBascula = 500000;
-uint64_t tiempoErrorBomba = 500000;
+// iniciado en 3.5 minutos => 500000 // POR AHORA 15 SEGUNDOS
+uint64_t tiempoErrorBascula = 800000;
+uint64_t tiempoErrorBomba = 800000;
+uint64_t tiempoAgotado = 60000;
+uint64_t tiempoUltimaVariacion;
 uint64_t tiempoPasado = 0;
+uint64_t tiempoPasadoAgotado;
 int16_t nuevoPesoActual = 0;
 
 // 2 minutos => 240000 ms    ::   PARA LA PRIMERA MEZCLA
@@ -718,7 +721,7 @@ void Mezclas::mezclaVacio()
       bombaVacio.off();
       return;
     }
-
+  
     updateProgressBar(pesoVaciado, pesoTotalAVaciar, 1); // Actualizar la barra de progreso
     delay(2000);
     deteccionPulso();
@@ -737,18 +740,25 @@ void Mezclas::calcularVolumen()
   volumenAceite= porcentajeAceite * 37.5;
   pesoAceiteDeseado  = volumenAceite * DENSIDAD_ACEITE;
   EEPROM.put(VOL_ACEITE_ADRESS, pesoAceiteDeseado);
-  lcd.clear();
-  delay(20);
-  lcd.setCursor(0,0);
-  lcd.print("% DE OIL: ");
-  lcd.setCursor(12,0);
-  lcd.print(porcentajeAceite);
-  /*lcd.setCursor(0,1);
-  lcd.print("VOLUMEN: ");
-  lcd.setCursor(10,1);
-  lcd.print(pesoAceiteDeseado);
-  lcd.setCursor(14,1);
-  lcd.print("ML");*/
+  if(idioma==0)
+  {
+    lcd.clear();
+    delay(20);
+    lcd.setCursor(0,0);
+    lcd.print("% DE ACEITE: ");
+    lcd.setCursor(13,0);
+    lcd.print(porcentajeAceite);
+  }
+  else
+  {
+    lcd.clear();
+    delay(20);
+    lcd.setCursor(0,0);
+    lcd.print("% OF OIL: ");
+    lcd.setCursor(13,0);
+    lcd.print(porcentajeAceite);
+  }
+  
   delay(6000);
 
   // Calculos de la cantidad de Souji
@@ -756,18 +766,24 @@ void Mezclas::calcularVolumen()
   volumenSouji = porcentajeSouji * 37.5;
   pesoSoujiDeseado = volumenSouji * DENSIDAD_SOUJI;
   EEPROM.put(VOL_SOUJI_ADRESS, pesoSoujiDeseado);
-  lcd.clear();
-  delay(20);
-  lcd.setCursor(0,0);
-  lcd.print("% DE SOUJI: ");
-  lcd.setCursor(12,0);
-  lcd.print(porcentajeSouji);
-  /*lcd.setCursor(0,1);
-  lcd.print("VOLUMEN: ");
-  lcd.setCursor(10,1);
-  lcd.print(pesoSoujiDeseado);
-  lcd.setCursor(14,1);
-  lcd.print("ML");*/
+  if(idioma==0)
+  {
+    lcd.clear();
+    delay(20);
+    lcd.setCursor(0,0);
+    lcd.print("% DE SOUJI: ");
+    lcd.setCursor(13,0);
+    lcd.print(porcentajeSouji);
+  }
+  else
+  {
+    lcd.clear();
+    delay(20);
+    lcd.setCursor(0,0);
+    lcd.print("% OF SOUJI: ");
+    lcd.setCursor(13,0);
+    lcd.print(porcentajeSouji);
+  }
   delay(6000);
 
   // Calculos de la cantidad de Agua que es lo que queda
@@ -776,18 +792,24 @@ void Mezclas::calcularVolumen()
   volumenAgua = porcentajeAgua * 38;
   pesoAguaDeseado = volumenAgua;
   EEPROM.put(VOL_AGUA_ADRESS, pesoAguaDeseado);
-  lcd.clear();
-  delay(20);
-  lcd.setCursor(0,0);
-  lcd.print("% DE AGUA: ");
-  lcd.setCursor(12,0);
-  lcd.print(porcentajeAgua);
-  /*lcd.setCursor(0,1);
-  lcd.print("VOLUMEN: ");
-  lcd.setCursor(10,1);
-  lcd.print(pesoAguaDeseado);
-  lcd.setCursor(14,1);
-  lcd.print("ML");*/
+  if(idioma==0)
+  {
+    lcd.clear();
+    delay(20);
+    lcd.setCursor(0,0);
+    lcd.print("% DE AGUA: ");
+    lcd.setCursor(13,0);
+    lcd.print(porcentajeAgua);
+  }
+  else
+  {
+    lcd.clear();
+    delay(20);
+    lcd.setCursor(0,0);
+    lcd.print("% OF WATER: ");
+    lcd.setCursor(13,0);
+    lcd.print(porcentajeAgua);
+  }
   delay(6000);
 }
 
@@ -796,20 +818,19 @@ void Mezclas::echarLiquido(int16_t pesoPorechar)
   // Encender la bomba correspondiente
   encenderBombaCorrespondiente();
 
-  unsigned long tiempoInicioMezcla = millis(); 
-  unsigned long tiempoUltimaVariacion = millis();
+  //tiempoInicioMezcla = millis(); 
+  tiempoUltimaVariacion = millis();
   pesoLiquido = PesoActual();
   pesoRelative = 0;
 
   EEPROM.get(PESO_RELATIVO_ADDRESS, pesoRelative);
-  // Mostrar el mensaje adecuado en el LCD
   mostrarLiquido();
   
   while(pesoRelative < pesoPorechar)
   { 
     deteccionPulso();
     mostrarLiquido();  
-   
+    /*
     if (millis() - tiempoInicioMezcla > tiempoErrorBomba)
     {
       lcd.clear();
@@ -820,7 +841,7 @@ void Mezclas::echarLiquido(int16_t pesoPorechar)
       apagarBombas();
       return;
     }
-    
+    */
     nuevoPesoActual = PesoActual();
     if (abs(nuevoPesoActual - pesoLiquido) > 50) 
     {
@@ -828,11 +849,13 @@ void Mezclas::echarLiquido(int16_t pesoPorechar)
       pesoRelative += nuevoPesoActual - pesoLiquido;
       pesoLiquido = nuevoPesoActual;
       EEPROM.put(PESO_RELATIVO_ADDRESS, pesoRelative);
+      //tiempoPasadoMezcla = millis() - tiempoInicioMezcla;
+      tiempoPasadoAgotado = millis() -  tiempoUltimaVariacion;
       updateProgressBar(pesoRelative, pesoPorechar, 1);
     }
 
-    // Verificar si no ha habido cambios significativos durante más de 10 segundos
-    if (millis() - tiempoUltimaVariacion > 30000) 
+    // Verificar si no ha habido cambios significativos durante más de 30 segundos
+    if (millis() - tiempoUltimaVariacion > tiempoAgotado) 
     {
       mostrarAgotado();
       apagarBombas();
@@ -925,23 +948,8 @@ void Mezclas::deteccionPulso()
 {
   if(botonPausa.pulsado())
   {
-      unsigned long tiempoPulsado = millis();
-      while(botonPausa.pulsado())
-      {
-        if (millis() - tiempoPulsado > 2000) 
-        {
-          lcd.clear();
-          delay(20);
-          lcd.setCursor(0,0);
-          lcd.print("CANCELADO...");
-          delay(4000);
-          motorMezclador.cancelar();
-          return;
-        }
-        delay(20);
-      }
-
       pausarMezcla();
+
       // Espera a que se salga del estado de pausa
       while (enPausa) 
       {
@@ -952,6 +960,8 @@ void Mezclas::deteccionPulso()
         }
         delay(100); 
       }
+      //tiempoInicioMezcla += (millis() - tiempoInicioMezcla) - tiempoPasadoMezcla;
+      tiempoUltimaVariacion  += (millis() - tiempoUltimaVariacion) - tiempoPasadoAgotado;
       encenderBombaCorrespondiente();
   }
 }

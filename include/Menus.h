@@ -42,6 +42,7 @@ class Menus
         int IndexCantidad = 0;
         bool variarCantidad = false;        
         int Cantidad_Souji[5] = {5, 10, 15, 20, 25};
+        bool mostrarLitros = false;
         bool mostrarLitrosMensuales = false;
         // Variables de la gestion de fecha
         bool definirFecha = false;

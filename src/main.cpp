@@ -38,7 +38,6 @@ void setup()
 
   mySerial.begin(4800);
   delay(100);
-  //mySerial.println("Programa INICIADO");
   menu.lcd_init();
   menu.iniciando();
   mezclas.resetearTodo();

@@ -51,24 +51,7 @@ void Motor::ajustarRpms(uint64_t tiempoMezcla)
     {
         if(botonPausado.pulsado())
         {
-            unsigned long tiempoPulsado = millis();
-
-            while(botonPausado.pulsado())
-            {
-                if (millis() - tiempoPulsado > 3000) 
-                {
-                    lcd.clear();
-                    delay(20);
-                    lcd.setCursor(0,0);
-                    lcd.print("CANCELADO...");
-                    delay(4000);
-                    cancelar();
-                    return;
-                }
-                delay(20);
-            }
-
-            pausado();
+           pausado();
 
             // Espera a que se salga del estado de pausa
             while (enPausa) 

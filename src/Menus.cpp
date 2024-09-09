@@ -58,6 +58,7 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     menuPrincipal = true;
     menuProgramador = false;
     mostrarLitrosMensuales = false;
+    mostrarLitros = false;
     inSubMenu = false;
     mezcla.mezclando = false;
     menuIndex = 0;
@@ -66,28 +67,28 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
       if(idioma == 0)
       {
         lcd.setCursor(0,0);
-        lcd.print("CANTIDAD SOUJI");
-        lcd.setCursor(0,1);
-        lcd.print("LITROS:");
-        lcd.setCursor(9,1);
+        lcd.print("CANTIDAD SOUJI:");
+        lcd.setCursor(1,1);
         lcd.print(Cantidad_Souji[IndexCantidad]);
-        lcd.setCursor(11,1);
+        lcd.setCursor(3,1);
         lcd.print("/");
-        lcd.setCursor(12,1);
+        lcd.setCursor(4,1);
         lcd.print("25");
+        lcd.setCursor(9,1);
+        lcd.print("LITROS");
       }
       else
       {
-        lcd.setCursor(2,0);
-        lcd.print("SOUJI AMOUNT");
-        lcd.setCursor(0,1);
-        lcd.print("LITERS:");
-        lcd.setCursor(9,1);
+        lcd.setCursor(0,0);
+        lcd.print("SOUJI AMOUNT:");
+        lcd.setCursor(1,1);
         lcd.print(Cantidad_Souji[IndexCantidad]);
-        lcd.setCursor(11,1);
+        lcd.setCursor(3,1);
         lcd.print("/");
-        lcd.setCursor(12,1);
+        lcd.setCursor(4,1);
         lcd.print("25");
+        lcd.setCursor(9,1);
+        lcd.print("LITERS");
       }
     }
     else
@@ -102,6 +103,7 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
   {
     mezcla.estado = 0;
     EEPROM.put(STATUS_ADRESS, mezcla.estado);
+    mostrarLitros = true;
     mostrarLitrosMensuales = false;
     if(mes == 0)mes =1;
     if(idioma == 0)
@@ -124,6 +126,7 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
   if (pantalla == 2)
   { 
     EEPROM.get(LITROS_TOTALES_DIRECCION, litrosTotales);
+    mostrarLitros = false;
     if(idioma==0)
     {
       lcd.setCursor(0,0);
@@ -147,6 +150,7 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
   // El Menu de la FECHA
   if (pantalla == 3)
   { 
+    vacioAutomatico = false;
     EEPROM.get(DAY_ADDRESS, dia);
     EEPROM.get(MONTH_ADDRESS, mes);
     EEPROM.get(YEAR_ADDRESS, anio);
@@ -178,7 +182,7 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
   // El Menu de Vaciar Deposito
   if (pantalla == 4)
   {
-    //vacioAutomatico = false;
+    vacioAutomatico = true;
     if(idioma==0)
     {
       lcd.setCursor(5,0);
@@ -198,6 +202,7 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
   // El Menu de Calibracion de Bascula
   if (pantalla == 5)
   {
+    vacioAutomatico = false;
     elegirCalibracion = false;
     //mostrarPeso = false;
     if(idioma==0)
@@ -224,15 +229,15 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     {
       lcd.setCursor(2,0);
       lcd.print("SELECCIONAR");
-      lcd.setCursor(4,1);
-      lcd.print("LENGUAJE");
+      lcd.setCursor(2,1);
+      lcd.print("EL LENGUAJE");
     }
     else
     {
       lcd.setCursor(5,0);
       lcd.print("SELECT");
-      lcd.setCursor(4,1);
-      lcd.print("LANGUAGE");
+      lcd.setCursor(2,1);
+      lcd.print("THE LANGUAGE");
     }
   }
 
@@ -268,12 +273,12 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
   // El SubMenu de Litros Mensuales
   if (pantalla == 8)
   {
+    mostrarLitrosMensuales = true;
     for (int i = 0; i < 13; ++i) 
     {
       int direccion = LITROS_MENSUALES_DIRECCION + i * TAMANIO_DATOS_MENSUALES;
       EEPROM.get(direccion, litrosMensuales[i]);
     }
-    mostrarLitrosMensuales = true;
     displayLitrosMensuales();
   }
 
@@ -297,6 +302,7 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
   {
     //vacioAutomatico = true;
     vaciandoDeposito();
+    vacioAutomatico = false;
     PantallaSeleccionada(0);
     /*if(idioma==0)
     {
@@ -397,7 +403,8 @@ void Menus::entrarSubMenu()
       Menus::PantallaSeleccionada(7);
       break;
       case 1:
-      Menus::PantallaSeleccionada(8);
+      inSubMenu = false;
+      Menus::PantallaSeleccionada(1);
       break;
       case 2:
       inSubMenu = false;
@@ -407,7 +414,8 @@ void Menus::entrarSubMenu()
       Menus::PantallaSeleccionada(10);
       break;
       case 4:
-      Menus::PantallaSeleccionada(11);
+      inSubMenu = false;
+      Menus::PantallaSeleccionada(4);
       break;
       case 5:
       Menus::PantallaSeleccionada(12);
@@ -578,67 +586,6 @@ void Menus::PantallaProgramador(uint8_t pantallaProg)
       lcd.print("PRESS SELECT");
     }
   }
-/*
-  // SUBMENU de Ajustar la cantidad del ACEITE
-  if (pantallaProg == 5)
-  {
-    ajustarAceite = true;
-    if(idioma==0)
-    {
-      lcd.setCursor(1,0);
-      lcd.print("AJUSTAR ACEITE");
-      lcd.setCursor(2,1);
-      lcd.print("PULSE SELECT");
-    }
-    else
-    {
-      lcd.setCursor(1,0);
-      lcd.print("SETTING OIL");
-      lcd.setCursor(2,1);
-      lcd.print("PRESS SELECT");
-    }
-  }
-
-  // SUBMENU de Ajustar la cantidad del SOUJI
-  if (pantallaProg == 6)
-  {
-    ajustarSouji = true;
-    if(idioma==0)
-    {
-      lcd.setCursor(1,0);
-      lcd.print("AJUSTAR SOUJI");
-      lcd.setCursor(2,1);
-      lcd.print("PULSE SELECT");
-    }
-    else
-    {
-      lcd.setCursor(1,0);
-      lcd.print("SETTING SOUJI");
-      lcd.setCursor(2,1);
-      lcd.print("PRESS SELECT");
-    }
-
- 
-  // Pantalla de Ajustar LA VELOCIDAD DEL MOTOR
-  if (pantallaProg == 8)
-  {
-    validarRpms = false;
-    accederRpms = true;
-    if(idioma==0)
-    {
-      lcd.setCursor(1,0);
-      lcd.print("PARA MODIFICAR");
-      lcd.setCursor(2,1);
-      lcd.print("PULSE SELECT");
-    }
-    else
-    {
-      lcd.setCursor(4,0);
-      lcd.print("TO MODIFY");
-      lcd.setCursor(3,1);
-      lcd.print("PRESS SELECT");
-    }
-  }*/
 }
 
 void Menus::entrarMenuProg()
@@ -728,7 +675,11 @@ void Menus::modificarBotonSet()
   }
   else if(menuProgramador)
   {
-    if(ajustarAceite && !validarAjusteAceite)
+    if(modoProg)
+    {
+      PantallaProgramador(0);
+    }
+    else if(ajustarAceite && !validarAjusteAceite)
     {
       validarAjusteAceite = true;
       ajustandoAceite = true;
@@ -763,19 +714,15 @@ void Menus::modificarBotonSel()
 {
   if (menuPrincipal)
   {
-    /*if(definirFecha && !bascularFecha)
-    {
-      //bascularFecha = true;
-      ajustarFecha();
-    } */
     if(definirFecha && bascularFecha)
     {
       pasarFecha();
     }
-    /*else if(iniciarCalibracion)
+    else if(mostrarLitros)
     {
-      iniciarCaliBascula();
-    }*/
+      mostrarLitros = false;
+      PantallaSeleccionada(8);
+    }
     else if(calibrarPeso)
     {
       talarBascula();
@@ -784,13 +731,11 @@ void Menus::modificarBotonSel()
     {
       calibrarEscala();
     }
-    /*else if(mostrarPeso)
-    {
-      mostrarElPeso();
-    }*/
     else if(vacioAutomatico)
     {
       vaciandoDeposito();
+      vacioAutomatico = false;
+      PantallaSeleccionada(0);
     }
     else if(variarCantidad)
     {
@@ -900,12 +845,12 @@ void Menus::decrementandoIndex()
 {
   if(menuPrincipal)
   {
-    if(!inSubMenu && menuIndex < 6) 
+    if(!inSubMenu && menuIndex < 6 && !mostrarLitrosMensuales) 
     {
       menuIndex++;
       updateMenuDisplay();
     }
-    else if(inSubMenu && variarCantidad && IndexCantidad > 0)
+    else if(inSubMenu && variarCantidad && IndexCantidad > 0 && !mostrarLitrosMensuales)
     {                      
       IndexCantidad--; 
       updateCantidadSouji();
@@ -972,12 +917,12 @@ void Menus::incrementandoIndex()
 {
   if(menuPrincipal)
   {
-    if(!inSubMenu && menuIndex > 0)
+    if(!inSubMenu && menuIndex > 0 && !mostrarLitrosMensuales)
     {
       menuIndex--;
       updateMenuDisplay(); 
     }
-    else if(inSubMenu && variarCantidad && IndexCantidad < 4)
+    else if(inSubMenu && variarCantidad && IndexCantidad < 4 && !mostrarLitrosMensuales)
     {
       IndexCantidad++;
       updateCantidadSouji();
@@ -1541,7 +1486,7 @@ void Menus::inicializarEEPROM()
     EEPROM.get(INIT_CHECK_ADDRESS, initCheck);
     if (initCheck != 12345) 
     {
-        EEPROM.put(DAY_ADDRESS, 4); // Día inicial
+        EEPROM.put(DAY_ADDRESS, 9); // Día inicial
         EEPROM.put(MONTH_ADDRESS, 9); // Mes inicial
         EEPROM.put(YEAR_ADDRESS, 2024); // Año inicial
         EEPROM.put(RPMS_ADRESS, 1500); // RPMs del motor inicial
