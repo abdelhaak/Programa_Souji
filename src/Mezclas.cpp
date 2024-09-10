@@ -703,7 +703,6 @@ void Mezclas::mezclaVacio()
   while(PesoActual() > elPesoMinimo)
   {
     deteccionPulso();
-
     lcd.setCursor(0,0);
     lcd.print("VACIANDO ....");
     pesoActual = PesoActual();
@@ -721,9 +720,9 @@ void Mezclas::mezclaVacio()
       bombaVacio.off();
       return;
     }
-  
+    deteccionPulso();
     updateProgressBar(pesoVaciado, pesoTotalAVaciar, 1); // Actualizar la barra de progreso
-    delay(2000);
+    delay(1000);
     deteccionPulso();
     lcd.clear();
     delay(20);
@@ -968,8 +967,8 @@ void Mezclas::deteccionPulso()
 
 void Mezclas::pausarMezcla()
 {
-  Pantallamezcla(8);
   apagarBombas();
+  Pantallamezcla(8);
   enPausa = true;
 }
 
@@ -992,15 +991,19 @@ void Mezclas::encenderBombaCorrespondiente()
   {
     case 1:
       bombaAceite.on();
-    break;
+      break;
     case 2:
       bombaSouji.on();
-    break;
+      break;
     case 4:
       bombaAgua.on();
-    break;
+      break;
+    case 6:
+      bombaVacio.on();
+      break;
   }
 }
+
 void Mezclas::apagarBombas()
 {
    switch (estado2)
@@ -1013,6 +1016,9 @@ void Mezclas::apagarBombas()
       break;
     case 4:
       bombaAgua.off();
+      break;
+    case 6:
+      bombaVacio.off();
       break;
   }
 }
@@ -1099,7 +1105,7 @@ void Mezclas::vacioGeneral()
 void Mezclas::verificarPeso()
 {
   peso=PesoActual();
-  if(peso>200)
+  if(peso>300)
   {
     estado = 3;
   }
