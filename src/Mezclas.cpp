@@ -736,7 +736,7 @@ void Mezclas::calcularVolumen()
 
   // Calculos de la cantidad de Aceite
   EEPROM.get(PORCENTAJE_ACEITE_ADRESS, porcentajeAceite);
-  volumenAceite= porcentajeAceite * 37.5;
+  volumenAceite= porcentajeAceite * 30;
   pesoAceiteDeseado  = volumenAceite * DENSIDAD_ACEITE;
   EEPROM.put(VOL_ACEITE_ADRESS, pesoAceiteDeseado);
   if(idioma==0)
@@ -762,7 +762,7 @@ void Mezclas::calcularVolumen()
 
   // Calculos de la cantidad de Souji
   EEPROM.get(PORCENTAJE_SOUJI_ADRESS, porcentajeSouji);
-  volumenSouji = porcentajeSouji * 37.5;
+  volumenSouji = porcentajeSouji * 30;
   pesoSoujiDeseado = volumenSouji * DENSIDAD_SOUJI;
   EEPROM.put(VOL_SOUJI_ADRESS, pesoSoujiDeseado);
   if(idioma==0)
@@ -788,7 +788,7 @@ void Mezclas::calcularVolumen()
   // Calculos de la cantidad de Agua que es lo que queda
   int16_t porcentajeAgua = 0;
   porcentajeAgua  = 100 - (porcentajeAceite + porcentajeSouji);
-  volumenAgua = porcentajeAgua * 38;
+  volumenAgua = porcentajeAgua * 30;
   pesoAguaDeseado = volumenAgua;
   EEPROM.put(VOL_AGUA_ADRESS, pesoAguaDeseado);
   if(idioma==0)

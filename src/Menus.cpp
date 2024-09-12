@@ -1486,7 +1486,7 @@ void Menus::inicializarEEPROM()
     EEPROM.get(INIT_CHECK_ADDRESS, initCheck);
     if (initCheck != 12345) 
     {
-        EEPROM.put(DAY_ADDRESS, 9); // Día inicial
+        EEPROM.put(DAY_ADDRESS, 12); // Día inicial
         EEPROM.put(MONTH_ADDRESS, 9); // Mes inicial
         EEPROM.put(YEAR_ADDRESS, 2024); // Año inicial
         EEPROM.put(RPMS_ADRESS, 1500); // RPMs del motor inicial
