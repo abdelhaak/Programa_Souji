@@ -32,22 +32,25 @@ class Menus
     private:
         LiquidCrystal &lcd;
         Stream &serial; 
-        bool mezclar5Litros = false;
+        
         // Variables del menu principal 
         uint8_t misPantallas=0;
-        
-        
         bool cambiarIdioma = false;
+        bool mezclar5Litros = false;
+        uint8_t misPantallasMezc = 0;
+
         // Variables de la cantidad SOUJI
         int IndexCantidad = 0;
         bool variarCantidad = false;        
         int Cantidad_Souji[5] = {5, 10, 15, 20, 25};
         bool mostrarLitros = false;
         bool mostrarLitrosMensuales = false;
+
         // Variables de la gestion de fecha
         bool definirFecha = false;
         bool bascularFecha = false;
         int editIndex = 0;
+
         // Variables de la gestion de la galga
         bool iniciarCalibracion = false;
         bool calibrarPeso = false;
@@ -56,19 +59,14 @@ class Menus
         bool mostrarPeso = false;
         int16_t elPeso = 0.0;
         bool elegirCalibracion = false;
+
         // Variables del vacio automatico
-        
         bool vaciando = false;
         bool validarRpms = false;
 
-        // Variables de las mezclas
-        uint8_t misPantallasMezc = 0;
-        
-        
         // Variables del menu programador 
         uint8_t misPantallasProg=0;
         bool modoProg=false;
-        
         bool SubMenuProgamador = false;
         int menuProgIndex = 0;
         bool inSubMenuProg = false;
@@ -82,16 +80,18 @@ class Menus
                
     public:
         Menus(LiquidCrystal &display,Stream &serial);
-        //Menus();
         void lcd_init();
-        int menuIndex ;  
+
+        // Variables publicas del menu principal 
+        int menuIndex = 0;  
         bool inSubMenu = false;
         bool menuProgramador = false;
         bool menuPrincipal = false;
         bool vacioAutomatico = false;
         bool validarAjusteAceite = false;
         bool validarAjusteSouji = false;
-        // Variables del menu principal
+
+        // Funciones del menu principal
         void PantallaSeleccionada(uint8_t pantalla);
         void updateMenuDisplay();
         void updateCantidadSouji();
@@ -122,7 +122,10 @@ class Menus
         void vaciandoDeposito();
         void finalizarCiclo();
 
-        // Variables del menu programador
+        void decrementandoIndex();
+        void incrementandoIndex();
+
+        // Funciones del menu programador
         void PantallaProgramador(uint8_t pantallaProg);
         void modificarBotonPro();
         void entrarMenuProg();
@@ -133,11 +136,7 @@ class Menus
         void ReseteoTotalVerif();
         void ReseteoTotal();
         void resetearLitrosMensuales();
-
-        void decrementandoIndex();
-        void decrementandoIndexRapido();
-        void incrementandoIndexRapido();
-        void incrementandoIndex();
+        
 };
 
 #endif

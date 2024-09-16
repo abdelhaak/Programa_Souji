@@ -17,12 +17,6 @@ void rtc_init()
 {
   rtc.begin();
   Tiempo = rtc.now();
-  /*dia = Tiempo.day();
-  mes = Tiempo.month();
-  anio = Tiempo.year();
-  EEPROM.put(DAY_ADDRESS, dia); 
-  EEPROM.put(MONTH_ADDRESS, mes); 
-  EEPROM.put(YEAR_ADDRESS, anio); */
   EEPROM.put(DAY_ADDRESS, 9); // Día inicial
   EEPROM.put(MONTH_ADDRESS, 9); // Mes inicial
   EEPROM.put(YEAR_ADDRESS, 2024); // Año inicial

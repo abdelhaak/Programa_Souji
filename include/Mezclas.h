@@ -13,6 +13,7 @@
 
 extern SoftwareSerial mySerial;
 
+// Pines de las bombas
 #define PIN_BOMBA_ACEITE 13
 #define PIN_BOMBA_SOUJI 12
 #define PIN_BOMBA_AGUA 10
@@ -33,8 +34,6 @@ extern SoftwareSerial mySerial;
 #define VOL_AGUA_ADRESS 64
 #define I_MEZCLAS_ADRESS 66
 #define PESO_ACEITE_ACTUAL_ADRESS 68
-#define PESO_SOUJI_ACTUAL_ADRESS 70
-#define PESO_AGUA_ACTUAL_ADRESS 72
 #define PESO_RELATIVO_ADDRESS 74
 
 //extern bool enPausa;
@@ -66,6 +65,7 @@ class Mezclas
     public:
         Mezclas(SoftwareSerial& serial);
         void init();
+
         void checkStatus();  
         void parado();
         void Pantallamezcla(uint8_t pantallamezcla);
@@ -93,14 +93,14 @@ class Mezclas
 
         bool enPausa = false;
         bool mezclando = false;
-        int numMezclas;
-        int estado;
-        int estado2;
-        int i_mezclas;
-        int16_t porcentajeAceite;
-        int16_t porcentajeSouji;
-        int16_t pesoLiquido;
-        int16_t pesoRelative;
+        int numMezclas = 0;
+        int estado = 0;
+        int estado2 = 0;
+        int i_mezclas = 0;
+        int16_t porcentajeAceite = 30;
+        int16_t porcentajeSouji = 50;
+        int16_t pesoLiquido = 0;
+        int16_t pesoRelative = 0;
 };
 
 #endif

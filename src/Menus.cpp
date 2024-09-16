@@ -31,8 +31,6 @@ void Menus::lcd_init()
 {  
   lcd.begin(16,2);
   motor.pararMotor();
-  //Timer1.initialize(100);
-  //Timer1.pwm(motor.pin,512);
 }
 
 ///////////////// Pantallas del MENU Principal   /////////////////
@@ -304,24 +302,6 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     vaciandoDeposito();
     vacioAutomatico = false;
     PantallaSeleccionada(0);
-    /*if(idioma==0)
-    {
-      lcd.clear();
-      delay(20);
-      lcd.setCursor(1,0);
-      lcd.print("INICIAR VACIO");
-      lcd.setCursor(2,1);
-      lcd.print("PULSE SELECT");
-    }
-    else
-    {
-      lcd.clear();
-      delay(20);
-      lcd.setCursor(2,0);
-      lcd.print("START VACUUM");
-      lcd.setCursor(2,1);
-      lcd.print("PRESS SELECT");
-    }*/
   }
   
   // El SubMenu de Calibracion
@@ -904,14 +884,6 @@ void Menus::decrementandoIndex()
   } 
 }
 
-void Menus::decrementandoIndexRapido()
-{
-  if(definirFecha)
-  {
-    bajaFechaRapido();
-    displayFecha();
-  }
-}
 
 void Menus::incrementandoIndex() 
 {
@@ -976,15 +948,6 @@ void Menus::incrementandoIndex()
     }
     else
     {}
-  }
-}
-
-void Menus::incrementandoIndexRapido()
-{
-  if(definirFecha)
-  {
-    subeFechaRapido();
-    displayFecha();
   }
 }
 

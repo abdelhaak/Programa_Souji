@@ -18,21 +18,14 @@ class Boton
         bool UltimaLectura;
         bool pulso;
         bool pulsado_largo;
-        uint64_t  UltimoTiempoPulsado;
+        uint64_t  ultimoTiempoPulsado;
         const unsigned long TIEMPO_PULSO_LARGO = 2000; // 2 segundos
-        uint64_t TiempoPulsado = 1000;
-        uint64_t t_mantenido = 0;
-        uint64_t t_pulsado = 0;
-        uint16_t mantener = 2500;
-        uint16_t mantenerDelay = 200;
-        //uint16_t ultimoCambioTiempo;
 
     public:
         Boton(byte pin);
         void init();
         void update();
         bool pulsado();
-        bool pulsadoLargo();
 };
 
 #endif

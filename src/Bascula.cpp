@@ -23,7 +23,7 @@ void balanza_Setup()
     balanza.set_scale(escala); 
     EEPROM.get(TARE_ADRESS, ultima_tara);
     balanza.tare(ultima_tara);
-    delay(1500); 
+    delay(500); 
     EEPROM.get(PESO_ADRESS, peso);
     balanza.set_offset(balanza.get_offset() - (peso * balanza.get_scale()));
 }

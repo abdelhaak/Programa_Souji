@@ -35,9 +35,7 @@ class Motor
         int rpmS();  
         void cargarRpms();
         void pausado();
-        void cancelar();
-
-        
+        void cancelar();      
 };
 
 #endif

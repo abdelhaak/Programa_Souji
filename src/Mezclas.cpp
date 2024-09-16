@@ -245,9 +245,6 @@ void Mezclas::mezclaGeneral(int mezclas)
           EEPROM.get(VOL_ACEITE_ADRESS, pesoAceiteDeseado);
           lcd.clear();
           delay(20);
-          lcd.setCursor(0,0);
-          lcd.print("ECHAMOS ACEITE :");
-          delay(4000);
           Pantallamezcla(1);
           delay(20);
           echarLiquido(pesoAceiteDeseado);
@@ -260,9 +257,6 @@ void Mezclas::mezclaGeneral(int mezclas)
           EEPROM.get(VOL_SOUJI_ADRESS, pesoSoujiDeseado);
           lcd.clear();
           delay(20);
-          lcd.setCursor(0,0);
-          lcd.print("ECHAMOS SOUJI :");
-          delay(4000);
           Pantallamezcla(2);
           delay(100);
           echarLiquido(pesoSoujiDeseado);
@@ -289,7 +283,7 @@ void Mezclas::mezclaGeneral(int mezclas)
           lcd.clear();
           delay(20);
           lcd.setCursor(0,0);
-          lcd.print("ECHAMOS AGUA :");
+          lcd.print("ECHANDO AGUA");
           delay(30000);
           Pantallamezcla(3);
           echarLiquido(pesoAguaDeseado);
@@ -313,26 +307,6 @@ void Mezclas::mezclaGeneral(int mezclas)
         {
           Pantallamezcla(6);
           mezclaVacio();
-          if(idioma==0)
-          {
-            lcd.clear();
-            delay(10);
-            lcd.setCursor(4,0);
-            lcd.print("MEZCLA ");
-            lcd.setCursor(2,1);
-            lcd.print("FINALIZADA");
-            finMezcla = true ;
-          }
-          else
-          {
-            lcd.clear();
-            delay(10);
-            lcd.setCursor(1,0);
-            lcd.print("THE MIX IS ");
-            lcd.setCursor(2,1);
-            lcd.print("COMPLETED");
-            finMezcla = true ;
-          } 
           delay(2000);   
         }
       } 
@@ -344,7 +318,6 @@ void Mezclas::mezclaGeneral(int mezclas)
       Pantallamezcla(7);
       delay(8000);
       menus.finalizarCiclo();
-      //menus.PantallaSeleccionada(0);
     }
     // Error de verificacion y peso superior a lo normal
     if(estado == 3)
@@ -574,29 +547,6 @@ void Mezclas::Pantallamezcla(uint8_t pantallamezcla)
     }
   }
 
-  // Pantalla de REANUDAR
-  if (pantallamezcla == 9)
-  {
-    if(idioma==0)
-    {
-      lcd.clear();
-      delay(20);
-      lcd.setCursor(3,0);
-      lcd.print("ESTAMOS ");
-      lcd.setCursor(0,1);
-      lcd.print("REANUDANDO ...");
-    }
-    else
-    {
-      lcd.clear();
-      delay(20);
-      lcd.setCursor(5,0);
-      lcd.print("WE ARE ");
-      lcd.setCursor(1,1);
-      lcd.print("RESUMING ...");
-    }
-  }
-
   // Pantalla de Ajuste de PORCENTAJE ACEITE
   if (pantallamezcla == 10)
   {
@@ -688,18 +638,13 @@ void Mezclas::mezclaVacio()
   int16_t pesoVaciado;
   int16_t pesoActual; 
   int16_t pesoTotalAVaciar = pesoInicial - elPesoMinimo;
-  lcd.clear();
-  delay(20);
-  lcd.setCursor(0,0);
-  lcd.print("VOL POR VACIAR:");
-  lcd.setCursor(0,1);
-  lcd.print(pesoInicial);
-  lcd.setCursor(6,1);
-  lcd.print("ML");
-  delay(8000);
+  
   
   bombaVacio.on();
-  
+
+  lcd.clear();
+  delay(20);
+
   while(PesoActual() > elPesoMinimo)
   {
     deteccionPulso();
@@ -829,18 +774,6 @@ void Mezclas::echarLiquido(int16_t pesoPorechar)
   { 
     deteccionPulso();
     mostrarLiquido();  
-    /*
-    if (millis() - tiempoInicioMezcla > tiempoErrorBomba)
-    {
-      lcd.clear();
-      delay(20);
-      lcd.setCursor(1,0);
-      lcd.print("ERROR BOMBA");
-      delay(8000);
-      apagarBombas();
-      return;
-    }
-    */
     nuevoPesoActual = PesoActual();
     if (abs(nuevoPesoActual - pesoLiquido) > 50) 
     {
