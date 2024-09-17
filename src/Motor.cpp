@@ -41,7 +41,6 @@ void Motor::contarPulsos()
 void Motor::ajustarRpms(uint64_t tiempoMezcla)
 {
     //int valorPwm = map(rpms,0,3300,0,255); 
-    
     analogWrite(pin,130);
     
     //Timer1.setPwmDuty(pin, 512);
@@ -65,12 +64,12 @@ void Motor::ajustarRpms(uint64_t tiempoMezcla)
             }
             // Actualiza el tiempo de inicio para compensar el tiempo pausado
             tiempoInicio += (millis() - tiempoInicio) - tiempoPasado;
-            mezclado.Pantallamezcla(4);
+            mezclado.Pantallamezcla(12);
             analogWrite(pin,130);
         }
         tiempoPasado = millis() - tiempoInicio;
-        updateProgressBar(tiempoPasado, tiempoMezcla, 1);  
-        delay(200);
+        //updateProgressBar(tiempoPasado, tiempoMezcla, 1);  
+        delay(100);
     }
     pararMotor();
 }
@@ -229,21 +228,17 @@ void Motor::pausado()
 {
     if(idioma==0)
     {
-        lcd.clear();
-        delay(20);
-        lcd.setCursor(5,0);
-        lcd.print("MEZCLA");
-        lcd.setCursor(4,1);
-        lcd.print("PAUSADA");
+      lcd.clear();
+      delay(20);
+      lcd.setCursor(4,0);
+      lcd.print("EN PAUSA");
     }
     else
     {
-        lcd.clear();
-        delay(20);
-        lcd.setCursor(3,0);
-        lcd.print("MIXING IS");
-        lcd.setCursor(5,1);
-        lcd.print("PAUSED");
+      lcd.clear();
+      delay(20);
+      lcd.setCursor(4,0);
+      lcd.print("IN PAUSE");
     }
     pararMotor();
     enPausa = true;

@@ -88,7 +88,6 @@ void Mezclas::mezclaGeneral(int mezclas)
       Pantallamezcla(0);
       delay(4000);
       verificarPeso();
-      //estado = 1;
       EEPROM.put(STATUS_ADRESS, estado);
     }
     // Calculamos el volumen de cada liquido
@@ -105,7 +104,7 @@ void Mezclas::mezclaGeneral(int mezclas)
     {
       if(mezclas > 1)
       {
-        lcd.clear();
+        /*lcd.clear();
         delay(20);
         lcd.setCursor(0,0);
         lcd.print("HACEMOS:");
@@ -114,6 +113,9 @@ void Mezclas::mezclaGeneral(int mezclas)
         lcd.setCursor(3,1);
         lcd.print("MEZCLAS:");
         delay(6000);
+        */
+        Pantallamezcla(12);
+
         for(i_mezclas=0; i_mezclas<mezclas; i_mezclas++)
         {
             EEPROM.put(I_MEZCLAS_ADRESS, i_mezclas);
@@ -121,13 +123,13 @@ void Mezclas::mezclaGeneral(int mezclas)
             if(estado2 == 1)
             {
               EEPROM.get(VOL_ACEITE_ADRESS, pesoAceiteDeseado);
-              lcd.clear();
+              /*lcd.clear();
               delay(20);
               lcd.setCursor(0,0);
               lcd.print("ECHAMOS ACEITE :");
-              delay(4000);
-              Pantallamezcla(1);
-              delay(20);
+              delay(4000);*/
+              Pantallamezcla(12);
+              //delay(20);
               echarLiquido(pesoAceiteDeseado);
               estado2 = 2;
               EEPROM.put(STATUS_2_ADRESS, estado2);
@@ -136,13 +138,13 @@ void Mezclas::mezclaGeneral(int mezclas)
             if(estado2 == 2)
             { 
               EEPROM.get(VOL_SOUJI_ADRESS, pesoSoujiDeseado);
-              lcd.clear();
+              /*lcd.clear();
               delay(20);
               lcd.setCursor(0,0);
               lcd.print("ECHAMOS SOUJI :");
-              delay(4000);
-              Pantallamezcla(2);
-              delay(100);
+              delay(4000);*/
+              Pantallamezcla(12);
+              //delay(20);
               echarLiquido(pesoSoujiDeseado);
               estado2 = 3;
               EEPROM.put(STATUS_2_ADRESS, estado2);
@@ -150,26 +152,26 @@ void Mezclas::mezclaGeneral(int mezclas)
             // Pasamos a la primera etapa de mezcla con el motor 
             if(estado2 == 3)
             { 
-              Pantallamezcla(4);
+              Pantallamezcla(12);
               motorMezclador.ajustarRpms(tiempoMezcla1);
               // Apagar el motor y pasar a la siguiente etapa
-              motorMezclador.pararMotor();
+              //motorMezclador.pararMotor();
               delay(50);
               estado2 = 4;
               EEPROM.put(STATUS_2_ADRESS, estado2);
-              delay(50);
+              //delay(50);
             }
             // echamos la cantidad adecuada de AGUA
             if(estado2 == 4)
             {
               EEPROM.get(VOL_AGUA_ADRESS, pesoAguaDeseado);
-              delay(50);
+              /*delay(50);
               lcd.clear();
               delay(20);
               lcd.setCursor(0,0);
-              lcd.print("ECHAMOS AGUA :");
-              delay(4000);
-              Pantallamezcla(3);
+              lcd.print("ECHAMOS AGUA :");*/
+              delay(30000);
+              Pantallamezcla(12);
               echarLiquido(pesoAguaDeseado);
               estado2 = 5;
               EEPROM.put(STATUS_2_ADRESS, estado2);
@@ -177,19 +179,19 @@ void Mezclas::mezclaGeneral(int mezclas)
             // Pasamos a la segunda etapa de mezcla con el motor 
             if(estado2 == 5)
             {
-              delay(50);
-              Pantallamezcla(5);
+              //delay(50);
+              Pantallamezcla(12);
               // Activamos el motor con los RPMs guardados y el tiempo adecuado
               motorMezclador.ajustarRpms(tiempoMezcla2);
               // Apagar el motor y pasar a la siguiente etapa
-              motorMezclador.pararMotor();
+              //motorMezclador.pararMotor();
               estado2 = 6;
               EEPROM.put(STATUS_2_ADRESS, estado2);
             }
             // Pasamos a la etapa del vacio
             if(estado2 == 6)
             {
-              Pantallamezcla(6);
+              Pantallamezcla(13);
               mezclaVacio();
               if(idioma==0)
               {
@@ -206,9 +208,7 @@ void Mezclas::mezclaGeneral(int mezclas)
                 delay(10000);
                 lcd.clear();
                 delay(20);
-                lcd.setCursor(2,0);
-                lcd.print("PASAMOS A LA");
-                lcd.setCursor(0,1);
+                lcd.setCursor(0,0);
                 lcd.print("SIGUIENTE MEZCLA");
                 delay(8000);
               }
@@ -227,10 +227,8 @@ void Mezclas::mezclaGeneral(int mezclas)
                 delay(10000);
                 lcd.clear();
                 delay(20);
-                lcd.setCursor(3,0);
-                lcd.print("WE MOVE TO");
-                lcd.setCursor(2,1);
-                lcd.print("THE NEXT MIX");
+                lcd.setCursor(4,0);
+                lcd.print("NEXT MIX");
                 delay(8000);
               }
             }
@@ -243,10 +241,10 @@ void Mezclas::mezclaGeneral(int mezclas)
         if(estado2 == 1)
         {
           EEPROM.get(VOL_ACEITE_ADRESS, pesoAceiteDeseado);
-          lcd.clear();
-          delay(20);
-          Pantallamezcla(1);
-          delay(20);
+          //lcd.clear();
+          //delay(20);
+          Pantallamezcla(12);
+          //delay(20);
           echarLiquido(pesoAceiteDeseado);
           estado2 = 2;
           EEPROM.put(STATUS_2_ADRESS, estado2);
@@ -255,10 +253,10 @@ void Mezclas::mezclaGeneral(int mezclas)
         if(estado2 == 2)
         {
           EEPROM.get(VOL_SOUJI_ADRESS, pesoSoujiDeseado);
-          lcd.clear();
-          delay(20);
-          Pantallamezcla(2);
-          delay(100);
+          //lcd.clear();
+          //delay(20);
+          Pantallamezcla(12);
+          //delay(100);
           echarLiquido(pesoSoujiDeseado);
           estado2 = 3;
           EEPROM.put(STATUS_2_ADRESS, estado2);
@@ -266,26 +264,26 @@ void Mezclas::mezclaGeneral(int mezclas)
         // Pasamos a la primera etapa de mezcla con el motor 
         if(estado2 == 3)
         { 
-          Pantallamezcla(4);
+          Pantallamezcla(12);
           motorMezclador.ajustarRpms(tiempoMezcla1);
           // Apagar el motor y pasar a la siguiente etapa
-          motorMezclador.pararMotor();
+          //motorMezclador.pararMotor();
           delay(50);
           estado2 = 4;
           EEPROM.put(STATUS_2_ADRESS, estado2);
-          delay(50);
+          //delay(50);
         }
         // echamos la cantidad adecuada de AGUA
         if(estado2 == 4)
         {
           EEPROM.get(VOL_AGUA_ADRESS, pesoAguaDeseado);
-          delay(50);
+          /*delay(50);
           lcd.clear();
           delay(20);
           lcd.setCursor(0,0);
-          lcd.print("ECHANDO AGUA");
+          lcd.print("ECHANDO AGUA");*/
           delay(30000);
-          Pantallamezcla(3);
+          Pantallamezcla(12);
           echarLiquido(pesoAguaDeseado);
           estado2 = 5;
           EEPROM.put(STATUS_2_ADRESS, estado2);
@@ -293,20 +291,21 @@ void Mezclas::mezclaGeneral(int mezclas)
         // Pasamos a la segunda etapa de mezcla con el motor 
         if(estado2 == 5)
         {
-          delay(50);
-          Pantallamezcla(5);
+          //delay(50);
+          Pantallamezcla(12);
           // Activamos el motor con los RPMs guardados y el tiempo adecuado
           motorMezclador.ajustarRpms(tiempoMezcla2);
           // Apagar el motor y pasar a la siguiente etapa
-          motorMezclador.pararMotor();
+          //motorMezclador.pararMotor();
           estado2 = 6;
           EEPROM.put(STATUS_2_ADRESS, estado2);
         }
         // Pasamos a la etapa del vacio
         if(estado2 == 6)
         {
-          Pantallamezcla(6);
+          Pantallamezcla(13);
           mezclaVacio();
+          finMezcla = true;
           delay(2000);   
         }
       } 
@@ -315,6 +314,7 @@ void Mezclas::mezclaGeneral(int mezclas)
     if(estado == 2 && finMezcla)
     {
       resetearTodo();
+      Pantallamezcla(14);
       Pantallamezcla(7);
       delay(8000);
       menus.finalizarCiclo();
@@ -367,23 +367,19 @@ void Mezclas::Pantallamezcla(uint8_t pantallamezcla)
     {
       lcd.clear();
       delay(20);
-      lcd.setCursor(0,0);
-      lcd.print("AHORA EMPEZAMOS");
-      lcd.setCursor(0,1);
-      lcd.print("LA MEZCLA");
-      lcd.setCursor(12,1);
-      lcd.createChar(0, Character2);
+      lcd.setCursor(4,0);
+      lcd.print("COMIENZA");
+      lcd.setCursor(2,1);
+      lcd.print("LA MAGIA  !!");
     }
     else
     {
       lcd.clear();
       delay(20);
-      lcd.setCursor(0,0);
-      lcd.print("NOW STARTING");
+      lcd.setCursor(3,0);
+      lcd.print("THE MAGIC");
       lcd.setCursor(5,1);
-      lcd.print("THE MIX");
-      lcd.setCursor(12,1);
-      lcd.createChar(0, Character2);
+      lcd.print("BEGINS");
     }
   }
 
@@ -531,19 +527,15 @@ void Mezclas::Pantallamezcla(uint8_t pantallamezcla)
     {
       lcd.clear();
       delay(20);
-      lcd.setCursor(3,0);
-      lcd.print("ESTAMOS EN");
-      lcd.setCursor(5,1);
-      lcd.print("PAUSA ..");
+      lcd.setCursor(4,0);
+      lcd.print("EN PAUSA");
     }
     else
     {
       lcd.clear();
       delay(20);
-      lcd.setCursor(2,0);
-      lcd.print("WE ARE IN");
-      lcd.setCursor(5,1);
-      lcd.print("PAUSE ...");
+      lcd.setCursor(4,0);
+      lcd.print("IN PAUSE");
     }
   }
 
@@ -604,10 +596,92 @@ void Mezclas::Pantallamezcla(uint8_t pantallamezcla)
       lcd.print("%");
     }
   }
+
+  // Pantalla Mezclando
+  if (pantallamezcla == 12)
+  {  
+    if(idioma==0)
+    {
+      lcd.clear();
+      delay(20);
+      lcd.setCursor(2,0);
+      lcd.print("MEZCLANDO...");
+    }
+    else
+    {
+      lcd.clear();
+      delay(20);
+      lcd.setCursor(3,0);
+      lcd.print("MIXING ...");
+    }
+  }
+
+  // Pantalla LIMPIAR O VACIAR
+  if (pantallamezcla == 13)
+  {  
+    if(idioma==0)
+    {
+      lcd.clear();
+      delay(20);
+      lcd.setCursor(3,0);
+      lcd.print("FABRICANDO");
+      lcd.setCursor(2,1);
+      lcd.print("EL LIMPIADOR");
+    }
+    else
+    {
+      lcd.clear();
+      delay(20);
+      lcd.setCursor(3,0);
+      lcd.print("MAKING");
+      lcd.setCursor(3,1);
+      lcd.print("THE CLEANER");
+    }
+  }
+
+  // Pantalla LA MAGIA ESTA HECHA
+  if (pantallamezcla == 14)
+  {  
+    if(idioma==0)
+    {
+      lcd.clear();
+      delay(20);
+      lcd.setCursor(2,0);
+      lcd.print("LA MAGIA ESTA");
+      lcd.setCursor(4,1);
+      lcd.print("HECHA !!");
+      delay(10000);
+      lcd.clear();
+      delay(20);
+      lcd.setCursor(2,0);
+      lcd.print("EL LIMPIADOR");
+      lcd.setCursor(2,1);
+      lcd.print("ESTA LISTO !!");
+      delay(10000);
+    }
+    else
+    {
+      lcd.clear();
+      delay(20);
+      lcd.setCursor(2,0);
+      lcd.print("THE MAGIC IS");
+      lcd.setCursor(4,1);
+      lcd.print("DONE !!");
+      delay(10000);
+      lcd.clear();
+      delay(20);
+      lcd.setCursor(2,0);
+      lcd.print("THE CLEANER");
+      lcd.setCursor(3,1);
+      lcd.print("IS READY !!");
+      delay(10000);
+    }
+  }
 }
 
 void Mezclas::mezclaVacio()
 {
+  Pantallamezcla(13);
   int16_t elPesoMinimo = 120;
   if (PesoActual() <= elPesoMinimo)
   {
@@ -617,8 +691,6 @@ void Mezclas::mezclaVacio()
       delay(20);
       lcd.setCursor(1,0);
       lcd.print("PESO MINIMO");
-      lcd.setCursor(0,1);
-      lcd.print("ADQUIRIDO");
       delay(8000);
     }
     else
@@ -627,8 +699,6 @@ void Mezclas::mezclaVacio()
       delay(20);
       lcd.setCursor(1,0);
       lcd.print("WHEIGHT LIMIT");
-      lcd.setCursor(3,1);
-      lcd.print("ARRIVED");
       delay(8000);
     }
     return;
@@ -639,7 +709,6 @@ void Mezclas::mezclaVacio()
   int16_t pesoActual; 
   int16_t pesoTotalAVaciar = pesoInicial - elPesoMinimo;
   
-  
   bombaVacio.on();
 
   lcd.clear();
@@ -648,29 +717,38 @@ void Mezclas::mezclaVacio()
   while(PesoActual() > elPesoMinimo)
   {
     deteccionPulso();
-    lcd.setCursor(0,0);
-    lcd.print("VACIANDO ....");
+    //lcd.setCursor(0,0);
+    //lcd.print("VACIANDO ....");
+    Pantallamezcla(13);
     pesoActual = PesoActual();
     pesoVaciado = pesoInicial - pesoActual; 
 
     if (millis() - tiempoInicio > tiempoErrorBomba)
     {
-      lcd.clear();
-      delay(20);
-      lcd.setCursor(1,0);
-      lcd.print("ERROR BOMBA");
-      lcd.setCursor(1,0);
-      lcd.print("TIEMPO MAXIMO");
+      if(idioma==0)
+      {
+        lcd.clear();
+        delay(20);
+        lcd.setCursor(1,0);
+        lcd.print("ERROR BOMBA");
+      }
+      else
+      {
+        lcd.clear();
+        delay(20);
+        lcd.setCursor(3,0);
+        lcd.print("POMP ERROR");
+      }
       delay(8000);
       bombaVacio.off();
       return;
     }
     deteccionPulso();
-    updateProgressBar(pesoVaciado, pesoTotalAVaciar, 1); // Actualizar la barra de progreso
-    delay(1000);
-    deteccionPulso();
-    lcd.clear();
-    delay(20);
+    //updateProgressBar(pesoVaciado, pesoTotalAVaciar, 1); // Actualizar la barra de progreso
+    //delay(1000);
+    //deteccionPulso();
+    //lcd.clear();
+    //delay(20);
   }  
   bombaVacio.off();
 }
@@ -684,7 +762,7 @@ void Mezclas::calcularVolumen()
   volumenAceite= porcentajeAceite * 30;
   pesoAceiteDeseado  = volumenAceite * DENSIDAD_ACEITE;
   EEPROM.put(VOL_ACEITE_ADRESS, pesoAceiteDeseado);
-  if(idioma==0)
+  /*if(idioma==0)
   {
     lcd.clear();
     delay(20);
@@ -704,13 +782,14 @@ void Mezclas::calcularVolumen()
   }
   
   delay(6000);
+  */
 
   // Calculos de la cantidad de Souji
   EEPROM.get(PORCENTAJE_SOUJI_ADRESS, porcentajeSouji);
   volumenSouji = porcentajeSouji * 30;
   pesoSoujiDeseado = volumenSouji * DENSIDAD_SOUJI;
   EEPROM.put(VOL_SOUJI_ADRESS, pesoSoujiDeseado);
-  if(idioma==0)
+  /*if(idioma==0)
   {
     lcd.clear();
     delay(20);
@@ -729,14 +808,14 @@ void Mezclas::calcularVolumen()
     lcd.print(porcentajeSouji);
   }
   delay(6000);
-
+  */
   // Calculos de la cantidad de Agua que es lo que queda
   int16_t porcentajeAgua = 0;
   porcentajeAgua  = 100 - (porcentajeAceite + porcentajeSouji);
   volumenAgua = porcentajeAgua * 30;
   pesoAguaDeseado = volumenAgua;
   EEPROM.put(VOL_AGUA_ADRESS, pesoAguaDeseado);
-  if(idioma==0)
+  /*if(idioma==0)
   {
     lcd.clear();
     delay(20);
@@ -755,6 +834,7 @@ void Mezclas::calcularVolumen()
     lcd.print(porcentajeAgua);
   }
   delay(6000);
+  */
 }
 
 void Mezclas::echarLiquido(int16_t pesoPorechar)
@@ -768,12 +848,12 @@ void Mezclas::echarLiquido(int16_t pesoPorechar)
   pesoRelative = 0;
 
   EEPROM.get(PESO_RELATIVO_ADDRESS, pesoRelative);
-  mostrarLiquido();
+  Pantallamezcla(12);
   
   while(pesoRelative < pesoPorechar)
   { 
     deteccionPulso();
-    mostrarLiquido();  
+    Pantallamezcla(12);
     nuevoPesoActual = PesoActual();
     if (abs(nuevoPesoActual - pesoLiquido) > 50) 
     {
@@ -783,7 +863,7 @@ void Mezclas::echarLiquido(int16_t pesoPorechar)
       EEPROM.put(PESO_RELATIVO_ADDRESS, pesoRelative);
       //tiempoPasadoMezcla = millis() - tiempoInicioMezcla;
       tiempoPasadoAgotado = millis() -  tiempoUltimaVariacion;
-      updateProgressBar(pesoRelative, pesoPorechar, 1);
+      //updateProgressBar(pesoRelative, pesoPorechar, 1);
     }
 
     // Verificar si no ha habido cambios significativos durante más de 30 segundos
@@ -981,13 +1061,64 @@ void Mezclas::mostrarAgotado()
   switch(estado2)
   {
     case 1:
-      idioma == 0 ? lcd.print("ACEITE AGOTADO") : lcd.print("OUT OF OIL");
+      if(idioma==0)
+      {
+        lcd.clear();
+        delay(20);
+        lcd.setCursor(0,0);
+        lcd.print("LLENAR DEPOSITO");
+        lcd.setCursor(2,1);
+        lcd.print("ACEITE USADO");
+      }
+      else
+      {
+        lcd.clear();
+        delay(20);
+        lcd.setCursor(3,0);
+        lcd.print("FILL USED");
+        lcd.setCursor(4,1);
+        lcd.print("OIL TANK");
+      }
       break;
     case 2:
-      idioma == 0 ? lcd.print("SOUJI AGOTADO") : lcd.print("OUT OF SOUJI");
+      if(idioma==0)
+      {
+        lcd.clear();
+        delay(20);
+        lcd.setCursor(0,0);
+        lcd.print("LLENAR DEPOSITO");
+        lcd.setCursor(4,1);
+        lcd.print("DE SOUJI");
+      }
+      else
+      {
+        lcd.clear();
+        delay(20);
+        lcd.setCursor(3,0);
+        lcd.print("FILL SOUJI");
+        lcd.setCursor(6,1);
+        lcd.print("TANK");
+      }
       break;
     case 4:
-      idioma == 0 ? lcd.print("AGUA AGOTADO") : lcd.print("OUT OF WATER");
+      if(idioma==0)
+      {
+        lcd.clear();
+        delay(20);
+        lcd.setCursor(0,0);
+        lcd.print("LLENAR DEPOSITO");
+        lcd.setCursor(4,1);
+        lcd.print("DE AGUA");
+      }
+      else
+      {
+        lcd.clear();
+        delay(20);
+        lcd.setCursor(3,0);
+        lcd.print("FILL WATER");
+        lcd.setCursor(6,1);
+        lcd.print("TANK");
+      }
       break;
   }
 }

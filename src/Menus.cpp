@@ -61,11 +61,11 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     mezcla.mezclando = false;
     menuIndex = 0;
     if (mezcla.estado == 0)
-    {
+    {   
       if(idioma == 0)
       {
         lcd.setCursor(0,0);
-        lcd.print("CANTIDAD SOUJI:");
+        lcd.print("CANTIDAD SOUJI:");  
         lcd.setCursor(1,1);
         lcd.print(Cantidad_Souji[IndexCantidad]);
         lcd.setCursor(3,1);
@@ -107,16 +107,16 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     if(idioma == 0)
     {     
       lcd.setCursor(4,0);
-      lcd.print("MOSTRAR");
-      lcd.setCursor(0,1);
-      lcd.print("LITROS MENSUALES");
+      lcd.print("ENSENAR");
+      lcd.setCursor(2,1);
+      lcd.print("LITROS / MES");
     }
     else
     {
       lcd.setCursor(6,0);
       lcd.print("SHOW");
       lcd.setCursor(1,1);
-      lcd.print("MONTHLY LITERS");
+      lcd.print("LITERS / MONTH");
     }
   }
   
@@ -128,7 +128,7 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     if(idioma==0)
     {
       lcd.setCursor(0,0);
-      lcd.print("LITROS TOTALES:");
+      lcd.print("LITROS TOTALES");
       lcd.setCursor(0,1);
       lcd.print(litrosTotales);
       lcd.setCursor(9,1);
@@ -137,7 +137,7 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     else
     {    
       lcd.setCursor(2,0);
-      lcd.print("TOTAL LITERS :");
+      lcd.print("TOTAL LITERS");
       lcd.setCursor(0,1);
       lcd.print(litrosTotales);
       lcd.setCursor(9,1);
@@ -156,7 +156,7 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     if(idioma==0)
     {
       lcd.setCursor(2,0);
-      lcd.print("LA FECHA ES :");
+      lcd.print("FECHA ACTUAL");
       lcd.setCursor(4,1);
       lcd.print(dia);
       lcd.print("/");
@@ -166,8 +166,8 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     }
     else
     {
-      lcd.setCursor(1,0);
-      lcd.print("THE DATE IS :");
+      lcd.setCursor(2,0);
+      lcd.print("CURRENT DATE");
       lcd.setCursor(4,1);
       lcd.print(dia);
       lcd.print("/");
@@ -183,17 +183,21 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     vacioAutomatico = true;
     if(idioma==0)
     {
-      lcd.setCursor(5,0);
-      lcd.print("VACIAR");
+      lcd.clear();
+      delay(20);
+      lcd.setCursor(2,0);
+      lcd.print("DISPENSANDO");
       lcd.setCursor(4,1);
-      lcd.print("DEPOSITO");
+      lcd.print("PRODUCTO");
     }
     else
     {
-      lcd.setCursor(6,0);
-      lcd.print("EMPTY");
+      lcd.clear();
+      delay(20);
+      lcd.setCursor(3,0);
+      lcd.print("DISPENSING");
       lcd.setCursor(4,1);
-      lcd.print("CONTAINER");
+      lcd.print("PRODUCT");
     }
   }
   
@@ -213,7 +217,7 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     else
     {
       lcd.setCursor(5,0);
-      lcd.print("SCALE ");
+      lcd.print("WEIGHT SCALE");
       lcd.setCursor(2,1);
       lcd.print("CALIBRATION");
     }
@@ -227,15 +231,15 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     {
       lcd.setCursor(2,0);
       lcd.print("SELECCIONAR");
-      lcd.setCursor(2,1);
-      lcd.print("EL LENGUAJE");
+      lcd.setCursor(4,1);
+      lcd.print("LENGUAJE");
     }
     else
     {
       lcd.setCursor(5,0);
       lcd.print("SELECT");
-      lcd.setCursor(2,1);
-      lcd.print("THE LANGUAGE");
+      lcd.setCursor(4,1);
+      lcd.print("LANGUAGE");
     }
   }
 
@@ -245,16 +249,18 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     inSubMenu = true;
     variarCantidad = true;
     if(idioma==0)
-    {
+    {      
       lcd.clear();
       delay(20);
-      lcd.setCursor(0,0);
-      lcd.print("ELIGE CANTIDAD:");
-      lcd.setCursor(3,1);
+      lcd.setCursor(3,0);
+      lcd.print("SELECCIONE");
+      lcd.setCursor(0,1);
+      lcd.print("CANTIDAD:");
+      lcd.setCursor(11,1);
       lcd.print(Cantidad_Souji[IndexCantidad]);  
-      lcd.setCursor(7,1);
-      lcd.print("LITROS");
-    } 
+      lcd.setCursor(15,1);
+      lcd.print("L"); 
+    }
     else
     {
       lcd.clear();
@@ -439,15 +445,11 @@ void Menus::PantallaProgramador(uint8_t pantallaProg)
     delay(20);
     if(idioma==0)
     {
-      lcd.setCursor(1,0);
-      lcd.print("ESTAMOS EN EL");
-      lcd.setCursor(0,1);
+      lcd.setCursor(0,0);
       lcd.print("MODO PROGRAMADOR");  
     }
     else
     {
-      lcd.setCursor(1,0);
-      lcd.print("THIS IS THE");
       lcd.setCursor(0,1);
       lcd.print("PROGRAMMING MODE");
     }
@@ -534,16 +536,16 @@ void Menus::PantallaProgramador(uint8_t pantallaProg)
     if(idioma==0)
     {
       lcd.setCursor(2,0);
-      lcd.print("AJUSTAR  RPMS");
-      lcd.setCursor(3,1);
-      lcd.print("DEL  MOTOR");
+      lcd.print("AJUSTAR");
+      lcd.setCursor(0,1);
+      lcd.print("VELOCIDAD (RPMS)");
     }
     else
     {
-      lcd.setCursor(1,0);
-      lcd.print("SETTING  THE");
-      lcd.setCursor(2,1);
-      lcd.print("RPMS  MOTOR");
+      lcd.setCursor(2,0);
+      lcd.print("ADJUST SPEED");
+      lcd.setCursor(3,1);
+      lcd.print("PARAMETERS");
     }
   }  
   
@@ -957,13 +959,15 @@ void Menus::updateCantidadSouji()
   if(idioma==0)
   {
     lcd.clear();
-    delay(20);
-    lcd.setCursor(0,0);
-    lcd.print("ELIGE CANTIDAD:");
-    lcd.setCursor(3,1);
-    lcd.print(Cantidad_Souji[IndexCantidad]);
-    lcd.setCursor(7,1);
-    lcd.print("LITROS");
+      delay(20);
+      lcd.setCursor(3,0);
+      lcd.print("SELECCIONE");
+      lcd.setCursor(0,1);
+      lcd.print("CANTIDAD:");
+      lcd.setCursor(11,1);
+      lcd.print(Cantidad_Souji[IndexCantidad]);  
+      lcd.setCursor(15,1);
+      lcd.print("L"); 
   }
   else
   {
@@ -1681,4 +1685,9 @@ void Menus::finalizarCiclo()
   lcd.clear();
   delay(20);
   updateMenuDisplay();
+}
+
+void Menus::desplazarTexto() {
+ 
+
 }

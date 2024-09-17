@@ -136,7 +136,6 @@ class Menus
         void ReseteoTotalVerif();
         void ReseteoTotal();
         void resetearLitrosMensuales();
-        
 };
 
 #endif
