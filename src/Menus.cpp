@@ -13,7 +13,6 @@ bool enPausa = false;
 bool pausado = false;
 
 const uint8_t RS = A3, EN = A2, D4 = A0, D5 = 0, D6 = 1, D7 = 2;
-//const uint8_t RS = 22, EN = 23, D4  b = 31, D5 = 30, D6 = 29, D7 = 28;
 LiquidCrystal lcd(RS, EN, D4, D5, D6, D7); 
 
 Mezclas mezcla(mySerial);
@@ -92,7 +91,6 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     else
     {
       mezcla.mezclaGeneral(mezcla.numMezclas);
-      //finalizarCiclo();
     }
   }
   
@@ -206,7 +204,6 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
   {
     vacioAutomatico = false;
     elegirCalibracion = false;
-    //mostrarPeso = false;
     if(idioma==0)
     {
       lcd.setCursor(2,0);
@@ -318,8 +315,6 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     calibrarPeso = false;
     calibrarPeso1 = false;
     finDeCalibre = false;
-    /*ultima_tara = balanza.get_offset();
-    EEPROM.put(sizeof(escala), ultima_tara);*/
     lcd.clear();
     delay(20);
     if (opcionCalibre == 0) 
@@ -779,7 +774,6 @@ void Menus::modificarBotonSel()
       lcd.clear();
       delay(20);
       PantallaProgramador(4);
-      //motor.mostrarRpms(pin_encoder);
     }
     else if (ajustarAceite && !validarAjusteAceite)
     {
@@ -1193,7 +1187,7 @@ void Menus::resetearLitrosMensuales()
 {
   for (int i = 0; i < 13; ++i) 
   {
-    litrosMensuales[i] = 0; // Reseteamos los litros mensuales a cero
+    litrosMensuales[i] = 0; 
     int direccion = LITROS_MENSUALES_DIRECCION + i * TAMANIO_DATOS_MENSUALES;
     EEPROM.put(direccion, litrosMensuales[i]); // Guardamos los litros mensuales en la EEPROM
   }
@@ -1561,13 +1555,10 @@ void Menus::finalizarCalibracion()
   EEPROM.put(TARE_ADRESS, ultima_tara);
   EEPROM.put(PESO_ACEITE_ACTUAL_ADRESS, 0);
   delay(100);
-  //PantallaSeleccionada(5);
 }
 
 void Menus::mostrarElPeso()
 {
-  /*ultima_tara = balanza.get_offset();
-  EEPROM.put(TARE_ADRESS, ultima_tara);*/
   elPeso = PesoActual();
   if(idioma==0)
   {
@@ -1597,7 +1588,6 @@ void Menus::mostrarElPeso()
 
 void Menus::vaciandoDeposito()
 {
-  //vaciando = true;
   if(idioma==0)
   {
     lcd.clear();
@@ -1614,8 +1604,6 @@ void Menus::vaciandoDeposito()
     lcd.print("EMPTYING...");
     mezcla.vacioGeneral();
   }
-  //delay(2000);
-  //PantallaSeleccionada(11);
 }
 
 /////////////////  CONTROL DEL RESETEO TOTAL DE DATA  /////////////////
@@ -1687,7 +1675,4 @@ void Menus::finalizarCiclo()
   updateMenuDisplay();
 }
 
-void Menus::desplazarTexto() {
  
-
-}

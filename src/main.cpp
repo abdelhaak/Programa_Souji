@@ -19,8 +19,6 @@ Boton botonDown(PIN_BOTON_DOWN);
 Boton botonSel(PIN_BOTON_SEL);
 Boton botonPro(PIN_BOTON_PRO);
 
-//const int pindled = A7;
-//Menus menu;
 Menus menu(lcd,mySerial);
 Mezclas mezclas(mySerial);
 

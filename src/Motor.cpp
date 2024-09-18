@@ -3,7 +3,6 @@
 volatile uint64_t Motor::pulsos = 0;
 int pin_encoder = 23;
 int rpms=1500;
-//int pin_sensor =  23;
 
 Mezclas mezclado(mySerial);
 Menus menuus(lcd,mySerial);
