@@ -76,8 +76,8 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
       }
       else
       {
-        lcd.setCursor(0,0);
-        lcd.print("SOUJI AMOUNT:");
+        lcd.setCursor(2,0);
+        lcd.print("SOUJI AMOUNT");
         lcd.setCursor(1,1);
         lcd.print(Cantidad_Souji[IndexCantidad]);
         lcd.setCursor(3,1);
@@ -183,8 +183,8 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     {
       lcd.clear();
       delay(20);
-      lcd.setCursor(2,0);
-      lcd.print("DISPENSANDO");
+      lcd.setCursor(3,0);
+      lcd.print("DISPENSAR");
       lcd.setCursor(4,1);
       lcd.print("PRODUCTO");
     }
@@ -192,8 +192,8 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     {
       lcd.clear();
       delay(20);
-      lcd.setCursor(3,0);
-      lcd.print("DISPENSING");
+      lcd.setCursor(4,0);
+      lcd.print("DISPENSE");
       lcd.setCursor(4,1);
       lcd.print("PRODUCT");
     }
@@ -213,8 +213,8 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     }
     else
     {
-      lcd.setCursor(5,0);
-      lcd.print("WEIGHT SCALE");
+      lcd.setCursor(1,0);
+      lcd.print("WEIGHT  SCALE");
       lcd.setCursor(2,1);
       lcd.print("CALIBRATION");
     }
@@ -327,10 +327,21 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
       lcd.setCursor(2, 1);
       lcd.print(">");
     }
-    lcd.setCursor(4, 0);
-    lcd.print("CALIBRAR");
-    lcd.setCursor(4, 1);
-    lcd.print("PESAR");
+    if(idioma==0)
+    {
+      lcd.setCursor(4, 0);
+      lcd.print("CALIBRAR");
+      lcd.setCursor(4, 1);
+      lcd.print("PESAR");
+    }
+    else
+    {
+      lcd.setCursor(4, 0);
+      lcd.print("CALIBRATE");
+      lcd.setCursor(4, 1);
+      lcd.print("WEIGH"); 
+    }
+    
   }
     
   // El SubMenu de lenguaje
@@ -445,7 +456,7 @@ void Menus::PantallaProgramador(uint8_t pantallaProg)
     }
     else
     {
-      lcd.setCursor(0,1);
+      lcd.setCursor(0,0);
       lcd.print("PROGRAMMING MODE");
     }
   }
@@ -460,6 +471,8 @@ void Menus::PantallaProgramador(uint8_t pantallaProg)
     ajustarAceite = true;
     if(idioma==0)
     {
+      lcd.clear();
+      delay(20);
       lcd.setCursor(0,0);
       lcd.print("AJUSTAR CANTIDAD");
       lcd.setCursor(2,1);
@@ -467,8 +480,10 @@ void Menus::PantallaProgramador(uint8_t pantallaProg)
     }
     else
     {
-      lcd.setCursor(0,0);
-      lcd.print("SETTING THE");
+      lcd.clear();
+      delay(20);
+      lcd.setCursor(2,0);
+      lcd.print("SETTING  THE");
       lcd.setCursor(2,1);
       lcd.print("OIL QUANTITY");
     }
@@ -484,16 +499,20 @@ void Menus::PantallaProgramador(uint8_t pantallaProg)
     ajustarSouji = true;
     if(idioma==0)
     {
+      lcd.clear();
+      delay(20);
       lcd.setCursor(0,0);
       lcd.print("AJUSTAR CANTIDAD");
-      lcd.setCursor(2,1);
+      lcd.setCursor(3,1);
       lcd.print("DE : SOUJI");
     }
     else
     {
-      lcd.setCursor(0,0);
-      lcd.print("SETTING THE");
-      lcd.setCursor(2,1);
+      lcd.clear();
+      delay(20);
+      lcd.setCursor(2,0);
+      lcd.print("SETTING  THE");
+      lcd.setCursor(1,1);
       lcd.print("SOUJI QUANTITY");
     }
   }
@@ -514,10 +533,10 @@ void Menus::PantallaProgramador(uint8_t pantallaProg)
     }
     else
     {
-      lcd.setCursor(2,0);
+      lcd.setCursor(4,0);
       lcd.print("RESET THE");
-      lcd.setCursor(1,1);
-      lcd.print("TOTAL LITERS");
+      lcd.setCursor(2,1);
+      lcd.print("TOTAL  LITERS");
     }
   }
 
@@ -530,7 +549,7 @@ void Menus::PantallaProgramador(uint8_t pantallaProg)
     ajustarSouji = false;
     if(idioma==0)
     {
-      lcd.setCursor(2,0);
+      lcd.setCursor(4,0);
       lcd.print("AJUSTAR");
       lcd.setCursor(0,1);
       lcd.print("VELOCIDAD (RPMS)");
@@ -557,8 +576,8 @@ void Menus::PantallaProgramador(uint8_t pantallaProg)
     }
     else
     {
-      lcd.setCursor(1,0);
-      lcd.print("TO DELETE ALL");
+      lcd.setCursor(3,0);
+      lcd.print("TO  DELETE");
       lcd.setCursor(2,1);
       lcd.print("PRESS SELECT");
     }
@@ -575,6 +594,9 @@ void Menus::salirMenuProg()
 {
   menuPrincipal = true;
   menuProgramador = false;
+  accederRpms = false;
+  ajustarSouji = false;
+  ajustarAceite = false;
   lcd.clear();
   delay(20);
   PantallaSeleccionada(0);
@@ -1006,10 +1028,9 @@ void Menus::displayLitrosMensuales()
       delay(20);
       lcd.setCursor(0,0);
       lcd.print(elegirMes(mes)); // Muestra el nombre del mes actual
-      lcd.print(" HAY:");
-      lcd.setCursor(3,1);
+      lcd.setCursor(0,1);
       lcd.print(litrosMensuales[mes]); // Muestra los litros mensuales del mes actual
-      lcd.setCursor(8,1);
+      lcd.setCursor(6,1);
       lcd.print("LITROS");  
     }
     else
@@ -1018,12 +1039,9 @@ void Menus::displayLitrosMensuales()
       delay(20);
       lcd.setCursor(0,0);
       lcd.print(elegirMes(mes)); // Muestra el nombre del mes actual
-      lcd.print(" THERE");
       lcd.setCursor(0,1);
-      lcd.print("ARE:");
-      lcd.setCursor(5,1);
       lcd.print(litrosMensuales[mes]); // Muestra los litros mensuales del mes actual
-      lcd.setCursor(10,1);
+      lcd.setCursor(6,1);
       lcd.print("LITERS");  
     }    
 }
@@ -1283,7 +1301,7 @@ void Menus::validarFecha()
     delay(20);
     lcd.setCursor(0, 0);
     lcd.print("FECHA AJUSTADA A");
-    lcd.setCursor(0, 1);
+    lcd.setCursor(3, 1);
     lcd.print(dia); 
     lcd.print("/"); 
     lcd.print(mes); 
@@ -1294,9 +1312,9 @@ void Menus::validarFecha()
   {
     lcd.clear();
     delay(20);
-    lcd.setCursor(0, 0);
-    lcd.print("DATE SET TO :");
-    lcd.setCursor(0, 1);
+    lcd.setCursor(2, 0);
+    lcd.print("DATE SET TO:");
+    lcd.setCursor(3, 1);
     lcd.print(dia); 
     lcd.print("/"); 
     lcd.print(mes); 

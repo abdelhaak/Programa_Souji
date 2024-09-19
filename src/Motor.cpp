@@ -132,8 +132,8 @@ void Motor::modificarRpms()
     {
         lcd.clear();
         delay(20);
-        lcd.setCursor(0,0);
-        lcd.print("ADJUSTING RPMS:");
+        lcd.setCursor(1,0);
+        lcd.print("ADJUSTING RPMS");
         lcd.setCursor(7,1);
         lcd.print(rpms);
     }

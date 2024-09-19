@@ -268,20 +268,20 @@ void Mezclas::mezclaGeneral(int mezclas)
       {
         lcd.clear();
         delay(20);
-        lcd.setCursor(0,0);
-        lcd.print("ERROR DE PESO");
+        lcd.setCursor(1,0);
+        lcd.print("ERROR DE  PESO");
         lcd.setCursor(0,1);
-        lcd.print("VACIAR DEPOSITO");
+        lcd.print("VACIAR  DEPOSITO");
         delay(10000);
       }
       else
       {
         lcd.clear();
         delay(20);
-        lcd.setCursor(0,0);
+        lcd.setCursor(2,0);
         lcd.print("WEIGHT ERROR");
-        lcd.setCursor(0,1);
-        lcd.print("EMPTY TANK");
+        lcd.setCursor(1,1);
+        lcd.print("EMPTY CLEANER");
         delay(10000);
       }
       resetearTodo();
@@ -312,16 +312,58 @@ void Mezclas::Pantallamezcla(uint8_t pantallamezcla)
       lcd.setCursor(4,0);
       lcd.print("COMIENZA");
       lcd.setCursor(2,1);
-      lcd.print("LA MAGIA  !!");
+      lcd.print("LA MAGIA !!!");
     }
     else
     {
       lcd.clear();
       delay(20);
       lcd.setCursor(3,0);
-      lcd.print("THE MAGIC");
-      lcd.setCursor(5,1);
-      lcd.print("BEGINS");
+      lcd.print("THE  MAGIC");
+      lcd.setCursor(3,1);
+      lcd.print("BEGINS !!!");
+    }
+  }
+
+  // Pantalla de DISPENSANDO
+  if (pantallamezcla == 1)
+  {
+    if(idioma==0)
+    {
+      lcd.clear();
+      delay(20);
+      lcd.setCursor(0,0);
+      lcd.print("DISPENSANDO ...");
+    }
+    else
+    {
+      lcd.clear();
+      delay(20);
+      lcd.setCursor(0,0);
+      lcd.print("DISPENSING ...");
+    }
+  }
+
+  // Pantalla de DEPOSITO DISPENSADO
+  if (pantallamezcla == 2)
+  {
+    if(idioma==0)
+    {
+      lcd.clear();
+      delay(20);
+      lcd.setCursor(3,0);
+      lcd.print("LIMPIADOR");
+      lcd.setCursor(1,1);
+      lcd.print("LISTO POR USAR");
+    }
+    else
+    {
+      lcd.clear();
+      delay(20);
+      lcd.setCursor(4,0);
+      lcd.print("CLEANER");
+      lcd.setCursor(2,1);
+      lcd.print("READY TO USE");
     }
   }
 
@@ -387,8 +429,8 @@ void Mezclas::Pantallamezcla(uint8_t pantallamezcla)
     {
       lcd.clear();
       delay(20);
-      lcd.setCursor(0,0);
-      lcd.print("ADJUSTNIG OIL");
+      lcd.setCursor(1,0);
+      lcd.print("ADJUSTING  OIL");
       lcd.setCursor(5,1);
       lcd.print(porcentajeAceite);
       lcd.setCursor(10,1);
@@ -406,7 +448,7 @@ void Mezclas::Pantallamezcla(uint8_t pantallamezcla)
       lcd.clear();
       delay(20);
       lcd.setCursor(0,0);
-      lcd.print("AJUSTANDO SOUJI");
+      lcd.print("AJUSTANDO  SOUJI");
       lcd.setCursor(5,1);
       lcd.print(porcentajeSouji);
       lcd.setCursor(10,1);
@@ -417,7 +459,7 @@ void Mezclas::Pantallamezcla(uint8_t pantallamezcla)
       lcd.clear();
       delay(20);
       lcd.setCursor(0,0);
-      lcd.print("ADJUSTNIG SOUJI");
+      lcd.print("ADJUSTING  SOUJI");
       lcd.setCursor(5,1);
       lcd.print(porcentajeSouji);
       lcd.setCursor(10,1);
@@ -432,15 +474,15 @@ void Mezclas::Pantallamezcla(uint8_t pantallamezcla)
     {
       lcd.clear();
       delay(20);
-      lcd.setCursor(2,0);
-      lcd.print("MEZCLANDO...");
+      lcd.setCursor(1,0);
+      lcd.print("MEZCLANDO ....");
     }
     else
     {
       lcd.clear();
       delay(20);
-      lcd.setCursor(3,0);
-      lcd.print("MIXING ...");
+      lcd.setCursor(2,0);
+      lcd.print("MIXING ....");
     }
   }
 
@@ -460,10 +502,10 @@ void Mezclas::Pantallamezcla(uint8_t pantallamezcla)
     {
       lcd.clear();
       delay(20);
-      lcd.setCursor(3,0);
+      lcd.setCursor(5,0);
       lcd.print("MAKING");
-      lcd.setCursor(3,1);
-      lcd.print("THE CLEANER");
+      lcd.setCursor(2,1);
+      lcd.print("THE  CLEANER");
     }
   }
 
@@ -483,8 +525,8 @@ void Mezclas::Pantallamezcla(uint8_t pantallamezcla)
       delay(20);
       lcd.setCursor(2,0);
       lcd.print("EL LIMPIADOR");
-      lcd.setCursor(2,1);
-      lcd.print("ESTA LISTO !!");
+      lcd.setCursor(1,1);
+      lcd.print("ESTA LISTO  !!");
       delay(10000);
     }
     else
@@ -494,14 +536,14 @@ void Mezclas::Pantallamezcla(uint8_t pantallamezcla)
       lcd.setCursor(2,0);
       lcd.print("THE MAGIC IS");
       lcd.setCursor(4,1);
-      lcd.print("DONE !!");
+      lcd.print("DONE  !!");
       delay(10000);
       lcd.clear();
       delay(20);
       lcd.setCursor(2,0);
-      lcd.print("THE CLEANER");
-      lcd.setCursor(3,1);
-      lcd.print("IS READY !!");
+      lcd.print("THE  CLEANER");
+      lcd.setCursor(2,1);
+      lcd.print("IS READY  !!");
       delay(10000);
     }
   }
@@ -577,12 +619,14 @@ void Mezclas::calcularVolumen()
   volumenAceite= porcentajeAceite * 30;
   pesoAceiteDeseado  = volumenAceite * DENSIDAD_ACEITE;
   EEPROM.put(VOL_ACEITE_ADRESS, pesoAceiteDeseado);
+  delay(1000);
 
   // Calculos de la cantidad de Souji
   EEPROM.get(PORCENTAJE_SOUJI_ADRESS, porcentajeSouji);
   volumenSouji = porcentajeSouji * 30;
   pesoSoujiDeseado = volumenSouji * DENSIDAD_SOUJI;
   EEPROM.put(VOL_SOUJI_ADRESS, pesoSoujiDeseado);
+  delay(1000);
 
   // Calculos de la cantidad de Agua que es lo que queda
   int16_t porcentajeAgua = 0;
@@ -590,7 +634,7 @@ void Mezclas::calcularVolumen()
   volumenAgua = porcentajeAgua * 30;
   pesoAguaDeseado = volumenAgua;
   EEPROM.put(VOL_AGUA_ADRESS, pesoAguaDeseado);
- 
+  delay(1000);
 }
 
 void Mezclas::echarLiquido(int16_t pesoPorechar)
@@ -860,44 +904,47 @@ void Mezclas::mostrarAgotado()
 
 void Mezclas::vacioGeneral()
 {
-  lcd.setCursor(0,0);
-  lcd.print("DISPENSANDO ...");
+  Pantallamezcla(1);
   tiempoInicioVacio = millis();
   uint64_t tiempoPasado = 0;
   bombaVacio.on();
   while (tiempoPasado < tiempoVacio)
   {
-    lcd.setCursor(0,0);
-    lcd.print("DISPENSANDO ...");
+    if(idioma==0)
+    {
+      lcd.clear();
+      delay(20);
+      lcd.setCursor(0,0);
+      lcd.print("DISPENSANDO ...");
+    }
+    else
+    {
+      lcd.clear();
+      delay(20);
+      lcd.setCursor(0,0);
+      lcd.print("DISPENSING ...");
+    }
+
     tiempoPasado = millis() - tiempoInicioVacio;
     if (botonPausa.pulsado())
     {
       bombaVacio.off(); 
-      lcd.clear();
-      delay(20); 
-      lcd.setCursor(0, 0);
-      lcd.print("DEPOSITO");
-      lcd.setCursor(0, 1);
-      lcd.print("DISPENSADO");
+      Pantallamezcla(2);
       delay(4000);
       menus.PantallaSeleccionada(4);  
       menus.inSubMenu = false;
       menus.updateMenuDisplay();
       break;
     }
-    updateProgressBar(tiempoPasado, tiempoVacio, 1);
     delay(1000);
     lcd.clear();
     delay(20);
+    //updateProgressBar(tiempoPasado, tiempoVacio, 1);
+    //delay(1000);
   }
   bombaVacio.off();
-  lcd.clear();
-  delay(20); 
-  lcd.setCursor(0, 0);
-  lcd.print("DEPOSITO");
-  lcd.setCursor(0, 1);
-  lcd.print("DISPENSADO");
-  delay(4000);  
+  Pantallamezcla(2);
+  delay(8000);  
 }
 
 void Mezclas::verificarPeso()
