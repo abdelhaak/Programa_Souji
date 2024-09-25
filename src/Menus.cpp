@@ -1545,7 +1545,7 @@ void Menus::calibrarEscala()
     lcd.setCursor(0,0);
     lcd.print("RETIRE EL PESO");
     lcd.setCursor(2,1);
-    lcd.print("PULSE SET");
+    lcd.print("PULSE  SET");
   }
   else
   {

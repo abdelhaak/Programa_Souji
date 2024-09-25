@@ -637,6 +637,78 @@ void Mezclas::calcularVolumen()
   delay(1000);
 }
 
+/*
+void Mezclas::echarLiquido(int16_t pesoPorechar)
+{
+  encenderBombaCorrespondiente();
+
+  tiempoUltimaVariacion = millis();
+  pesoLiquido = PesoActual();
+  pesoRelative = 0;
+
+  EEPROM.get(PESO_RELATIVO_ADDRESS, pesoRelative);
+  Pantallamezcla(12);
+
+  unsigned long tiempoUltimaLectura = millis(); 
+  const unsigned long intervaloLectura = 2000;
+  const int16_t maxPesoEsperado = 50;
+
+  while(pesoRelative < pesoPorechar)
+  { 
+    deteccionPulso();
+    Pantallamezcla(12);
+    
+    unsigned long tiempoActual = millis();
+    
+    if (tiempoActual - tiempoUltimaLectura >= intervaloLectura)
+    {
+      if(PesoActual() - pesoRelative < maxPesoEsperado)
+      {
+        nuevoPesoActual = PesoActual(); 
+      }
+      else
+      {
+        nuevoPesoActual = pesoRelative;
+      }
+      
+      tiempoUltimaLectura = tiempoActual;  
+
+      if (abs(nuevoPesoActual - pesoLiquido) > 50) 
+      {
+        tiempoUltimaVariacion = millis();  
+        pesoRelative += nuevoPesoActual - pesoLiquido;  
+        pesoLiquido = nuevoPesoActual; 
+        EEPROM.put(PESO_RELATIVO_ADDRESS, pesoRelative); 
+        tiempoPasadoAgotado = millis() - tiempoUltimaVariacion;
+      }
+    }
+
+    if (millis() - tiempoUltimaVariacion > tiempoAgotado) 
+    {
+      mostrarAgotado();
+      apagarBombas();
+
+      while (!botonPausa.pulsado())
+      {
+        delay(300);
+      }
+
+      encenderBombaCorrespondiente();
+      tiempoUltimaVariacion = millis();
+    }
+
+    deteccionPulso();  
+
+  }
+
+  pesoLiquido = PesoActual();
+  EEPROM.put(PESO_ACEITE_ACTUAL_ADRESS, pesoLiquido);
+  EEPROM.put(PESO_RELATIVO_ADDRESS, 0);  
+  
+  apagarBombas();
+  delay(1000); 
+}
+*/
 void Mezclas::echarLiquido(int16_t pesoPorechar)
 {
   // Encender la bomba correspondiente
@@ -648,15 +720,24 @@ void Mezclas::echarLiquido(int16_t pesoPorechar)
 
   EEPROM.get(PESO_RELATIVO_ADDRESS, pesoRelative);
   Pantallamezcla(12);
-  
+
   while(pesoRelative < pesoPorechar)
   { 
     deteccionPulso();
     Pantallamezcla(12);
     nuevoPesoActual = PesoActual();
+    if(estado2 == 4)
+    {
+      delay(500);
+    }
+    else
+    {
+      delay(4000);
+    }
+    
     if (abs(nuevoPesoActual - pesoLiquido) > 50) 
     {
-      tiempoUltimaVariacion = millis(); // Reiniciar el temporizador si hay un cambio significativo
+      tiempoUltimaVariacion = millis(); 
       pesoRelative += nuevoPesoActual - pesoLiquido;
       pesoLiquido = nuevoPesoActual;
       EEPROM.put(PESO_RELATIVO_ADDRESS, pesoRelative);
@@ -681,7 +762,6 @@ void Mezclas::echarLiquido(int16_t pesoPorechar)
       // Reiniciar el tiempo de última variación
       tiempoUltimaVariacion = millis();
     }
-    delay(700);
     deteccionPulso();
   }
 
@@ -689,9 +769,15 @@ void Mezclas::echarLiquido(int16_t pesoPorechar)
   EEPROM.put(PESO_ACEITE_ACTUAL_ADRESS, pesoLiquido);
   EEPROM.put(PESO_RELATIVO_ADDRESS, 0);
   
-  // Apagar la bomba correspondiente
   apagarBombas();
-  delay(1000);
+
+  lcd.clear();
+  delay(20);
+  lcd.setCursor(0,1);
+  lcd.print("PESO : ");
+  lcd.setCursor(8,1);      
+  lcd.print(pesoLiquido);
+  delay(6000);
 }
 
 void Mezclas::subirPorcentajeAceite()
