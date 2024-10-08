@@ -2,10 +2,6 @@
 	"folders": [
 		{
 			"path": ".."
-		},
-		{
-			"name": "test_interrupcion",
-			"path": "..\\..\\..\\..\\..\\test_interrupcion"
 		}
 	],
 	"settings": {}

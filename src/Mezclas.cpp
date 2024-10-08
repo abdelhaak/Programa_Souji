@@ -34,8 +34,10 @@ uint64_t tiempoMezcla2 = 360000 ; //10000   ;
 // 3 minutos => 360000 ms    ::   PARA EL VACIO POR AHORA 
 uint64_t tiempoVacio = 360000 ; // 10000
 
-
-
+unsigned long temp = 0;
+unsigned long tempSig = 0;
+unsigned long temp1 = 0;
+unsigned long tempSig1 = 0;
 // Porcentajes de inicio de liquidos
 int16_t porcentajeAceite = 30;
 int16_t porcentajeSouji = 50;
@@ -605,6 +607,14 @@ void Mezclas::mezclaVacio()
       bombaVacio.off();
       return;
     }
+    /*temp1 = millis();
+    if(temp1 - tempSig1 >= 3000)
+    {
+      deteccionPulso();
+      tempSig1 = temp1;
+    }
+    lcd.clear();
+    delay(20);*/
     deteccionPulso();
   }  
   bombaVacio.off();
@@ -726,15 +736,21 @@ void Mezclas::echarLiquido(int16_t pesoPorechar)
     deteccionPulso();
     Pantallamezcla(12);
     nuevoPesoActual = PesoActual();
+    
     if(estado2 == 4)
     {
       delay(50);
     }
     else
     {
-      delay(3000);
+      temp = millis();
+      if(temp - tempSig >= 3000)
+      {
+        deteccionPulso();
+        tempSig = temp;
+      }
     }
-    
+    deteccionPulso();
     if (abs(nuevoPesoActual - pesoLiquido) > 50) 
     {
       tiempoUltimaVariacion = millis(); 
@@ -743,7 +759,7 @@ void Mezclas::echarLiquido(int16_t pesoPorechar)
       EEPROM.put(PESO_RELATIVO_ADDRESS, pesoRelative);
       tiempoPasadoAgotado = millis() -  tiempoUltimaVariacion;
     }
-
+    deteccionPulso();
     // Verificar si no ha habido cambios significativos durante más de 30 segundos
     if (millis() - tiempoUltimaVariacion > tiempoAgotado) 
     {
@@ -821,7 +837,7 @@ void Mezclas::resetearTodo()
 {
   estado = 0;
   estado2 = 0;
-  numMezclas = 0;
+  numMezclas = 1;
   volumenAceite = 0;
   volumenSouji = 0;
   volumenAgua = 0;

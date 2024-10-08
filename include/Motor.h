@@ -2,7 +2,6 @@
 #define MOTOR_H
 
 #include "Arduino.h"
-#include "LCD_Progress.h"
 #include "Menus.h"
 #include "Mezclas.h"
 #include "Boton.h"

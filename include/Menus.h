@@ -103,8 +103,6 @@ class Menus
         void validarFecha();
         void pasarFecha();
         void subeFecha();
-        void subeFechaRapido();
-        void bajaFechaRapido();
         void bajaFecha();
         void modificarBotonSel();
         void modificarBotonSet();

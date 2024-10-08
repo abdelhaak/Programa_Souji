@@ -147,9 +147,15 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
   if (pantalla == 3)
   { 
     vacioAutomatico = false;
-    EEPROM.get(DAY_ADDRESS, dia);
-    EEPROM.get(MONTH_ADDRESS, mes);
-    EEPROM.get(YEAR_ADDRESS, anio);
+    DateTime Tiempo = rtc.now();
+    dia = Tiempo.day();
+    mes = Tiempo.month();
+    anio = Tiempo.year();
+
+    // Guardar la fecha en EEPROM
+    EEPROM.put(DAY_ADDRESS, dia);
+    EEPROM.put(MONTH_ADDRESS, mes);
+    EEPROM.put(YEAR_ADDRESS, anio);
 
     if(idioma==0)
     {
@@ -975,15 +981,15 @@ void Menus::updateCantidadSouji()
   if(idioma==0)
   {
     lcd.clear();
-      delay(20);
-      lcd.setCursor(3,0);
-      lcd.print("SELECCIONE");
-      lcd.setCursor(0,1);
-      lcd.print("CANTIDAD:");
-      lcd.setCursor(11,1);
-      lcd.print(Cantidad_Souji[IndexCantidad]);  
-      lcd.setCursor(15,1);
-      lcd.print("L"); 
+    delay(20);
+    lcd.setCursor(3,0);
+    lcd.print("SELECCIONE");
+    lcd.setCursor(0,1);
+    lcd.print("CANTIDAD:");
+    lcd.setCursor(11,1);
+    lcd.print(Cantidad_Souji[IndexCantidad]);  
+    lcd.setCursor(15,1);
+    lcd.print("L"); 
   }
   else
   {
@@ -1013,6 +1019,7 @@ void Menus::incrementarCantidad(int cantidad)
     int direccion = LITROS_MENSUALES_DIRECCION + i * TAMANIO_DATOS_MENSUALES;
     EEPROM.put(direccion, litrosMensuales[i]);
   }
+  IndexCantidad = 0;
 }
 
 void Menus::displayLitrosMensuales()
@@ -1292,9 +1299,6 @@ void Menus::ajustarFecha()
 
 void Menus::validarFecha()
 {
-  EEPROM.put(DAY_ADDRESS, dia);
-  EEPROM.put(MONTH_ADDRESS, mes);
-  EEPROM.put(YEAR_ADDRESS, anio);
   if(idioma==0)
   {
     lcd.clear();
@@ -1321,8 +1325,13 @@ void Menus::validarFecha()
     lcd.print("/"); 
     lcd.print(anio);
   }
-
   delay(5000);
+
+  EEPROM.put(DAY_ADDRESS, dia);
+  EEPROM.put(MONTH_ADDRESS, mes);
+  EEPROM.put(YEAR_ADDRESS, anio);
+  DateTime nuevaFecha(anio, mes, dia, 12, 30, 0);
+  rtc.adjust(nuevaFecha);
   bascularFecha = false;
   definirFecha = false;
   inSubMenu = false;
@@ -1371,36 +1380,6 @@ void Menus::subeFecha()
   displayFecha();
 }
 
-void Menus::subeFechaRapido()
-{
-  switch (editIndex)
-  {
-  case 0 :
-    if(dia<31)
-    {dia+=2;}
-    else
-    {dia = 1;}
-    EEPROM.put(DAY_ADDRESS, dia);
-    break;
-  case 1 :
-    if(mes<12)
-    {mes+=2;}
-    else
-    {mes = 1;}
-    EEPROM.put(MONTH_ADDRESS, mes);
-    break;
-  case 2 :
-    if(anio<3000)
-    {anio++;}
-    else
-    {anio = 2024;}
-    EEPROM.put(YEAR_ADDRESS, anio);
-    break;
-    
-  }
-  delay(300);
-}
-
 void Menus::bajaFecha()
 {
   switch (editIndex)
@@ -1427,55 +1406,27 @@ void Menus::bajaFecha()
   displayFecha();
 }
 
-void Menus::bajaFechaRapido()
-{
-  switch (editIndex)
-  {
-  case 0 :
-    if(dia>1)
-    {dia-=2;}
-    else
-    {dia = 31;}
-    EEPROM.put(MONTH_ADDRESS, dia);
-    break;
-  case 1 :
-    if(mes>1)
-    {mes-=2;}
-    else
-    {mes = 12;}
-    EEPROM.put(MONTH_ADDRESS, mes);
-    break;
-  case 2 :
-    if(anio>2024)
-    {anio-=2;}
-    else
-    {anio=3000;}
-    EEPROM.put(YEAR_ADDRESS, anio);
-    break;
-  }
-  delay(300);
-}
-
-
 /////////////////  CONTROL DE LA EEPROM   /////////////////
 
 void Menus::inicializarEEPROM() 
 {
-    int initCheck;
-    EEPROM.get(INIT_CHECK_ADDRESS, initCheck);
-    if (initCheck != 12345) 
-    {
-        EEPROM.put(DAY_ADDRESS, 12); // Día inicial
-        EEPROM.put(MONTH_ADDRESS, 9); // Mes inicial
-        EEPROM.put(YEAR_ADDRESS, 2024); // Año inicial
-        EEPROM.put(RPMS_ADRESS, 1500); // RPMs del motor inicial
-        EEPROM.put(LITROS_TOTALES_DIRECCION, 0); // Litros totales iniciales
-        EEPROM.put(IDIOMA_ADRESS, 0); // Idioma por defecto es español
-        EEPROM.put(PORCENTAJE_ACEITE_ADRESS, 30); // Porcentaje de aceite inicial
-        EEPROM.put(PORCENTAJE_SOUJI_ADRESS, 50); // Porcentaje de Souji inicial.
-        EEPROM.put(PESO_RELATIVO_ADDRESS, 0);
-        resetearLitrosMensuales();
-    }
+  int initCheck;
+  EEPROM.get(INIT_CHECK_ADDRESS, initCheck);
+  if (initCheck != 12345) 
+  {
+    EEPROM.put(DAY_ADDRESS, 7); // Día inicial
+    EEPROM.put(MONTH_ADDRESS, 10); // Mes inicial
+    EEPROM.put(YEAR_ADDRESS, 2024); // Año inicial
+    EEPROM.put(RPMS_ADRESS, 1500); // RPMs del motor inicial
+    EEPROM.put(LITROS_TOTALES_DIRECCION, 0); // Litros totales iniciales
+    EEPROM.put(IDIOMA_ADRESS, 0); // Idioma por defecto es español
+    EEPROM.put(PORCENTAJE_ACEITE_ADRESS, 30); // Porcentaje de aceite inicial
+    EEPROM.put(PORCENTAJE_SOUJI_ADRESS, 50); // Porcentaje de Souji inicial.
+    EEPROM.put(PESO_RELATIVO_ADDRESS, 0);
+    DateTime fechaPorDefecto(2024, 10, 7, 8, 45, 1);
+    rtc.adjust(fechaPorDefecto);
+    resetearLitrosMensuales();
+  }
 }
 
 
@@ -1688,6 +1639,7 @@ void Menus::finalizarCiclo()
   inSubMenu = true;
   variarCantidad = true;
   menuIndex = 7;  
+  IndexCantidad = 0;
   lcd.clear();
   delay(20);
   updateMenuDisplay();

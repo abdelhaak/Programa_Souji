@@ -12,15 +12,17 @@ uint8_t segundo, minuto, hora,diaDeLaSemana,dia,mes;
 int16_t anio;
 String elMes;
 
-
 void rtc_init()
 {
   rtc.begin();
+  //rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
   Tiempo = rtc.now();
-  EEPROM.put(DAY_ADDRESS, 9); // Día inicial
-  EEPROM.put(MONTH_ADDRESS, 9); // Mes inicial
-  EEPROM.put(YEAR_ADDRESS, 2024); // Año inicial
-  
+  dia = Tiempo.day();
+  mes = Tiempo.month();
+  anio = Tiempo.year();
+  EEPROM.put(DAY_ADDRESS, dia); // Día inicial
+  EEPROM.put(MONTH_ADDRESS, mes); // Mes inicial
+  EEPROM.put(YEAR_ADDRESS, anio); // Año inicial
 }
 String Fecha_actual()
 {

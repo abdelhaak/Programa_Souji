@@ -6,7 +6,6 @@
 #include "Motor.h"
 #include "Bombas.h"
 #include "Bascula.h"
-#include "LCD_Progress.h"
 #include "Menus.h"
 #include "Boton.h"
 #include "SoftwareSerial.h"
@@ -40,7 +39,6 @@ extern SoftwareSerial mySerial;
 class Mezclas
 {
     private:
-
         //// Aceite 
         int16_t pesoAceiteDeseado = 0;
         int16_t volumenAceite = 0;
