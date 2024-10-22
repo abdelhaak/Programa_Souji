@@ -2,7 +2,7 @@
 
 volatile uint64_t Motor::pulsos = 0;
 int pin_encoder = 23;
-int rpms=1500;
+int rpms;
 
 Mezclas mezclado(mySerial);
 Menus menuus(lcd,mySerial);
@@ -14,7 +14,7 @@ Motor::Motor(uint8_t pin,uint8_t pin_encoder)
     this->pin = pin;
     tiempoInicio = 0;
     frecuencia = 0 ;
-    rpms = 2500 ;
+    //rpms = 2500 ;
     pulsos = 0;
     pulsos_ultimo_segundo = 0 ;
     init();
@@ -37,8 +37,9 @@ void Motor::contarPulsos()
     pulsos++;
 }
         
-void Motor::ajustarRpms(uint64_t tiempoMezcla)
+void Motor::ajustarRpms(uint64_t tiempoMezcla,int rpms)
 {
+    
     //int valorPwm = map(rpms,0,3300,0,255); 
     analogWrite(pin,130);
     

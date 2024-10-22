@@ -23,14 +23,9 @@ extern SoftwareSerial mySerial;
 #define DENSIDAD_ACEITE 0.92
 #define DENSIDAD_SOUJI 0.92
 
-#define PORCENTAJE_ACEITE_ADRESS 20
-#define PORCENTAJE_SOUJI_ADRESS 22
 #define STATUS_ADRESS 16
 #define STATUS_2_ADRESS 18
 #define NUM_MEZCLAS_ADRESS 24
-#define VOL_ACEITE_ADRESS 60
-#define VOL_SOUJI_ADRESS 62
-#define VOL_AGUA_ADRESS 64
 #define I_MEZCLAS_ADRESS 66
 #define PESO_ACEITE_ACTUAL_ADRESS 68
 #define PESO_RELATIVO_ADDRESS 74
@@ -39,18 +34,6 @@ extern SoftwareSerial mySerial;
 class Mezclas
 {
     private:
-        //// Aceite 
-        int16_t pesoAceiteDeseado = 0;
-        int16_t volumenAceite = 0;
-
-        //// Souji
-        int16_t pesoSoujiDeseado = 0;
-        int16_t volumenSouji = 0;
-
-        //// Agua
-        int16_t pesoAguaDeseado = 0;
-        int16_t volumenAgua = 0;
-
         //// Mezclas
         int16_t pesoAgregado = 0;
         int16_t pesoInicioEtapa = 0;
@@ -68,15 +51,20 @@ class Mezclas
         void parado();
         void Pantallamezcla(uint8_t pantallamezcla);
         void laMezcla(int cantidadSouji);  
-        void mezclaGeneral(int mezclas);
-        void calcularVolumen();
+        void mezclaMultiusos(int mezclas);
+        void mezclaFregasuelos(int mezclas);
         void echarLiquido(int16_t pesoPorechar);
         void mezclaVacio();   
         void resetearTodo();
+        
+        /*
+        void calcularVolumen();
         void subirPorcentajeAceite();
         void subirPorcentajeSouji();
         void bajarPorcentajeAceite();
         void bajarPorcentajeSouji();
+        */
+        
         void pausarMezcla();
         void esperarParaReanudar();
         void vacioGeneral();
@@ -95,8 +83,6 @@ class Mezclas
         int estado = 0;
         int estado2 = 0;
         int i_mezclas = 0;
-        int16_t porcentajeAceite = 30;
-        int16_t porcentajeSouji = 50;
         int16_t pesoLiquido = 0;
         int16_t pesoRelative = 0;
 };

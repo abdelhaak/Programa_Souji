@@ -22,7 +22,9 @@ extern LiquidCrystal lcd;
 #define IDIOMA_ADRESS 26
 
 extern int idioma;
+extern int tipoMezcla;
 extern int opcionCalibre;
+extern int opcionTipo;
 extern int opcionLenguaje; 
 extern const int PAUSE;
 extern bool enPausa;
@@ -36,6 +38,7 @@ class Menus
         // Variables del menu principal 
         uint8_t misPantallas=0;
         bool cambiarIdioma = false;
+        bool cambiarTipo = false;
         bool mezclar5Litros = false;
         uint8_t misPantallasMezc = 0;
 

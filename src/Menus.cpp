@@ -6,8 +6,10 @@
 // MENUS GENERALES
 
 int idioma = 0 ;
+int tipoMezcla = 0;
 int opcionLenguaje = 0; 
 int opcionCalibre = 0;
+int opcionTipo = 0;
 const int PAUSE = 99;
 bool enPausa = false;
 bool pausado = false;
@@ -58,40 +60,29 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     mostrarLitros = false;
     inSubMenu = false;
     mezcla.mezclando = false;
+    cambiarTipo = false;
     menuIndex = 0;
     if (mezcla.estado == 0)
     {   
       if(idioma == 0)
       {
-        lcd.setCursor(0,0);
-        lcd.print("CANTIDAD SOUJI:");  
+        lcd.setCursor(1,0);
+        lcd.print("SELECCIONE  EL");  
         lcd.setCursor(1,1);
-        lcd.print(Cantidad_Souji[IndexCantidad]);
-        lcd.setCursor(3,1);
-        lcd.print("/");
-        lcd.setCursor(4,1);
-        lcd.print("25");
-        lcd.setCursor(9,1);
-        lcd.print("LITROS");
+        lcd.print("TIPO DE MEZCLA");
       }
       else
       {
-        lcd.setCursor(2,0);
-        lcd.print("SOUJI AMOUNT");
+        lcd.setCursor(3,0);
+        lcd.print("CHOOSE THE");  
         lcd.setCursor(1,1);
-        lcd.print(Cantidad_Souji[IndexCantidad]);
-        lcd.setCursor(3,1);
-        lcd.print("/");
-        lcd.setCursor(4,1);
-        lcd.print("25");
-        lcd.setCursor(9,1);
-        lcd.print("LITERS");
+        lcd.print("MIX TYPE");
       }
     }
-    else
+    /*else
     {
       mezcla.mezclaGeneral(mezcla.numMezclas);
-    }
+    }*/
   }
   
   // Pantalla de Litros Mensuales
@@ -381,6 +372,38 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
       lcd.print("ENGLISH");
     }
   }
+
+  // El SubMenu de seleccionar el tipo de producto
+  if (pantalla == 14)
+  {
+    cambiarTipo = true;
+    lcd.clear();
+    delay(20);
+    if (opcionTipo == 0) 
+    {
+      lcd.setCursor(0, 0);
+      lcd.print(">");
+    } 
+    else 
+    {
+      lcd.setCursor(0, 1);
+      lcd.print(">");
+    }
+    if(idioma == 0)
+    {
+      lcd.setCursor(2, 0);
+      lcd.print("MULTIUSOS");
+      lcd.setCursor(2, 1);
+      lcd.print("FREGASUELOS");
+    }
+    else
+    {
+      lcd.setCursor(1, 0);
+      lcd.print("MULTI PURPOSE");
+      lcd.setCursor(1, 1);
+      lcd.print("FLOOR  WASHING");
+    }
+  }
 }
 
 void Menus::updateMenuDisplay()
@@ -398,7 +421,7 @@ void Menus::entrarSubMenu()
     switch (menuIndex) 
     {
       case 0:
-      Menus::PantallaSeleccionada(7);
+      Menus::PantallaSeleccionada(14);
       break;
       case 1:
       inSubMenu = false;
@@ -723,6 +746,12 @@ void Menus::modificarBotonSel()
     {
       pasarFecha();
     }
+    else if(cambiarTipo)
+    {
+      tipoMezcla = opcionTipo;
+      cambiarTipo = false;
+      PantallaSeleccionada(7);
+    }
     else if(mostrarLitros)
     {
       mostrarLitros = false;
@@ -776,7 +805,14 @@ void Menus::modificarBotonSel()
       {
         EEPROM.get(STATUS_ADRESS,mezcla.estado);
         EEPROM.get(NUM_MEZCLAS_ADRESS, mezcla.numMezclas);
-        mezcla.mezclaGeneral(mezcla.numMezclas);
+        if(opcionTipo == 0)
+        {
+          mezcla.mezclaMultiusos(mezcla.numMezclas);
+        }
+        else
+        {
+          mezcla.mezclaFregasuelos(mezcla.numMezclas);
+        }      
       }
     }
     else{}
@@ -854,6 +890,11 @@ void Menus::decrementandoIndex()
       menuIndex++;
       updateMenuDisplay();
     }
+    else if(cambiarTipo)
+    {
+      opcionTipo = 1;
+      PantallaSeleccionada(14);
+    }
     else if(inSubMenu && variarCantidad && IndexCantidad > 0 && !mostrarLitrosMensuales)
     {                      
       IndexCantidad--; 
@@ -893,7 +934,7 @@ void Menus::decrementandoIndex()
       menuProgIndex++;
       updateMenuProgDisplay(); 
     }
-    else if(ajustandoAceite && !ajustandoSouji)
+    /*else if(ajustandoAceite && !ajustandoSouji)
     {
       mezcla.bajarPorcentajeAceite();   
     }
@@ -904,7 +945,7 @@ void Menus::decrementandoIndex()
     else if(validarRpms )
     {
       motor.bajarRpms();
-    }
+    }*/
   } 
 }
 
@@ -917,6 +958,11 @@ void Menus::incrementandoIndex()
     {
       menuIndex--;
       updateMenuDisplay(); 
+    }
+    else if(cambiarTipo)
+    {
+      opcionTipo = 0;
+      PantallaSeleccionada(14);
     }
     else if(inSubMenu && variarCantidad && IndexCantidad < 4 && !mostrarLitrosMensuales)
     {
@@ -958,7 +1004,7 @@ void Menus::incrementandoIndex()
       menuProgIndex--;
       updateMenuProgDisplay(); 
     }
-    else if(ajustandoAceite && !ajustandoSouji)
+    /*else if(ajustandoAceite && !ajustandoSouji)
     {
       mezcla.subirPorcentajeAceite();   
     }
@@ -969,7 +1015,7 @@ void Menus::incrementandoIndex()
     else if(validarRpms)
     {
       motor.subirRpms();
-    }
+    }*/
     else
     {}
   }
@@ -1178,31 +1224,66 @@ void Menus::ejecutarMezcla(int Cantidad_Souji)
   case 5:
     mezcla.numMezclas = 1;
     EEPROM.put(NUM_MEZCLAS_ADRESS, mezcla.numMezclas);
-    mezcla.mezclaGeneral(mezcla.numMezclas);
+    if(opcionTipo == 0)
+    {
+      mezcla.mezclaMultiusos(mezcla.numMezclas);
+    }
+    else
+    {
+      mezcla.mezclaFregasuelos(mezcla.numMezclas);
+    }
     incrementarCantidad(5);
   break;
   case 10:
     mezcla.numMezclas = 2;
     EEPROM.put(NUM_MEZCLAS_ADRESS, mezcla.numMezclas);
-    mezcla.mezclaGeneral(mezcla.numMezclas);;
+    if(opcionTipo == 0)
+    {
+      mezcla.mezclaMultiusos(mezcla.numMezclas);
+    }
+    else
+    {
+      mezcla.mezclaFregasuelos(mezcla.numMezclas);
+    }
     incrementarCantidad(10);
   break;
   case 15:
     mezcla.numMezclas = 3;
     EEPROM.put(NUM_MEZCLAS_ADRESS, mezcla.numMezclas);
-    mezcla.mezclaGeneral(mezcla.numMezclas);
+    if(opcionTipo == 0)
+    {
+      mezcla.mezclaMultiusos(mezcla.numMezclas);
+    }
+    else
+    {
+      mezcla.mezclaFregasuelos(mezcla.numMezclas);
+    }
     incrementarCantidad(15);
   break;
   case 20:
     mezcla.numMezclas = 4;
     EEPROM.put(NUM_MEZCLAS_ADRESS, mezcla.numMezclas);
-    mezcla.mezclaGeneral(mezcla.numMezclas);
+    if(opcionTipo == 0)
+    {
+      mezcla.mezclaMultiusos(mezcla.numMezclas);
+    }
+    else
+    {
+      mezcla.mezclaFregasuelos(mezcla.numMezclas);
+    }
     incrementarCantidad(20);
   break;
   case 25:
     mezcla.numMezclas = 5;
     EEPROM.put(NUM_MEZCLAS_ADRESS, mezcla.numMezclas);
-    mezcla.mezclaGeneral(mezcla.numMezclas);
+    if(opcionTipo == 0)
+    {
+      mezcla.mezclaMultiusos(mezcla.numMezclas);
+    }
+    else
+    {
+      mezcla.mezclaFregasuelos(mezcla.numMezclas);
+    }
     incrementarCantidad(25);
   break;
   }
@@ -1420,8 +1501,6 @@ void Menus::inicializarEEPROM()
     EEPROM.put(RPMS_ADRESS, 1500); // RPMs del motor inicial
     EEPROM.put(LITROS_TOTALES_DIRECCION, 0); // Litros totales iniciales
     EEPROM.put(IDIOMA_ADRESS, 0); // Idioma por defecto es español
-    EEPROM.put(PORCENTAJE_ACEITE_ADRESS, 30); // Porcentaje de aceite inicial
-    EEPROM.put(PORCENTAJE_SOUJI_ADRESS, 50); // Porcentaje de Souji inicial.
     EEPROM.put(PESO_RELATIVO_ADDRESS, 0);
     DateTime fechaPorDefecto(2024, 10, 7, 8, 45, 1);
     rtc.adjust(fechaPorDefecto);

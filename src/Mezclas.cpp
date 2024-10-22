@@ -16,21 +16,56 @@ int numMezclas = 0;
 int i_mezclas=0;
 int16_t pesoLiquido = 0;
 
-// ERRORES
+int rpms500 = 500;
+int rpms1000 = 1000;
+int rpms1500 = 1500;
+int rpms2000 = 2000;
+int rpms200 = 200;
 
-// iniciado en 3.5 minutos => 500000 // POR AHORA 15 SEGUNDOS
-uint64_t tiempoErrorBascula = 800000;
-uint64_t tiempoErrorBomba = 800000;
-uint64_t tiempoAgotado = 60000;
-uint64_t tiempoUltimaVariacion;
-uint64_t tiempoPasado = 0;
-uint64_t tiempoPasadoAgotado;
+
+// VALORES DE PESO PARA EL MULTIUSOS Y UNA CANTIDAD DE 2.7 L 
+// PARA TENER 5L DE VOLUMEN A LA HORA DE HECHAR
+
+// Peso Aceite porcentajeAceite * cantidad => 30 * 27 = 810 g
+int16_t pesoAceiteMultiusos = 810;
+// Peso Souji porcentajeSouji * cantidad => 50 * 27 = 1350 g
+int16_t pesoSoujiMultiusos = 1350;
+// Peso Agua porcentajeAgua * cantidad => 20 * 25 = 500 g
+int16_t pesoAguaMultiusos = 500;
+
+// VALORES DE PESO PARA EL FREGASUELOS Y UNA CANTIDAD DE 3 L 
+// PARA TENER 5L DE VOLUMEN A LA HORA DE HECHAR
+
+// Peso Souji porcentajeSouji * cantidad => 43.8 * 30 = 1314 g
+int16_t pesoSoujiFregasuelos = 1314;
+// Peso Agua porcentajeAgua * cantidad => 25.1 * 30 = 753 g
+int16_t pesoAguaFregasuelos = 753;
+// Peso Aceite porcentajeAceite * cantidad => 31.1 * 30 = 933 g
+int16_t pesoAceiteFregasuelos = 933;
+
+// TIEMPOS 
+uint64_t tErrorBomba = 800000;
+uint64_t tAgotado = 60000;
+uint64_t tUltimaVariacion;
+uint64_t tPasado = 0;
+uint64_t tPasadoAgotado;
 int16_t nuevoPesoActual = 0;
 
-// 2 minutos => 240000 ms    ::   PARA LA PRIMERA MEZCLA
-uint64_t tiempoMezcla1 = 240000  ; // 
-// 3 minutos => 360000 ms    ::   PARA LA SEGUNDA MEZCLA
-uint64_t tiempoMezcla2 = 360000 ; //10000   ;
+// 2 minutos => 240000 ms    ::   PARA LA PRIMERA MEZCLA DE MULTIUSOS
+uint64_t tMixMultiusos1 = 240000; 
+// 3 minutos => 360000 ms    ::   PARA LA SEGUNDA MEZCLA DE MULTIUSOS
+uint64_t tMixMultiusos2 = 360000;  
+// 2 minutos => 240000 ms    ::   PARA LA PRIMERA MEZCLA DE FREGASUELOS
+uint64_t tMixFregasuelos1 = 240000; 
+// 30 segundos => 60000 ms    ::   PARA LA PRIMERA MEZCLA DE DOSIFICACION FREGASUELOS
+uint64_t tMixFregasuelosDosif1 = 60000; 
+// 60 segundos => 120000 ms    ::   PARA LA SEGUNDA MEZCLA DE DOSIFICACION FREGASUELOS
+uint64_t tMixFregasuelosDosif2 = 120000;
+// 2 minutos => 240000 ms    ::   PARA LA TERCERA MEZCLA DE DOSIFICACION FREGASUELOS
+uint64_t tMixFregasuelosDosif3 = 240000;
+// 60 segundos => 120000 ms   ::   PARA LA ULTIMA MEZCLA DE FREGASUELOS
+uint64_t tMixFregasuelos2 = 120000; 
+
 // 3 minutos => 360000 ms    ::   PARA EL VACIO POR AHORA 
 uint64_t tiempoVacio = 360000 ; // 10000
 
@@ -39,19 +74,14 @@ unsigned long tempSig = 0;
 unsigned long temp1 = 0;
 unsigned long tempSig1 = 0;
 // Porcentajes de inicio de liquidos
-int16_t porcentajeAceite = 30;
-int16_t porcentajeSouji = 50;
+//int16_t porcentajeAceite = 30;
+//int16_t porcentajeSouji = 50;
 
 Mezclas::Mezclas(SoftwareSerial& serial) : mySerial(serial)
 {
-  pesoAceiteDeseado = 0;
-  pesoSoujiDeseado = 0;
-  volumenAceite = 0;
-  volumenSouji = 0;
-  volumenAgua = 0;
+  pesoAceiteMultiusos = 0;
+  pesoSoujiMultiusos = 0;
   pesoAgregado = 0;
-  porcentajeAceite = 30;
-  porcentajeSouji = 50;
   tiempoInicioVacio = 0 ;
   init();
 }
@@ -70,8 +100,8 @@ void Mezclas::parado()
   motorMezclador.pararMotor();
 }
 
-// LA MEZCLA COMPLETA 
-void Mezclas::mezclaGeneral(int mezclas)
+// LA MEZCLA COMPLETA DE MULTIUSOS
+void Mezclas::mezclaMultiusos(int mezclas)
 {
   if(!enPausa)
   {
@@ -92,7 +122,7 @@ void Mezclas::mezclaGeneral(int mezclas)
       estado2 = 1;
       EEPROM.put(STATUS_ADRESS, estado);
       EEPROM.put(STATUS_2_ADRESS, estado2);
-      calcularVolumen();
+      //calcularVolumen();
     }
     // Pasamos a la mezcla general
     if(estado == 2)
@@ -106,18 +136,16 @@ void Mezclas::mezclaGeneral(int mezclas)
             // echamos la cantidad adecuada para el Aceite
             if(estado2 == 1)
             {
-              EEPROM.get(VOL_ACEITE_ADRESS, pesoAceiteDeseado);
               Pantallamezcla(12);
-              echarLiquido(pesoAceiteDeseado);
+              echarLiquido(pesoAceiteMultiusos);
               estado2 = 2;
               EEPROM.put(STATUS_2_ADRESS, estado2);
             }  
             // echamos la cantidad adecuada para el SOUJI
             if(estado2 == 2)
             { 
-              EEPROM.get(VOL_SOUJI_ADRESS, pesoSoujiDeseado);
               Pantallamezcla(12);
-              echarLiquido(pesoSoujiDeseado);
+              echarLiquido(pesoSoujiMultiusos);
               estado2 = 3;
               EEPROM.put(STATUS_2_ADRESS, estado2);
             }
@@ -125,7 +153,7 @@ void Mezclas::mezclaGeneral(int mezclas)
             if(estado2 == 3)
             { 
               Pantallamezcla(12);
-              motorMezclador.ajustarRpms(tiempoMezcla1);
+              motorMezclador.ajustarRpms(tMixMultiusos1, rpms1500);
               delay(50);
               estado2 = 4;
               EEPROM.put(STATUS_2_ADRESS, estado2);
@@ -133,10 +161,9 @@ void Mezclas::mezclaGeneral(int mezclas)
             // echamos la cantidad adecuada de AGUA
             if(estado2 == 4)
             {
-              EEPROM.get(VOL_AGUA_ADRESS, pesoAguaDeseado);
               delay(30000);
               Pantallamezcla(12);
-              echarLiquido(pesoAguaDeseado);
+              echarLiquido(pesoAguaMultiusos);
               estado2 = 5;
               EEPROM.put(STATUS_2_ADRESS, estado2);
             }
@@ -145,7 +172,7 @@ void Mezclas::mezclaGeneral(int mezclas)
             {
               Pantallamezcla(12);
               // Activamos el motor con los RPMs guardados y el tiempo adecuado
-              motorMezclador.ajustarRpms(tiempoMezcla2);
+              motorMezclador.ajustarRpms(tMixMultiusos2, rpms1500);
               estado2 = 6;
               EEPROM.put(STATUS_2_ADRESS, estado2);
             }
@@ -201,18 +228,16 @@ void Mezclas::mezclaGeneral(int mezclas)
         // echamos la cantidad adecuada para el Aceite
         if(estado2 == 1)
         {
-          EEPROM.get(VOL_ACEITE_ADRESS, pesoAceiteDeseado);
           Pantallamezcla(12);
-          echarLiquido(pesoAceiteDeseado);
+          echarLiquido(pesoAceiteMultiusos);
           estado2 = 2;
           EEPROM.put(STATUS_2_ADRESS, estado2);
         }  
         // echamos la cantidad adecuada para el SOUJI
         if(estado2 == 2)
         {
-          EEPROM.get(VOL_SOUJI_ADRESS, pesoSoujiDeseado);
           Pantallamezcla(12);
-          echarLiquido(pesoSoujiDeseado);
+          echarLiquido(pesoSoujiMultiusos);
           estado2 = 3;
           EEPROM.put(STATUS_2_ADRESS, estado2);
         }
@@ -220,7 +245,7 @@ void Mezclas::mezclaGeneral(int mezclas)
         if(estado2 == 3)
         { 
           Pantallamezcla(12);
-          motorMezclador.ajustarRpms(tiempoMezcla1);
+          motorMezclador.ajustarRpms(tMixMultiusos1, rpms1500);
           delay(50);
           estado2 = 4;
           EEPROM.put(STATUS_2_ADRESS, estado2);
@@ -228,10 +253,9 @@ void Mezclas::mezclaGeneral(int mezclas)
         // echamos la cantidad adecuada de AGUA
         if(estado2 == 4)
         {
-          EEPROM.get(VOL_AGUA_ADRESS, pesoAguaDeseado);
           delay(30000);
           Pantallamezcla(12);
-          echarLiquido(pesoAguaDeseado);
+          echarLiquido(pesoAguaMultiusos);
           estado2 = 5;
           EEPROM.put(STATUS_2_ADRESS, estado2);
         } 
@@ -240,7 +264,241 @@ void Mezclas::mezclaGeneral(int mezclas)
         {
           Pantallamezcla(12);
           // Activamos el motor con los RPMs guardados y el tiempo adecuado
-          motorMezclador.ajustarRpms(tiempoMezcla2);
+          motorMezclador.ajustarRpms(tMixMultiusos2, rpms1500);
+          estado2 = 6;
+          EEPROM.put(STATUS_2_ADRESS, estado2);
+        }
+        // Pasamos a la etapa del vacio
+        if(estado2 == 6)
+        {
+          Pantallamezcla(13);
+          mezclaVacio();
+          finMezcla = true;
+          delay(2000);   
+        }
+      } 
+    }
+    // Finalizamos la mezcla
+    if(estado == 2 && finMezcla)
+    {
+      resetearTodo();
+      Pantallamezcla(14);
+      Pantallamezcla(7);
+      delay(8000);
+      menus.finalizarCiclo();
+    }
+    // Error de verificacion y peso superior a lo normal
+    if(estado == 3)
+    {
+      if(idioma == 0)
+      {
+        lcd.clear();
+        delay(20);
+        lcd.setCursor(1,0);
+        lcd.print("ERROR DE  PESO");
+        lcd.setCursor(0,1);
+        lcd.print("VACIAR  DEPOSITO");
+        delay(10000);
+      }
+      else
+      {
+        lcd.clear();
+        delay(20);
+        lcd.setCursor(2,0);
+        lcd.print("WEIGHT ERROR");
+        lcd.setCursor(1,1);
+        lcd.print("EMPTY CLEANER");
+        delay(10000);
+      }
+      resetearTodo();
+      lcd.clear();
+      delay(20);
+      menus.finalizarCiclo();
+    }
+  }
+}
+
+// LA MEZCLA COMPLETA DE FREGASUELOS
+void Mezclas::mezclaFregasuelos(int mezclas)
+{
+  if(!enPausa)
+  {
+    EEPROM.get(I_MEZCLAS_ADRESS, i_mezclas);
+    EEPROM.get(PESO_ACEITE_ACTUAL_ADRESS, pesoLiquido);
+    // Iniciamos la mezcla 
+    if(estado == 0)
+    {
+      Pantallamezcla(0);
+      delay(4000);
+      verificarPeso();
+      EEPROM.put(STATUS_ADRESS, estado);
+    }
+    // Calculamos el volumen de cada liquido
+    if(estado == 1)
+    {
+      estado = 2;
+      estado2 = 1;
+      EEPROM.put(STATUS_ADRESS, estado);
+      EEPROM.put(STATUS_2_ADRESS, estado2);
+      //calcularVolumen();
+    }
+    // Pasamos a la mezcla general
+    if(estado == 2)
+    {
+      if(mezclas > 1)
+      {
+        Pantallamezcla(12);
+        for(i_mezclas=0; i_mezclas<mezclas; i_mezclas++)
+        {
+            EEPROM.put(I_MEZCLAS_ADRESS, i_mezclas);
+            // echamos la cantidad adecuada para el Souji
+            if(estado2 == 1)
+            {
+              Pantallamezcla(12);
+              echarLiquido(pesoSoujiFregasuelos);
+              estado2 = 2;
+              EEPROM.put(STATUS_2_ADRESS, estado2);
+            }  
+            // echamos la cantidad adecuada para el Agua
+            if(estado2 == 2)
+            { 
+              Pantallamezcla(12);
+              echarLiquido(pesoAguaFregasuelos);
+              estado2 = 3;
+              EEPROM.put(STATUS_2_ADRESS, estado2);
+            }
+            // Pasamos a la primera etapa de mezcla con el motor 
+            if(estado2 == 3)
+            { 
+              Pantallamezcla(12);
+              motorMezclador.ajustarRpms(tMixFregasuelosDosif1,rpms500);
+              delay(50);
+              estado2 = 4;
+              EEPROM.put(STATUS_2_ADRESS, estado2);
+            }
+            // echamos la cantidad adecuada de Aceite
+            if(estado2 == 4)
+            {
+              Pantallamezcla(12);
+              echarLiquido(pesoAceiteFregasuelos);
+              estado2 = 5;
+              EEPROM.put(STATUS_2_ADRESS, estado2);
+            }
+            // Pasamos a la segunda etapa de mezcla con el motor 
+            if(estado2 == 5)
+            {
+              Pantallamezcla(12);
+              // Activamos el motor con los RPMs guardados y el tiempo adecuado
+              motorMezclador.ajustarRpms(tMixFregasuelosDosif1,rpms1000);
+              delay(1000);
+              motorMezclador.ajustarRpms(tMixFregasuelosDosif2,rpms1500);
+              delay(1000);
+              motorMezclador.ajustarRpms(tMixFregasuelosDosif3,rpms2000);
+              delay(6000);
+              // Agitar para sacar todo el aire incorporado
+              motorMezclador.ajustarRpms(tMixFregasuelos2,rpms200);
+              delay(1000);
+              estado2 = 6;
+              EEPROM.put(STATUS_2_ADRESS, estado2);
+            }
+            // Pasamos a la etapa del vacio
+            if(estado2 == 6)
+            {
+              Pantallamezcla(13);
+              mezclaVacio();
+              if(idioma==0)
+              {
+                lcd.clear();
+                delay(20);
+                lcd.setCursor(1,0);
+                lcd.print("MEZCLA NUM : ");
+                lcd.setCursor(14,0);
+                lcd.print(i_mezclas+1);
+                lcd.setCursor(2,1);
+                lcd.print("FINALIZADA");
+                estado2 = 1;
+                EEPROM.put(STATUS_2_ADRESS, estado2);
+                delay(10000);
+                lcd.clear();
+                delay(20);
+                lcd.setCursor(0,0);
+                lcd.print("SIGUIENTE MEZCLA");
+                delay(8000);
+              }
+              else
+              {
+                lcd.clear();
+                delay(20);
+                lcd.setCursor(1,0);
+                lcd.print("MIX NUMBER : ");
+                lcd.setCursor(14,0);
+                lcd.print(i_mezclas+1);
+                lcd.setCursor(2,1);
+                lcd.print("COMPLETED");
+                estado2 = 1;
+                EEPROM.put(STATUS_2_ADRESS, estado2);
+                delay(10000);
+                lcd.clear();
+                delay(20);
+                lcd.setCursor(4,0);
+                lcd.print("NEXT MIX");
+                delay(8000);
+              }
+            }
+        }
+        finMezcla = true ;
+      }
+      else
+      {
+        // echamos la cantidad adecuada para el Souji
+        if(estado2 == 1)
+        {
+          Pantallamezcla(12);
+          echarLiquido(pesoSoujiFregasuelos);
+          estado2 = 2;
+          EEPROM.put(STATUS_2_ADRESS, estado2);
+        }  
+        // echamos la cantidad adecuada para el Agua
+        if(estado2 == 2)
+        {
+          Pantallamezcla(12);
+          echarLiquido(pesoAguaFregasuelos);
+          estado2 = 3;
+          EEPROM.put(STATUS_2_ADRESS, estado2);
+        }
+        // Pasamos a la primera etapa de mezcla con el motor 
+        if(estado2 == 3)
+        { 
+          Pantallamezcla(12);
+
+          motorMezclador.ajustarRpms(tMixFregasuelosDosif1,rpms500);
+          delay(50);
+          estado2 = 4;
+          EEPROM.put(STATUS_2_ADRESS, estado2);
+        }
+        // echamos la cantidad adecuada del Aceite
+        if(estado2 == 4)
+        {
+          delay(30000);
+          Pantallamezcla(12);
+          echarLiquido(pesoAceiteFregasuelos);
+          estado2 = 5;
+          EEPROM.put(STATUS_2_ADRESS, estado2);
+        } 
+        // Pasamos a la segunda etapa de mezcla con el motor 
+        if(estado2 == 5)
+        {
+          Pantallamezcla(12);
+          // Activamos el motor con los RPMs guardados y el tiempo adecuado
+          motorMezclador.ajustarRpms(tMixFregasuelosDosif1,rpms1000);
+          delay(1000);
+          motorMezclador.ajustarRpms(tMixFregasuelosDosif2,rpms1500);
+          delay(1000);
+          motorMezclador.ajustarRpms(tMixFregasuelosDosif3,rpms2000);
+          delay(6000);
+          // Agitar para sacar todo el aire incorporado
+          motorMezclador.ajustarRpms(tMixFregasuelos2,rpms200);
+          delay(1000);
           estado2 = 6;
           EEPROM.put(STATUS_2_ADRESS, estado2);
         }
@@ -411,11 +669,11 @@ void Mezclas::Pantallamezcla(uint8_t pantallamezcla)
     }
   }
 
+  /*
   // Pantalla de Ajuste de PORCENTAJE ACEITE
   if (pantallamezcla == 10)
   {
     //menus.validarAjusteAceite = true;
-    EEPROM.get(PORCENTAJE_ACEITE_ADRESS, porcentajeAceite);
     if(idioma==0)
     {
       lcd.clear();
@@ -443,8 +701,6 @@ void Mezclas::Pantallamezcla(uint8_t pantallamezcla)
   // Pantalla de Ajuste de PORCENTAJE SOUJI
   if (pantallamezcla == 11)
   {
-    
-    EEPROM.get(PORCENTAJE_SOUJI_ADRESS, porcentajeSouji);
     if(idioma==0)
     {
       lcd.clear();
@@ -468,6 +724,7 @@ void Mezclas::Pantallamezcla(uint8_t pantallamezcla)
       lcd.print("%");
     }
   }
+  */
 
   // Pantalla Mezclando
   if (pantallamezcla == 12)
@@ -587,7 +844,7 @@ void Mezclas::mezclaVacio()
     deteccionPulso();
     Pantallamezcla(13);
 
-    if (millis() - tiempoInicio > tiempoErrorBomba)
+    if (millis() - tiempoInicio > tErrorBomba)
     {
       if(idioma==0)
       {
@@ -620,6 +877,7 @@ void Mezclas::mezclaVacio()
   bombaVacio.off();
 }
 
+/*
 void Mezclas::calcularVolumen()
 { 
   // EL 70% de la cantidad de 5 litros por ahora que es 3500 --> 35
@@ -627,32 +885,33 @@ void Mezclas::calcularVolumen()
   // Calculos de la cantidad de Aceite
   EEPROM.get(PORCENTAJE_ACEITE_ADRESS, porcentajeAceite);
   volumenAceite= porcentajeAceite * 27;
-  pesoAceiteDeseado  = volumenAceite * DENSIDAD_ACEITE;
-  EEPROM.put(VOL_ACEITE_ADRESS, pesoAceiteDeseado);
+  pesoAceiteMultiusos  = volumenAceite * DENSIDAD_ACEITE;
+  EEPROM.put(VOL_ACEITE_ADRESS, pesoAceiteMultiusos);
   delay(1000);
 
   // Calculos de la cantidad de Souji
   EEPROM.get(PORCENTAJE_SOUJI_ADRESS, porcentajeSouji);
   volumenSouji = porcentajeSouji * 27;
-  pesoSoujiDeseado = volumenSouji * DENSIDAD_SOUJI;
-  EEPROM.put(VOL_SOUJI_ADRESS, pesoSoujiDeseado);
+  pesoSoujiMultiusos = volumenSouji * DENSIDAD_SOUJI;
+  EEPROM.put(VOL_SOUJI_ADRESS, pesoSoujiMultiusos);
   delay(1000);
 
   // Calculos de la cantidad de Agua que es lo que queda
   int16_t porcentajeAgua = 0;
   porcentajeAgua  = 100 - (porcentajeAceite + porcentajeSouji);
   volumenAgua = porcentajeAgua * 24;
-  pesoAguaDeseado = volumenAgua;
-  EEPROM.put(VOL_AGUA_ADRESS, pesoAguaDeseado);
+  pesoAguaMultiusos = volumenAgua;
+  EEPROM.put(VOL_AGUA_ADRESS, pesoAguaMultiusos);
   delay(1000);
 }
+*/
 
 /*
 void Mezclas::echarLiquido(int16_t pesoPorechar)
 {
   encenderBombaCorrespondiente();
 
-  tiempoUltimaVariacion = millis();
+  tUltimaVariacion = millis();
   pesoLiquido = PesoActual();
   pesoRelative = 0;
 
@@ -685,15 +944,15 @@ void Mezclas::echarLiquido(int16_t pesoPorechar)
 
       if (abs(nuevoPesoActual - pesoLiquido) > 50) 
       {
-        tiempoUltimaVariacion = millis();  
+        tUltimaVariacion = millis();  
         pesoRelative += nuevoPesoActual - pesoLiquido;  
         pesoLiquido = nuevoPesoActual; 
         EEPROM.put(PESO_RELATIVO_ADDRESS, pesoRelative); 
-        tiempoPasadoAgotado = millis() - tiempoUltimaVariacion;
+        tPasadoAgotado = millis() - tUltimaVariacion;
       }
     }
 
-    if (millis() - tiempoUltimaVariacion > tiempoAgotado) 
+    if (millis() - tUltimaVariacion > tAgotado) 
     {
       mostrarAgotado();
       apagarBombas();
@@ -704,7 +963,7 @@ void Mezclas::echarLiquido(int16_t pesoPorechar)
       }
 
       encenderBombaCorrespondiente();
-      tiempoUltimaVariacion = millis();
+      tUltimaVariacion = millis();
     }
 
     deteccionPulso();  
@@ -724,7 +983,7 @@ void Mezclas::echarLiquido(int16_t pesoPorechar)
   // Encender la bomba correspondiente
   encenderBombaCorrespondiente();
 
-  tiempoUltimaVariacion = millis();
+  tUltimaVariacion = millis();
   pesoLiquido = PesoActual();
   pesoRelative = 0;
 
@@ -753,15 +1012,15 @@ void Mezclas::echarLiquido(int16_t pesoPorechar)
     deteccionPulso();
     if (abs(nuevoPesoActual - pesoLiquido) > 50) 
     {
-      tiempoUltimaVariacion = millis(); 
+      tUltimaVariacion = millis(); 
       pesoRelative += nuevoPesoActual - pesoLiquido;
       pesoLiquido = nuevoPesoActual;
       EEPROM.put(PESO_RELATIVO_ADDRESS, pesoRelative);
-      tiempoPasadoAgotado = millis() -  tiempoUltimaVariacion;
+      tPasadoAgotado = millis() -  tUltimaVariacion;
     }
     deteccionPulso();
     // Verificar si no ha habido cambios significativos durante más de 30 segundos
-    if (millis() - tiempoUltimaVariacion > tiempoAgotado) 
+    if (millis() - tUltimaVariacion > tAgotado) 
     {
       mostrarAgotado();
       apagarBombas();
@@ -776,7 +1035,7 @@ void Mezclas::echarLiquido(int16_t pesoPorechar)
       encenderBombaCorrespondiente();
 
       // Reiniciar el tiempo de última variación
-      tiempoUltimaVariacion = millis();
+      tUltimaVariacion = millis();
     }
     deteccionPulso();
   }
@@ -796,6 +1055,7 @@ void Mezclas::echarLiquido(int16_t pesoPorechar)
   delay(6000);*/
 }
 
+/*
 void Mezclas::subirPorcentajeAceite()
 {
   porcentajeAceite++;
@@ -831,21 +1091,15 @@ void Mezclas::bajarPorcentajeSouji()
   menus.validarAjusteSouji = true;
   Pantallamezcla(11);
 }
-
+*/
 
 void Mezclas::resetearTodo()
 {
   estado = 0;
   estado2 = 0;
   numMezclas = 1;
-  volumenAceite = 0;
-  volumenSouji = 0;
-  volumenAgua = 0;
   pesoLiquido = 0;
   pesoRelative = 0;
-  EEPROM.put(VOL_AGUA_ADRESS, volumenAgua);
-  EEPROM.put(VOL_SOUJI_ADRESS, volumenSouji);
-  EEPROM.put(VOL_ACEITE_ADRESS, volumenAceite);
   EEPROM.put(STATUS_ADRESS, estado);
   EEPROM.put(STATUS_2_ADRESS, estado2);
   EEPROM.put(NUM_MEZCLAS_ADRESS, numMezclas);
@@ -871,7 +1125,7 @@ void Mezclas::deteccionPulso()
         }
         delay(100); 
       }
-      tiempoUltimaVariacion  += (millis() - tiempoUltimaVariacion) - tiempoPasadoAgotado;
+      tUltimaVariacion  += (millis() - tUltimaVariacion) - tPasadoAgotado;
       encenderBombaCorrespondiente();
   }
 }
@@ -1008,9 +1262,9 @@ void Mezclas::vacioGeneral()
 {
   Pantallamezcla(1);
   tiempoInicioVacio = millis();
-  uint64_t tiempoPasado = 0;
+  uint64_t tPasado = 0;
   bombaVacio.on();
-  while (tiempoPasado < tiempoVacio)
+  while (tPasado < tiempoVacio)
   {
     if(idioma==0)
     {
@@ -1027,7 +1281,7 @@ void Mezclas::vacioGeneral()
       lcd.print("DISPENSING ...");
     }
 
-    tiempoPasado = millis() - tiempoInicioVacio;
+    tPasado = millis() - tiempoInicioVacio;
     if (botonPausa.pulsado())
     {
       bombaVacio.off(); 
@@ -1041,7 +1295,7 @@ void Mezclas::vacioGeneral()
     delay(1000);
     lcd.clear();
     delay(20);
-    //updateProgressBar(tiempoPasado, tiempoVacio, 1);
+    //updateProgressBar(tPasado, tiempoVacio, 1);
     //delay(1000);
   }
   bombaVacio.off();

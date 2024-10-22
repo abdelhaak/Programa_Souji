@@ -26,7 +26,7 @@ class Motor
         void init();
         void pararMotor();
         static void contarPulsos();
-        void ajustarRpms(uint64_t tiempoMezcla);
+        void ajustarRpms(uint64_t tiempoMezcla, int rpms);
         void mostrarRpms(int pin_encoder);
         void modificarRpms();   
         void bajarRpms();
