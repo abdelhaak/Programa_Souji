@@ -1046,13 +1046,13 @@ void Mezclas::echarLiquido(int16_t pesoPorechar)
   
   apagarBombas();
 
-  /*lcd.clear();
+  lcd.clear();
   delay(20);
   lcd.setCursor(0,1);
   lcd.print("PESO : ");
   lcd.setCursor(8,1);      
   lcd.print(pesoLiquido);
-  delay(6000);*/
+  delay(6000);
 }
 
 /*

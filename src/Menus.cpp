@@ -66,8 +66,8 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     {   
       if(idioma == 0)
       {
-        lcd.setCursor(1,0);
-        lcd.print("SELECCIONE  EL");  
+        lcd.setCursor(2,0);
+        lcd.print("SELECCIONAR");  
         lcd.setCursor(1,1);
         lcd.print("TIPO DE MEZCLA");
       }
@@ -75,7 +75,7 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
       {
         lcd.setCursor(3,0);
         lcd.print("CHOOSE THE");  
-        lcd.setCursor(1,1);
+        lcd.setCursor(4,1);
         lcd.print("MIX TYPE");
       }
     }
@@ -401,7 +401,7 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
       lcd.setCursor(1, 0);
       lcd.print("MULTI PURPOSE");
       lcd.setCursor(1, 1);
-      lcd.print("FLOOR  WASHING");
+      lcd.print("FLOOR WASHING");
     }
   }
 }
@@ -490,6 +490,7 @@ void Menus::PantallaProgramador(uint8_t pantallaProg)
     }
   }
   
+  /*
   // Pantalla de Ajustar la cantidad del ACEITE
   if (pantallaProg == 1)
   {
@@ -546,29 +547,6 @@ void Menus::PantallaProgramador(uint8_t pantallaProg)
     }
   }
 
-  // Pantalla de RESETEAR LA CANTIDAD DE LITROS ACUMULADA
-  if (pantallaProg == 3)
-  {
-    modoProg=false;
-    ajustarSouji = false;
-    resetearTodo = false;
-    accederRpms = false;
-    if(idioma==0)
-    {
-      lcd.setCursor(2,0);
-      lcd.print("RESETEAR LOS");
-      lcd.setCursor(1,1);
-      lcd.print("LITROS TOTALES");
-    }
-    else
-    {
-      lcd.setCursor(4,0);
-      lcd.print("RESET THE");
-      lcd.setCursor(2,1);
-      lcd.print("TOTAL  LITERS");
-    }
-  }
-
   // Pantalla de Ajustar LA VELOCIDAD DEL MOTOR
   if (pantallaProg == 4)
   {
@@ -591,6 +569,33 @@ void Menus::PantallaProgramador(uint8_t pantallaProg)
       lcd.print("PARAMETERS");
     }
   }  
+
+  */
+
+  // Pantalla de RESETEAR LA CANTIDAD DE LITROS ACUMULADA
+  if (pantallaProg == 1)
+  {
+    modoProg=false;
+    ajustarSouji = false;
+    resetearTodo = false;
+    accederRpms = false;
+    if(idioma==0)
+    {
+      lcd.setCursor(2,0);
+      lcd.print("RESETEAR LOS");
+      lcd.setCursor(1,1);
+      lcd.print("LITROS TOTALES");
+    }
+    else
+    {
+      lcd.setCursor(4,0);
+      lcd.print("RESET THE");
+      lcd.setCursor(2,1);
+      lcd.print("TOTAL  LITERS");
+    }
+  }
+
+
   
   // SUBMENU de RESETEAR LA CANTIDAD DE LITROS ACUMULADA
   if (pantallaProg == 7)
@@ -648,9 +653,9 @@ void Menus::entrarSubMenuProg()
           PantallaProgramador(0);
           break;
         case 1:
-          PantallaProgramador(1);
+          PantallaProgramador(7);
           break;
-        case 2:
+        /*case 2:
           PantallaProgramador(2);
           break;
         case 3:
@@ -659,6 +664,7 @@ void Menus::entrarSubMenuProg()
         case 4 :
           PantallaProgramador(4);   
           break;
+      */
       }
     }
     else
@@ -929,7 +935,7 @@ void Menus::decrementandoIndex()
   }
   else if(menuProgramador)
   {
-    if(!inSubMenuProg && menuProgIndex < 4 && !ajustandoAceite && !ajustandoSouji && !validarRpms)
+    if(!inSubMenuProg && menuProgIndex < 1 && !ajustandoAceite && !ajustandoSouji && !validarRpms)
     {
       menuProgIndex++;
       updateMenuProgDisplay(); 
@@ -1495,14 +1501,14 @@ void Menus::inicializarEEPROM()
   EEPROM.get(INIT_CHECK_ADDRESS, initCheck);
   if (initCheck != 12345) 
   {
-    EEPROM.put(DAY_ADDRESS, 7); // Día inicial
+    EEPROM.put(DAY_ADDRESS, 23); // Día inicial
     EEPROM.put(MONTH_ADDRESS, 10); // Mes inicial
     EEPROM.put(YEAR_ADDRESS, 2024); // Año inicial
-    EEPROM.put(RPMS_ADRESS, 1500); // RPMs del motor inicial
+    //EEPROM.put(RPMS_ADRESS, 1500); // RPMs del motor inicial
     EEPROM.put(LITROS_TOTALES_DIRECCION, 0); // Litros totales iniciales
     EEPROM.put(IDIOMA_ADRESS, 0); // Idioma por defecto es español
     EEPROM.put(PESO_RELATIVO_ADDRESS, 0);
-    DateTime fechaPorDefecto(2024, 10, 7, 8, 45, 1);
+    DateTime fechaPorDefecto(2024, 10, 23, 9, 45, 1);
     rtc.adjust(fechaPorDefecto);
     resetearLitrosMensuales();
   }
@@ -1702,7 +1708,7 @@ void Menus::ReseteoTotal()
   resetearLitrosMensuales();
   mezcla.resetearTodo();
   inicializarEEPROM();
-  PantallaProgramador(3);
+  PantallaProgramador(1);
 }
 
 void Menus::iniciando()
