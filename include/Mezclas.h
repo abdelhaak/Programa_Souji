@@ -52,7 +52,7 @@ class Mezclas
         void Pantallamezcla(uint8_t pantallamezcla);
         void laMezcla(int cantidadSouji);  
         void mezclaMultiusos(int mezclas);
-        void mezclaFregasuelos(int mezclas);
+        void mezclaFRIEGASUELOS(int mezclas);
         void echarLiquido(int16_t pesoPorechar);
         void mezclaVacio();   
         void resetearTodo();

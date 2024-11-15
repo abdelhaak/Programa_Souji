@@ -62,6 +62,8 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     mezcla.mezclando = false;
     cambiarTipo = false;
     menuIndex = 0;
+    tipoMezcla = 0;
+    opcionTipo = 0;
     if (mezcla.estado == 0)
     {   
       if(idioma == 0)
@@ -176,6 +178,7 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
   if (pantalla == 4)
   {
     vacioAutomatico = true;
+    //elegirCalibracion = false;
     if(idioma==0)
     {
       lcd.clear();
@@ -200,9 +203,11 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
   if (pantalla == 5)
   {
     vacioAutomatico = false;
-    elegirCalibracion = false;
+    //elegirCalibracion = false;
     if(idioma==0)
     {
+      lcd.clear();
+      delay(20);
       lcd.setCursor(2,0);
       lcd.print("CALIBRACION");
       lcd.setCursor(4,1);
@@ -210,6 +215,8 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     }
     else
     {
+      lcd.clear();
+      delay(20);
       lcd.setCursor(1,0);
       lcd.print("WEIGHT  SCALE");
       lcd.setCursor(2,1);
@@ -221,6 +228,7 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
   if (pantalla == 6)
   {
     cambiarIdioma = false;
+    //elegirCalibracion = false;
     if(idioma==0)
     {
       lcd.setCursor(2,0);
@@ -303,7 +311,7 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     vacioAutomatico = false;
     PantallaSeleccionada(0);
   }
-  
+  /*
   // El SubMenu de Calibracion
   if (pantalla == 12)
   {
@@ -340,7 +348,7 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     }
     
   }
-    
+  */
   // El SubMenu de lenguaje
   if (pantalla == 13)
   {
@@ -394,7 +402,7 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
       lcd.setCursor(2, 0);
       lcd.print("MULTIUSOS");
       lcd.setCursor(2, 1);
-      lcd.print("FREGASUELOS");
+      lcd.print("FRIEGASUELOS");
     }
     else
     {
@@ -439,7 +447,7 @@ void Menus::entrarSubMenu()
       Menus::PantallaSeleccionada(4);
       break;
       case 5:
-      Menus::PantallaSeleccionada(12);
+      Menus::iniciarCaliBascula();
       break;
       case 6:
       Menus::PantallaSeleccionada(13);
@@ -788,18 +796,11 @@ void Menus::modificarBotonSel()
       EEPROM.put(IDIOMA_ADRESS,idioma);
       PantallaSeleccionada(0);
     }
-    else if(elegirCalibracion)
+    /*else if(elegirCalibracion)
     {
       elegirCalibracion = false;
-      if(opcionCalibre == 0)
-      {
-        iniciarCaliBascula();
-      }
-      else
-      {
-        mostrarElPeso();
-      }
-    }
+      iniciarCaliBascula();
+    }*/
     else if(mezcla.enPausa)
     {
       mezcla.enPausa = !mezcla.enPausa;
@@ -817,7 +818,7 @@ void Menus::modificarBotonSel()
         }
         else
         {
-          mezcla.mezclaFregasuelos(mezcla.numMezclas);
+          mezcla.mezclaFRIEGASUELOS(mezcla.numMezclas);
         }      
       }
     }
@@ -925,11 +926,11 @@ void Menus::decrementandoIndex()
       opcionLenguaje = 1;
       PantallaSeleccionada(13);
     }
-    else if(elegirCalibracion)
+    /*else if(elegirCalibracion)
     {
       opcionCalibre = 1;
       PantallaSeleccionada(12);
-    }
+    }*/
     else
     {}
   }
@@ -994,11 +995,11 @@ void Menus::incrementandoIndex()
       opcionLenguaje = 0 ;
       PantallaSeleccionada(13);
     }
-    else if(elegirCalibracion)
+    /*else if(elegirCalibracion)
     {
       opcionCalibre = 0;
       PantallaSeleccionada(12);
-    }
+    }*/
     else
     {
     }
@@ -1072,6 +1073,9 @@ void Menus::incrementarCantidad(int cantidad)
     EEPROM.put(direccion, litrosMensuales[i]);
   }
   IndexCantidad = 0;
+  lcd.clear();
+  delay(20);
+  Menus::PantallaSeleccionada(0);
 }
 
 void Menus::displayLitrosMensuales()
@@ -1224,73 +1228,78 @@ String Menus::elegirMes(uint8_t mes)
 
 void Menus::ejecutarMezcla(int Cantidad_Souji)
 {
-  motor.cargarRpms();
+  //motor.cargarRpms();
   switch (Cantidad_Souji)
   {
   case 5:
     mezcla.numMezclas = 1;
     EEPROM.put(NUM_MEZCLAS_ADRESS, mezcla.numMezclas);
-    if(opcionTipo == 0)
+    if(tipoMezcla == 0)
     {
       mezcla.mezclaMultiusos(mezcla.numMezclas);
+      incrementarCantidad(5);
     }
     else
     {
-      mezcla.mezclaFregasuelos(mezcla.numMezclas);
+      mezcla.mezclaFRIEGASUELOS(mezcla.numMezclas);
+      incrementarCantidad(5);
     }
-    incrementarCantidad(5);
   break;
   case 10:
     mezcla.numMezclas = 2;
     EEPROM.put(NUM_MEZCLAS_ADRESS, mezcla.numMezclas);
-    if(opcionTipo == 0)
+    if(tipoMezcla == 0)
     {
       mezcla.mezclaMultiusos(mezcla.numMezclas);
+      incrementarCantidad(10);
     }
     else
     {
-      mezcla.mezclaFregasuelos(mezcla.numMezclas);
+      mezcla.mezclaFRIEGASUELOS(mezcla.numMezclas);
+      incrementarCantidad(10);
     }
-    incrementarCantidad(10);
   break;
   case 15:
     mezcla.numMezclas = 3;
     EEPROM.put(NUM_MEZCLAS_ADRESS, mezcla.numMezclas);
-    if(opcionTipo == 0)
+    if(tipoMezcla == 0)
     {
       mezcla.mezclaMultiusos(mezcla.numMezclas);
+      incrementarCantidad(15);
     }
     else
     {
-      mezcla.mezclaFregasuelos(mezcla.numMezclas);
+      mezcla.mezclaFRIEGASUELOS(mezcla.numMezclas);
+      incrementarCantidad(15);
     }
-    incrementarCantidad(15);
   break;
   case 20:
     mezcla.numMezclas = 4;
     EEPROM.put(NUM_MEZCLAS_ADRESS, mezcla.numMezclas);
-    if(opcionTipo == 0)
+    if(tipoMezcla == 0)
     {
       mezcla.mezclaMultiusos(mezcla.numMezclas);
+      incrementarCantidad(20);
     }
     else
     {
-      mezcla.mezclaFregasuelos(mezcla.numMezclas);
+      mezcla.mezclaFRIEGASUELOS(mezcla.numMezclas);
+      incrementarCantidad(20);
     }
-    incrementarCantidad(20);
   break;
   case 25:
     mezcla.numMezclas = 5;
     EEPROM.put(NUM_MEZCLAS_ADRESS, mezcla.numMezclas);
-    if(opcionTipo == 0)
+    if(tipoMezcla == 0)
     {
       mezcla.mezclaMultiusos(mezcla.numMezclas);
+      incrementarCantidad(25);
     }
     else
     {
-      mezcla.mezclaFregasuelos(mezcla.numMezclas);
+      mezcla.mezclaFRIEGASUELOS(mezcla.numMezclas);
+      incrementarCantidad(25);
     }
-    incrementarCantidad(25);
   break;
   }
 }
@@ -1501,15 +1510,15 @@ void Menus::inicializarEEPROM()
   EEPROM.get(INIT_CHECK_ADDRESS, initCheck);
   if (initCheck != 12345) 
   {
-    EEPROM.put(DAY_ADDRESS, 23); // Día inicial
-    EEPROM.put(MONTH_ADDRESS, 10); // Mes inicial
-    EEPROM.put(YEAR_ADDRESS, 2024); // Año inicial
+    //EEPROM.put(DAY_ADDRESS, 23); // Día inicial
+    //EEPROM.put(MONTH_ADDRESS, 10); // Mes inicial
+    //EEPROM.put(YEAR_ADDRESS, 2024); // Año inicial
     //EEPROM.put(RPMS_ADRESS, 1500); // RPMs del motor inicial
     EEPROM.put(LITROS_TOTALES_DIRECCION, 0); // Litros totales iniciales
     EEPROM.put(IDIOMA_ADRESS, 0); // Idioma por defecto es español
     EEPROM.put(PESO_RELATIVO_ADDRESS, 0);
-    DateTime fechaPorDefecto(2024, 10, 23, 9, 45, 1);
-    rtc.adjust(fechaPorDefecto);
+    //DateTime fechaPorDefecto(2024, 10, 23, 9, 45, 1);
+    //rtc.adjust(fechaPorDefecto);
     resetearLitrosMensuales();
   }
 }
@@ -1518,6 +1527,7 @@ void Menus::inicializarEEPROM()
 /////////////////  CONTROL DE LA BASCULA  /////////////////
 void Menus::iniciarCaliBascula()
 {
+  elegirCalibracion = true;
   iniciarCalibracion = false;
   calibrarPeso = true;
   if(idioma==0)
@@ -1687,7 +1697,7 @@ void Menus::ReseteoTotalVerif()
 }
 
 void Menus::ReseteoTotal()
-{
+{  
   litrosTotales = 0 ;
   EEPROM.put(LITROS_TOTALES_DIRECCION, litrosTotales);
   if(idioma==0)

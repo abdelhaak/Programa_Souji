@@ -59,8 +59,8 @@ uint64_t tMixMultiusos2 = 360000;
 uint64_t tMixFregasuelos1 = 240000; 
 // 30 segundos => 60000 ms    ::   PARA LA PRIMERA MEZCLA DE DOSIFICACION FREGASUELOS
 uint64_t tMixFregasuelosDosif1 = 60000; 
-// 60 segundos => 120000 ms    ::   PARA LA SEGUNDA MEZCLA DE DOSIFICACION FREGASUELOS
-uint64_t tMixFregasuelosDosif2 = 120000;
+// 30 segundos => 60000 ms    ::   PARA LA SEGUNDA MEZCLA DE DOSIFICACION FREGASUELOS
+uint64_t tMixFregasuelosDosif2 = 60000;
 // 2 minutos => 240000 ms    ::   PARA LA TERCERA MEZCLA DE DOSIFICACION FREGASUELOS
 uint64_t tMixFregasuelosDosif3 = 240000;
 // 60 segundos => 120000 ms   ::   PARA LA ULTIMA MEZCLA DE FREGASUELOS
@@ -79,8 +79,6 @@ unsigned long tempSig1 = 0;
 
 Mezclas::Mezclas(SoftwareSerial& serial) : mySerial(serial)
 {
-  pesoAceiteMultiusos = 0;
-  pesoSoujiMultiusos = 0;
   pesoAgregado = 0;
   tiempoInicioVacio = 0 ;
   init();
@@ -107,6 +105,9 @@ void Mezclas::mezclaMultiusos(int mezclas)
   {
     EEPROM.get(I_MEZCLAS_ADRESS, i_mezclas);
     EEPROM.get(PESO_ACEITE_ACTUAL_ADRESS, pesoLiquido);
+
+    Pantallamezcla(10);
+    delay(6000);
     // Iniciamos la mezcla 
     if(estado == 0)
     {
@@ -225,6 +226,7 @@ void Mezclas::mezclaMultiusos(int mezclas)
       }
       else
       {
+        motorMezclador.pararMotor();
         // echamos la cantidad adecuada para el Aceite
         if(estado2 == 1)
         {
@@ -281,6 +283,8 @@ void Mezclas::mezclaMultiusos(int mezclas)
     // Finalizamos la mezcla
     if(estado == 2 && finMezcla)
     {
+      lcd.clear();
+      delay(20);
       resetearTodo();
       Pantallamezcla(14);
       Pantallamezcla(7);
@@ -319,12 +323,16 @@ void Mezclas::mezclaMultiusos(int mezclas)
 }
 
 // LA MEZCLA COMPLETA DE FREGASUELOS
-void Mezclas::mezclaFregasuelos(int mezclas)
+void Mezclas::mezclaFRIEGASUELOS(int mezclas)
 {
   if(!enPausa)
   {
     EEPROM.get(I_MEZCLAS_ADRESS, i_mezclas);
     EEPROM.get(PESO_ACEITE_ACTUAL_ADRESS, pesoLiquido);
+
+    Pantallamezcla(11);
+    delay(6000);
+
     // Iniciamos la mezcla 
     if(estado == 0)
     {
@@ -347,6 +355,7 @@ void Mezclas::mezclaFregasuelos(int mezclas)
     {
       if(mezclas > 1)
       {
+        motorMezclador.pararMotor();
         Pantallamezcla(12);
         for(i_mezclas=0; i_mezclas<mezclas; i_mezclas++)
         {
@@ -371,7 +380,7 @@ void Mezclas::mezclaFregasuelos(int mezclas)
             if(estado2 == 3)
             { 
               Pantallamezcla(12);
-              motorMezclador.ajustarRpms(tMixFregasuelosDosif1,rpms500);
+              motorMezclador.ajustarRpms(tMixFregasuelos1,rpms500);
               delay(50);
               estado2 = 4;
               EEPROM.put(STATUS_2_ADRESS, estado2);
@@ -390,9 +399,9 @@ void Mezclas::mezclaFregasuelos(int mezclas)
               Pantallamezcla(12);
               // Activamos el motor con los RPMs guardados y el tiempo adecuado
               motorMezclador.ajustarRpms(tMixFregasuelosDosif1,rpms1000);
-              delay(1000);
+              delay(2000);
               motorMezclador.ajustarRpms(tMixFregasuelosDosif2,rpms1500);
-              delay(1000);
+              delay(2000);
               motorMezclador.ajustarRpms(tMixFregasuelosDosif3,rpms2000);
               delay(6000);
               // Agitar para sacar todo el aire incorporado
@@ -450,6 +459,7 @@ void Mezclas::mezclaFregasuelos(int mezclas)
       }
       else
       {
+        motorMezclador.pararMotor();
         // echamos la cantidad adecuada para el Souji
         if(estado2 == 1)
         {
@@ -470,8 +480,7 @@ void Mezclas::mezclaFregasuelos(int mezclas)
         if(estado2 == 3)
         { 
           Pantallamezcla(12);
-
-          motorMezclador.ajustarRpms(tMixFregasuelosDosif1,rpms500);
+          motorMezclador.ajustarRpms(tMixFregasuelos1,rpms500);
           delay(50);
           estado2 = 4;
           EEPROM.put(STATUS_2_ADRESS, estado2);
@@ -491,9 +500,9 @@ void Mezclas::mezclaFregasuelos(int mezclas)
           Pantallamezcla(12);
           // Activamos el motor con los RPMs guardados y el tiempo adecuado
           motorMezclador.ajustarRpms(tMixFregasuelosDosif1,rpms1000);
-          delay(1000);
+          delay(2000);
           motorMezclador.ajustarRpms(tMixFregasuelosDosif2,rpms1500);
-          delay(1000);
+          delay(2000);
           motorMezclador.ajustarRpms(tMixFregasuelosDosif3,rpms2000);
           delay(6000);
           // Agitar para sacar todo el aire incorporado
@@ -515,6 +524,8 @@ void Mezclas::mezclaFregasuelos(int mezclas)
     // Finalizamos la mezcla
     if(estado == 2 && finMezcla)
     {
+      lcd.clear();
+      delay(20);
       resetearTodo();
       Pantallamezcla(14);
       Pantallamezcla(7);
@@ -669,36 +680,30 @@ void Mezclas::Pantallamezcla(uint8_t pantallamezcla)
     }
   }
 
-  /*
-  // Pantalla de Ajuste de PORCENTAJE ACEITE
+  // Pantalla de MULTIUSOS
   if (pantallamezcla == 10)
   {
-    //menus.validarAjusteAceite = true;
     if(idioma==0)
     {
       lcd.clear();
       delay(20);
       lcd.setCursor(0,0);
-      lcd.print("AJUSTANDO ACEITE");
+      lcd.print("MEZCLA");
       lcd.setCursor(5,1);
-      lcd.print(porcentajeAceite);
-      lcd.setCursor(10,1);
-      lcd.print("%");
+      lcd.print("MULTIUSOS");
     }
     else
     {
       lcd.clear();
       delay(20);
-      lcd.setCursor(1,0);
-      lcd.print("ADJUSTING  OIL");
-      lcd.setCursor(5,1);
-      lcd.print(porcentajeAceite);
-      lcd.setCursor(10,1);
-      lcd.print("%");
+      lcd.setCursor(9,0);
+      lcd.print("MIX");
+      lcd.setCursor(1, 1);
+      lcd.print("MULTI PURPOSE");
     }
   }
 
-  // Pantalla de Ajuste de PORCENTAJE SOUJI
+  // Pantalla de FRIEGASUELOS
   if (pantallamezcla == 11)
   {
     if(idioma==0)
@@ -706,25 +711,21 @@ void Mezclas::Pantallamezcla(uint8_t pantallamezcla)
       lcd.clear();
       delay(20);
       lcd.setCursor(0,0);
-      lcd.print("AJUSTANDO  SOUJI");
-      lcd.setCursor(5,1);
-      lcd.print(porcentajeSouji);
-      lcd.setCursor(10,1);
-      lcd.print("%");
+      lcd.print("MEZCLA");
+      lcd.setCursor(2, 1);
+      lcd.print("FRIEGASUELOS");
     }
     else
     {
       lcd.clear();
       delay(20);
-      lcd.setCursor(0,0);
-      lcd.print("ADJUSTING  SOUJI");
-      lcd.setCursor(5,1);
-      lcd.print(porcentajeSouji);
-      lcd.setCursor(10,1);
-      lcd.print("%");
+      lcd.setCursor(9,0);
+      lcd.print("MIX");
+      lcd.setCursor(1, 1);
+      lcd.print("FLOOR WASHING");
     }
   }
-  */
+  
 
   // Pantalla Mezclando
   if (pantallamezcla == 12)
@@ -843,7 +844,14 @@ void Mezclas::mezclaVacio()
   {
     deteccionPulso();
     Pantallamezcla(13);
-
+    
+    temp1 = millis();
+    if(temp1-tempSig1 >= 1000)
+    {
+      lcd.clear();
+      delay(20);
+      tempSig1 = temp1;
+    }
     if (millis() - tiempoInicio > tErrorBomba)
     {
       if(idioma==0)
@@ -1046,13 +1054,13 @@ void Mezclas::echarLiquido(int16_t pesoPorechar)
   
   apagarBombas();
 
-  lcd.clear();
+  /*lcd.clear();
   delay(20);
   lcd.setCursor(0,1);
   lcd.print("PESO : ");
   lcd.setCursor(8,1);      
-  lcd.print(pesoLiquido);
-  delay(6000);
+  lcd.print(pesoLiquido);*/
+  delay(2000);
 }
 
 /*
@@ -1152,39 +1160,81 @@ void Mezclas::esperarParaReanudar()
 
 void Mezclas::encenderBombaCorrespondiente()
 {
-  switch (estado2)
+  if(tipoMezcla == 0)
   {
-    case 1:
-      bombaAceite.on();
-      break;
-    case 2:
-      bombaSouji.on();
-      break;
-    case 4:
-      bombaAgua.on();
-      break;
-    case 6:
-      bombaVacio.on();
-      break;
+    switch (estado2)
+    {
+      case 1:
+        bombaAceite.on();
+        break;
+      case 2:
+        bombaSouji.on();
+        break;
+      case 4:
+        bombaAgua.on();
+        break;
+      case 6:
+        bombaVacio.on();
+        break;
+    }
+  }
+  else
+  {
+    switch (estado2)
+    {
+      case 1:
+        bombaSouji.on();
+        break;
+      case 2:
+        bombaAgua.on();
+        break;
+      case 4:
+        bombaAceite.on();
+        break;
+      case 6:
+        bombaVacio.on();
+        break;
+    }
   }
 }
 
 void Mezclas::apagarBombas()
 {
-   switch (estado2)
+  if(tipoMezcla == 0)
   {
-    case 1:
-      bombaAceite.off();
-      break;
-    case 2:
-      bombaSouji.off();
-      break;
-    case 4:
-      bombaAgua.off();
-      break;
-    case 6:
-      bombaVacio.off();
-      break;
+    switch (estado2)
+    {
+      case 1:
+        bombaAceite.off();
+        break;
+      case 2:
+        bombaSouji.off();
+        break;
+      case 4:
+        bombaAgua.off();
+        break;
+      case 6:
+        bombaVacio.off();
+        break;
+    }
+  }
+  else
+  {
+    switch (estado2)
+    {
+      case 1:
+        bombaSouji.off();
+        break;
+      case 2:
+        bombaAgua.off();
+        break;
+      case 4:
+        bombaAceite.off();
+        break;
+      case 6:
+        bombaVacio.off();
+        break;
+    }
   }
 }
 

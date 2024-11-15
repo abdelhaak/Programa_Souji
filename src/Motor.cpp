@@ -40,8 +40,8 @@ void Motor::contarPulsos()
 void Motor::ajustarRpms(uint64_t tiempoMezcla,int rpms)
 {
     
-    //int valorPwm = map(rpms,0,3300,0,255); 
-    analogWrite(pin,130);
+    int valorPwm = map(rpms,0,3000,0,255); 
+    analogWrite(pin,valorPwm);
     
     //Timer1.setPwmDuty(pin, 512);
     tiempoInicio = millis();

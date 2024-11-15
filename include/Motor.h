@@ -6,8 +6,8 @@
 #include "Mezclas.h"
 #include "Boton.h"
 
-#define PIN_MOTOR A6
-#define RPMS_MAX 3300
+#define PIN_MOTOR 15
+#define RPMS_MAX 3000
 #define RPMS_ADRESS 28
 
 extern int pin_encoder;
