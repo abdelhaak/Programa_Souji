@@ -26,22 +26,31 @@ int rpms200 = 200;
 // VALORES DE PESO PARA EL MULTIUSOS Y UNA CANTIDAD DE 2.7 L 
 // PARA TENER 5L DE VOLUMEN A LA HORA DE HECHAR
 
-// Peso Aceite porcentajeAceite * cantidad => 30 * 27 = 810 g
-int16_t pesoAceiteMultiusos = 810;
-// Peso Souji porcentajeSouji * cantidad => 50 * 27 = 1350 g
-int16_t pesoSoujiMultiusos = 1350;
-// Peso Agua porcentajeAgua * cantidad => 20 * 25 = 500 g
-int16_t pesoAguaMultiusos = 500;
+// Peso Aceite porcentajeAceite * cantidad => 30 * 43 = 1260 g
+int16_t pesoAceiteMultiusos = 1260;
+// Peso Souji porcentajeSouji * cantidad => 50 * 43 = 2150 g
+int16_t pesoSoujiMultiusos = 2150;
+// Peso Agua porcentajeAgua * cantidad => 20 * 42 = 840 g
+int16_t pesoAguaMultiusos = 840;
 
 // VALORES DE PESO PARA EL FREGASUELOS Y UNA CANTIDAD DE 3 L 
 // PARA TENER 5L DE VOLUMEN A LA HORA DE HECHAR
 
-// Peso Souji porcentajeSouji * cantidad => 43.8 * 30 = 1314 g
-int16_t pesoSoujiFregasuelos = 1314;
-// Peso Agua porcentajeAgua * cantidad => 25.1 * 30 = 753 g
-int16_t pesoAguaFregasuelos = 753;
-// Peso Aceite porcentajeAceite * cantidad => 31.1 * 30 = 933 g
-int16_t pesoAceiteFregasuelos = 933;
+// Peso Souji   para 3l porcentajeSouji * cantidad => 43.8 * 30 = 1314 g
+// Peso Souji   para 4l porcentajeSouji * cantidad => 43.8 * 40 = 1752 g
+// Peso Souji   para 4.5l porcentajeSouji * cantidad => 43.8 * 42 = 1839 g
+int16_t pesoSoujiFregasuelos = 1839;  
+
+// Peso Agua para 3L porcentajeAgua * cantidad => 25.1 * 30 = 753 g
+// Peso Agua para 3L porcentajeAgua * cantidad => 25.1 * 40 = 1004 g
+// Peso Agua para 4.5L porcentajeAgua * cantidad => 25.1 * 42 = 1054 g
+
+int16_t pesoAguaFregasuelos = 1054;
+
+// Peso Aceite para 3L porcentajeAceite * cantidad => 31.1 * 30 = 933 g
+// Peso Aceite para 4L porcentajeAceite * cantidad => 31.1 * 40 = 1244 g
+// Peso Aceite para 4.5L porcentajeAceite * cantidad => 31.1 * 42 = 1306 g
+int16_t pesoAceiteFregasuelos = 1306;
 
 // TIEMPOS 
 uint64_t tErrorBomba = 800000;
@@ -174,6 +183,7 @@ void Mezclas::mezclaMultiusos(int mezclas)
               Pantallamezcla(12);
               // Activamos el motor con los RPMs guardados y el tiempo adecuado
               motorMezclador.ajustarRpms(tMixMultiusos2, rpms1500);
+              delay(2000);
               estado2 = 6;
               EEPROM.put(STATUS_2_ADRESS, estado2);
             }
@@ -197,9 +207,6 @@ void Mezclas::mezclaMultiusos(int mezclas)
                 delay(10000);
                 lcd.clear();
                 delay(20);
-                lcd.setCursor(0,0);
-                lcd.print("SIGUIENTE MEZCLA");
-                delay(8000);
               }
               else
               {
@@ -216,9 +223,6 @@ void Mezclas::mezclaMultiusos(int mezclas)
                 delay(10000);
                 lcd.clear();
                 delay(20);
-                lcd.setCursor(4,0);
-                lcd.print("NEXT MIX");
-                delay(8000);
               }
             }
         }
@@ -267,6 +271,7 @@ void Mezclas::mezclaMultiusos(int mezclas)
           Pantallamezcla(12);
           // Activamos el motor con los RPMs guardados y el tiempo adecuado
           motorMezclador.ajustarRpms(tMixMultiusos2, rpms1500);
+          delay(2000);
           estado2 = 6;
           EEPROM.put(STATUS_2_ADRESS, estado2);
         }
@@ -406,7 +411,7 @@ void Mezclas::mezclaFRIEGASUELOS(int mezclas)
               delay(6000);
               // Agitar para sacar todo el aire incorporado
               motorMezclador.ajustarRpms(tMixFregasuelos2,rpms200);
-              delay(1000);
+              delay(2000);
               estado2 = 6;
               EEPROM.put(STATUS_2_ADRESS, estado2);
             }
@@ -430,9 +435,6 @@ void Mezclas::mezclaFRIEGASUELOS(int mezclas)
                 delay(10000);
                 lcd.clear();
                 delay(20);
-                lcd.setCursor(0,0);
-                lcd.print("SIGUIENTE MEZCLA");
-                delay(8000);
               }
               else
               {
@@ -449,9 +451,6 @@ void Mezclas::mezclaFRIEGASUELOS(int mezclas)
                 delay(10000);
                 lcd.clear();
                 delay(20);
-                lcd.setCursor(4,0);
-                lcd.print("NEXT MIX");
-                delay(8000);
               }
             }
         }
@@ -507,7 +506,7 @@ void Mezclas::mezclaFRIEGASUELOS(int mezclas)
           delay(6000);
           // Agitar para sacar todo el aire incorporado
           motorMezclador.ajustarRpms(tMixFregasuelos2,rpms200);
-          delay(1000);
+          delay(2000);
           estado2 = 6;
           EEPROM.put(STATUS_2_ADRESS, estado2);
         }
