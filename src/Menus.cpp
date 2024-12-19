@@ -14,7 +14,8 @@ const int PAUSE = 99;
 bool enPausa = false;
 bool pausado = false;
 
-const uint8_t RS = A3, EN = A2, D4 = A0, D5 = 0, D6 = 1, D7 = 2;
+//const uint8_t RS = A3, EN = A2, D4 = A0, D5 = 0, D6 = 1, D7 = 2;
+const uint8_t RS = 8, EN = 9, D4 = 0, D5 = 1, D6 = 2, D7 = 3;
 LiquidCrystal lcd(RS, EN, D4, D5, D6, D7); 
 
 Mezclas mezcla(mySerial);

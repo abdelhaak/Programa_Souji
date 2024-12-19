@@ -8,7 +8,7 @@ const uint8_t PIN_BOTON_SET = 21;
 const uint8_t PIN_BOTON_UP = 20;
 const uint8_t PIN_BOTON_DOWN = 19;
 const uint8_t PIN_BOTON_SEL = 18;
-const uint8_t PIN_BOTON_PRO = 14;
+const uint8_t PIN_BOTON_PRO = 4;
 
 class Boton
 {

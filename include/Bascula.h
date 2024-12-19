@@ -9,8 +9,8 @@
 #define TARE_ADRESS 90     // Dirección para la TARA
 #define PESO_ADRESS 32
 
-#define DOUT A5
-#define CLK  A4
+#define DOUT 23
+#define CLK  22
 
 extern HX711 balanza;
 

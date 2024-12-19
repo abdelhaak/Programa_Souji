@@ -13,10 +13,10 @@
 extern SoftwareSerial mySerial;
 
 // Pines de las bombas
-#define PIN_BOMBA_ACEITE 13
-#define PIN_BOMBA_SOUJI 12
-#define PIN_BOMBA_AGUA 10
-#define PIN_BOMBA_VACIO 11
+#define PIN_BOMBA_ACEITE 14
+#define PIN_BOMBA_SOUJI 13
+#define PIN_BOMBA_AGUA 11
+#define PIN_BOMBA_VACIO 12
 
 // Capacidad total de la mezcla que seria de 5000 g que son 5L
 #define CAPACIDAD_TOTAL 5000 // 5000

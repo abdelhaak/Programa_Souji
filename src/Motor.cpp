@@ -1,7 +1,7 @@
 #include "Motor.h"
 
 volatile uint64_t Motor::pulsos = 0;
-int pin_encoder = 23;
+int pin_encoder = 10;
 int rpms;
 
 Mezclas mezclado(mySerial);
