@@ -400,10 +400,10 @@ void Menus::PantallaSeleccionada(uint8_t pantalla)
     }
     if(idioma == 0)
     {
-      lcd.setCursor(2, 0);
-      lcd.print("MULTIUSOS");
-      lcd.setCursor(2, 1);
-      lcd.print("FRIEGASUELOS");
+      lcd.setCursor(1, 0);
+      lcd.print("LIMP. MULTISUP.");
+      lcd.setCursor(1, 1);
+      lcd.print("LAVAVAJ. MANUAL");
     }
     else
     {
