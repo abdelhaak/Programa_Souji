@@ -53,35 +53,36 @@ int16_t pesoAguaFregasuelos = 1054;
 int16_t pesoAceiteFregasuelos = 1306;
 
 // TIEMPOS 
-uint64_t tErrorBomba = 800000;
-uint64_t tAgotado = 60000;
+uint64_t tErrorBomba = 400000;
+uint64_t tAgotado = 30000;
 uint64_t tUltimaVariacion;
 uint64_t tPasado = 0;
 uint64_t tPasadoAgotado;
 int16_t nuevoPesoActual = 0;
 
-// 2 minutos => 240000 ms    ::   PARA LA PRIMERA MEZCLA DE MULTIUSOS
-uint64_t tMixMultiusos1 = 240000; 
-// 3 minutos => 360000 ms    ::   PARA LA SEGUNDA MEZCLA DE MULTIUSOS
-uint64_t tMixMultiusos2 = 360000;  
-// 2 minutos => 240000 ms    ::   PARA LA PRIMERA MEZCLA DE FREGASUELOS
-uint64_t tMixFregasuelos1 = 240000; 
-// 30 segundos => 60000 ms    ::   PARA LA PRIMERA MEZCLA DE DOSIFICACION FREGASUELOS
-uint64_t tMixFregasuelosDosif1 = 60000; 
-// 30 segundos => 60000 ms    ::   PARA LA SEGUNDA MEZCLA DE DOSIFICACION FREGASUELOS
-uint64_t tMixFregasuelosDosif2 = 60000;
-// 2 minutos => 240000 ms    ::   PARA LA TERCERA MEZCLA DE DOSIFICACION FREGASUELOS
-uint64_t tMixFregasuelosDosif3 = 240000;
-// 60 segundos => 120000 ms   ::   PARA LA ULTIMA MEZCLA DE FREGASUELOS
-uint64_t tMixFregasuelos2 = 120000; 
+// 2 minutos => 120000 ms    ::   PARA LA PRIMERA MEZCLA DE MULTIUSOS
+uint64_t tMixMultiusos1 = 120000; 
+// 3 minutos => 180000 ms    ::   PARA LA SEGUNDA MEZCLA DE MULTIUSOS
+uint64_t tMixMultiusos2 = 180000;  
+// 2 minutos => 120000 ms    ::   PARA LA PRIMERA MEZCLA DE FREGASUELOS
+uint64_t tMixFregasuelos1 = 120000; 
+// 30 segundos => 30000 ms    ::   PARA LA PRIMERA MEZCLA DE DOSIFICACION FREGASUELOS
+uint64_t tMixFregasuelosDosif1 = 30000; 
+// 30 segundos => 30000 ms    ::   PARA LA SEGUNDA MEZCLA DE DOSIFICACION FREGASUELOS
+uint64_t tMixFregasuelosDosif2 = 30000;
+// 2 minutos => 120000 ms    ::   PARA LA TERCERA MEZCLA DE DOSIFICACION FREGASUELOS
+uint64_t tMixFregasuelosDosif3 = 120000;
+// 60 segundos => 60000 ms   ::   PARA LA ULTIMA MEZCLA DE FREGASUELOS
+uint64_t tMixFregasuelos2 = 60000; 
 
-// 3 minutos => 360000 ms    ::   PARA EL VACIO POR AHORA 
-uint64_t tiempoVacio = 360000 ; // 10000
+// 3 minutos => 180000 ms    ::   PARA EL VACIO POR AHORA 
+uint64_t tiempoVacio = 180000 ; // 180000
 
 unsigned long temp = 0;
 unsigned long tempSig = 0;
 unsigned long temp1 = 0;
 unsigned long tempSig1 = 0;
+
 // Porcentajes de inicio de liquidos
 //int16_t porcentajeAceite = 30;
 //int16_t porcentajeSouji = 50;
@@ -116,7 +117,7 @@ void Mezclas::mezclaMultiusos(int mezclas)
     EEPROM.get(PESO_ACEITE_ACTUAL_ADRESS, pesoLiquido);
 
     Pantallamezcla(10);
-    delay(6000);
+    delay(4000);
     // Iniciamos la mezcla 
     if(estado == 0)
     {
@@ -259,7 +260,7 @@ void Mezclas::mezclaMultiusos(int mezclas)
         // echamos la cantidad adecuada de AGUA
         if(estado2 == 4)
         {
-          delay(30000);
+          delay(15000);
           Pantallamezcla(12);
           echarLiquido(pesoAguaMultiusos);
           estado2 = 5;
@@ -271,7 +272,7 @@ void Mezclas::mezclaMultiusos(int mezclas)
           Pantallamezcla(12);
           // Activamos el motor con los RPMs guardados y el tiempo adecuado
           motorMezclador.ajustarRpms(tMixMultiusos2, rpms1500);
-          delay(2000);
+          delay(1000);
           estado2 = 6;
           EEPROM.put(STATUS_2_ADRESS, estado2);
         }
@@ -281,7 +282,7 @@ void Mezclas::mezclaMultiusos(int mezclas)
           Pantallamezcla(13);
           mezclaVacio();
           finMezcla = true;
-          delay(2000);   
+          delay(1000);   
         }
       } 
     }
@@ -293,7 +294,7 @@ void Mezclas::mezclaMultiusos(int mezclas)
       resetearTodo();
       Pantallamezcla(14);
       Pantallamezcla(7);
-      delay(8000);
+      delay(4000);
       menus.finalizarCiclo();
     }
     // Error de verificacion y peso superior a lo normal
@@ -307,7 +308,7 @@ void Mezclas::mezclaMultiusos(int mezclas)
         lcd.print("ERROR DE  PESO");
         lcd.setCursor(0,1);
         lcd.print("VACIAR  DEPOSITO");
-        delay(10000);
+        delay(6000);
       }
       else
       {
@@ -317,7 +318,7 @@ void Mezclas::mezclaMultiusos(int mezclas)
         lcd.print("WEIGHT ERROR");
         lcd.setCursor(1,1);
         lcd.print("EMPTY CLEANER");
-        delay(10000);
+        delay(6000);
       }
       resetearTodo();
       lcd.clear();
@@ -336,13 +337,13 @@ void Mezclas::mezclaFRIEGASUELOS(int mezclas)
     EEPROM.get(PESO_ACEITE_ACTUAL_ADRESS, pesoLiquido);
 
     Pantallamezcla(11);
-    delay(6000);
+    delay(4000);
 
     // Iniciamos la mezcla 
     if(estado == 0)
     {
       Pantallamezcla(0);
-      delay(4000);
+      delay(2000);
       verificarPeso();
       EEPROM.put(STATUS_ADRESS, estado);
     }
@@ -404,14 +405,14 @@ void Mezclas::mezclaFRIEGASUELOS(int mezclas)
               Pantallamezcla(12);
               // Activamos el motor con los RPMs guardados y el tiempo adecuado
               motorMezclador.ajustarRpms(tMixFregasuelosDosif1,rpms1000);
-              delay(2000);
+              delay(1000);
               motorMezclador.ajustarRpms(tMixFregasuelosDosif2,rpms1500);
-              delay(2000);
+              delay(1000);
               motorMezclador.ajustarRpms(tMixFregasuelosDosif3,rpms2000);
-              delay(6000);
+              delay(1000);
               // Agitar para sacar todo el aire incorporado
               motorMezclador.ajustarRpms(tMixFregasuelos2,rpms200);
-              delay(2000);
+              delay(1000);
               estado2 = 6;
               EEPROM.put(STATUS_2_ADRESS, estado2);
             }
@@ -432,7 +433,7 @@ void Mezclas::mezclaFRIEGASUELOS(int mezclas)
                 lcd.print("FINALIZADA");
                 estado2 = 1;
                 EEPROM.put(STATUS_2_ADRESS, estado2);
-                delay(10000);
+                delay(5000);
                 lcd.clear();
                 delay(20);
               }
@@ -448,7 +449,7 @@ void Mezclas::mezclaFRIEGASUELOS(int mezclas)
                 lcd.print("COMPLETED");
                 estado2 = 1;
                 EEPROM.put(STATUS_2_ADRESS, estado2);
-                delay(10000);
+                delay(5000);
                 lcd.clear();
                 delay(20);
               }
@@ -487,7 +488,7 @@ void Mezclas::mezclaFRIEGASUELOS(int mezclas)
         // echamos la cantidad adecuada del Aceite
         if(estado2 == 4)
         {
-          delay(30000);
+          delay(15000);
           Pantallamezcla(12);
           echarLiquido(pesoAceiteFregasuelos);
           estado2 = 5;
@@ -499,14 +500,14 @@ void Mezclas::mezclaFRIEGASUELOS(int mezclas)
           Pantallamezcla(12);
           // Activamos el motor con los RPMs guardados y el tiempo adecuado
           motorMezclador.ajustarRpms(tMixFregasuelosDosif1,rpms1000);
-          delay(2000);
+          delay(1000);
           motorMezclador.ajustarRpms(tMixFregasuelosDosif2,rpms1500);
-          delay(2000);
+          delay(1000);
           motorMezclador.ajustarRpms(tMixFregasuelosDosif3,rpms2000);
-          delay(6000);
+          delay(2000);
           // Agitar para sacar todo el aire incorporado
           motorMezclador.ajustarRpms(tMixFregasuelos2,rpms200);
-          delay(2000);
+          delay(1000);
           estado2 = 6;
           EEPROM.put(STATUS_2_ADRESS, estado2);
         }
@@ -516,7 +517,7 @@ void Mezclas::mezclaFRIEGASUELOS(int mezclas)
           Pantallamezcla(13);
           mezclaVacio();
           finMezcla = true;
-          delay(2000);   
+          delay(1000);   
         }
       } 
     }
@@ -528,7 +529,7 @@ void Mezclas::mezclaFRIEGASUELOS(int mezclas)
       resetearTodo();
       Pantallamezcla(14);
       Pantallamezcla(7);
-      delay(8000);
+      delay(4000);
       menus.finalizarCiclo();
     }
     // Error de verificacion y peso superior a lo normal
@@ -542,7 +543,7 @@ void Mezclas::mezclaFRIEGASUELOS(int mezclas)
         lcd.print("ERROR DE  PESO");
         lcd.setCursor(0,1);
         lcd.print("VACIAR  DEPOSITO");
-        delay(10000);
+        delay(5000);
       }
       else
       {
@@ -552,7 +553,7 @@ void Mezclas::mezclaFRIEGASUELOS(int mezclas)
         lcd.print("WEIGHT ERROR");
         lcd.setCursor(1,1);
         lcd.print("EMPTY CLEANER");
-        delay(10000);
+        delay(5000);
       }
       resetearTodo();
       lcd.clear();
@@ -687,9 +688,9 @@ void Mezclas::Pantallamezcla(uint8_t pantallamezcla)
       lcd.clear();
       delay(20);
       lcd.setCursor(0,0);
-      lcd.print("MEZCLA");
-      lcd.setCursor(5,1);
-      lcd.print("MULTIUSOS");
+      lcd.print("MEZCLA LIMPIADOR");
+      lcd.setCursor(0,1);
+      lcd.print("MULTISUPERFICIES");
     }
     else
     {
@@ -710,9 +711,9 @@ void Mezclas::Pantallamezcla(uint8_t pantallamezcla)
       lcd.clear();
       delay(20);
       lcd.setCursor(0,0);
-      lcd.print("MEZCLA");
-      lcd.setCursor(2, 1);
-      lcd.print("FRIEGASUELOS");
+      lcd.print("MEZ. LAVAVJILLAS");
+      lcd.setCursor(5, 1);
+      lcd.print("MANUAL");
     }
     else
     {
@@ -777,16 +778,16 @@ void Mezclas::Pantallamezcla(uint8_t pantallamezcla)
       delay(20);
       lcd.setCursor(2,0);
       lcd.print("LA MAGIA ESTA");
-      lcd.setCursor(4,1);
+      lcd.setCursor(5,1);
       lcd.print("HECHA !!");
-      delay(10000);
+      delay(6000);
       lcd.clear();
       delay(20);
       lcd.setCursor(2,0);
       lcd.print("EL LIMPIADOR");
       lcd.setCursor(1,1);
       lcd.print("ESTA LISTO  !!");
-      delay(10000);
+      delay(6000);
     }
     else
     {
@@ -796,14 +797,14 @@ void Mezclas::Pantallamezcla(uint8_t pantallamezcla)
       lcd.print("THE MAGIC IS");
       lcd.setCursor(4,1);
       lcd.print("DONE  !!");
-      delay(10000);
+      delay(6000);
       lcd.clear();
       delay(20);
       lcd.setCursor(2,0);
       lcd.print("THE  CLEANER");
       lcd.setCursor(2,1);
       lcd.print("IS READY  !!");
-      delay(10000);
+      delay(6000);
     }
   }
 }
@@ -1010,7 +1011,7 @@ void Mezclas::echarLiquido(int16_t pesoPorechar)
     else
     {
       temp = millis();
-      if(temp - tempSig >= 3000)
+      if(temp - tempSig >= 1500)
       {
         deteccionPulso();
         tempSig = temp;
@@ -1053,12 +1054,12 @@ void Mezclas::echarLiquido(int16_t pesoPorechar)
   
   apagarBombas();
 
-  /*lcd.clear();
+  lcd.clear();
   delay(20);
   lcd.setCursor(0,1);
   lcd.print("PESO : ");
   lcd.setCursor(8,1);      
-  lcd.print(pesoLiquido);*/
+  lcd.print(pesoLiquido);
   delay(2000);
 }
 
