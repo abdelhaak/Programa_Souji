@@ -27,11 +27,17 @@ int rpms200 = 200;
 // PARA TENER 5L DE VOLUMEN A LA HORA DE HECHAR
 
 // Peso Aceite porcentajeAceite * cantidad => 30 * 43 = 1260 g
-int16_t pesoAceiteMultiusos = 1260;
+// Peso Aceite porcentajeAceite * cantidad => 30 * 35 = 1050 g
+int16_t pesoAceiteMultiusos = 1050;
+
 // Peso Souji porcentajeSouji * cantidad => 50 * 43 = 2150 g
-int16_t pesoSoujiMultiusos = 2150;
+// Peso Souji porcentajeSouji * cantidad => 50 * 35 = 1750 g
+int16_t pesoSoujiMultiusos = 1750;
+
 // Peso Agua porcentajeAgua * cantidad => 20 * 42 = 840 g
-int16_t pesoAguaMultiusos = 840;
+// Peso Agua porcentajeAgua * cantidad => 20 * 35 = 700 g
+
+int16_t pesoAguaMultiusos = 700;
 
 // VALORES DE PESO PARA EL FREGASUELOS Y UNA CANTIDAD DE 3 L 
 // PARA TENER 5L DE VOLUMEN A LA HORA DE HECHAR
@@ -39,18 +45,21 @@ int16_t pesoAguaMultiusos = 840;
 // Peso Souji   para 3l porcentajeSouji * cantidad => 43.8 * 30 = 1314 g
 // Peso Souji   para 4l porcentajeSouji * cantidad => 43.8 * 40 = 1752 g
 // Peso Souji   para 4.5l porcentajeSouji * cantidad => 43.8 * 42 = 1839 g
-int16_t pesoSoujiFregasuelos = 1839;  
+// Peso Souji   para 3.5l porcentajeSouji * cantidad => 43.8 * 35 = 1533 g
+int16_t pesoSoujiFregasuelos = 1533;  
 
 // Peso Agua para 3L porcentajeAgua * cantidad => 25.1 * 30 = 753 g
 // Peso Agua para 3L porcentajeAgua * cantidad => 25.1 * 40 = 1004 g
 // Peso Agua para 4.5L porcentajeAgua * cantidad => 25.1 * 42 = 1054 g
+// Peso Agua para 3.5L porcentajeAgua * cantidad => 25.1 * 35 = 878 g
 
-int16_t pesoAguaFregasuelos = 1054;
+int16_t pesoAguaFregasuelos = 878;
 
 // Peso Aceite para 3L porcentajeAceite * cantidad => 31.1 * 30 = 933 g
 // Peso Aceite para 4L porcentajeAceite * cantidad => 31.1 * 40 = 1244 g
 // Peso Aceite para 4.5L porcentajeAceite * cantidad => 31.1 * 42 = 1306 g
-int16_t pesoAceiteFregasuelos = 1306;
+// Peso Aceite para 3.5L porcentajeAceite * cantidad => 31.1 * 35 = 1085 g
+int16_t pesoAceiteFregasuelos = 1085;
 
 // TIEMPOS 
 uint64_t tErrorBomba = 400000;
@@ -812,7 +821,7 @@ void Mezclas::Pantallamezcla(uint8_t pantallamezcla)
 void Mezclas::mezclaVacio()
 {
   Pantallamezcla(13);
-  int16_t elPesoMinimo = 120;
+  int16_t elPesoMinimo = 20;
   if (PesoActual() <= elPesoMinimo)
   {
     if(idioma==0)
@@ -868,7 +877,7 @@ void Mezclas::mezclaVacio()
         lcd.setCursor(3,0);
         lcd.print("POMP ERROR");
       }
-      delay(8000);
+      delay(4000);
       bombaVacio.off();
       return;
     }
@@ -1061,6 +1070,7 @@ void Mezclas::echarLiquido(int16_t pesoPorechar)
   lcd.setCursor(8,1);      
   lcd.print(pesoLiquido);
   delay(2000);
+  
 }
 
 /*
@@ -1238,7 +1248,6 @@ void Mezclas::apagarBombas()
   }
 }
 
-
 void Mezclas::mostrarAgotado()
 {
   lcd.clear();
@@ -1350,7 +1359,7 @@ void Mezclas::vacioGeneral()
   }
   bombaVacio.off();
   Pantallamezcla(2);
-  delay(8000);  
+  delay(4000);  
 }
 
 void Mezclas::verificarPeso()
