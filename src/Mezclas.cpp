@@ -28,15 +28,17 @@ int rpms200 = 200;
 
 // Peso Aceite porcentajeAceite * cantidad => 30 * 43 = 1260 g
 // Peso Aceite porcentajeAceite * cantidad => 30 * 35 = 1050 g
+// Peso Aceite porcentajeAceite * cantidad => 30 * 28 = 840 g
 int16_t pesoAceiteMultiusos = 1050;
 
 // Peso Souji porcentajeSouji * cantidad => 50 * 43 = 2150 g
 // Peso Souji porcentajeSouji * cantidad => 50 * 35 = 1750 g
+// Peso Souji porcentajeSouji * cantidad => 50 * 28 = 1400 g
 int16_t pesoSoujiMultiusos = 1750;
 
 // Peso Agua porcentajeAgua * cantidad => 20 * 42 = 840 g
 // Peso Agua porcentajeAgua * cantidad => 20 * 35 = 700 g
-
+// Peso Agua porcentajeAgua * cantidad => 20 * 28 = 560 g
 int16_t pesoAguaMultiusos = 700;
 
 // VALORES DE PESO PARA EL FREGASUELOS Y UNA CANTIDAD DE 3 L 
@@ -44,25 +46,27 @@ int16_t pesoAguaMultiusos = 700;
 
 // Peso Souji   para 3l porcentajeSouji * cantidad => 43.8 * 30 = 1314 g
 // Peso Souji   para 4l porcentajeSouji * cantidad => 43.8 * 40 = 1752 g
-// Peso Souji   para 4.5l porcentajeSouji * cantidad => 43.8 * 42 = 1839 g
+// Peso Souji   para 4.2l porcentajeSouji * cantidad => 43.8 * 42 = 1839 g
 // Peso Souji   para 3.5l porcentajeSouji * cantidad => 43.8 * 35 = 1533 g
+// Peso Souji   para 2.8l porcentajeSouji * cantidad => 43.8 * 28 = 1225 g
 int16_t pesoSoujiFregasuelos = 1533;  
 
 // Peso Agua para 3L porcentajeAgua * cantidad => 25.1 * 30 = 753 g
 // Peso Agua para 3L porcentajeAgua * cantidad => 25.1 * 40 = 1004 g
-// Peso Agua para 4.5L porcentajeAgua * cantidad => 25.1 * 42 = 1054 g
+// Peso Agua para 4.2L porcentajeAgua * cantidad => 25.1 * 42 = 1054 g
 // Peso Agua para 3.5L porcentajeAgua * cantidad => 25.1 * 35 = 878 g
-
+// Peso Agua para 2.8L porcentajeAgua * cantidad => 25.1 * 28 = 702 g
 int16_t pesoAguaFregasuelos = 878;
 
 // Peso Aceite para 3L porcentajeAceite * cantidad => 31.1 * 30 = 933 g
 // Peso Aceite para 4L porcentajeAceite * cantidad => 31.1 * 40 = 1244 g
-// Peso Aceite para 4.5L porcentajeAceite * cantidad => 31.1 * 42 = 1306 g
+// Peso Aceite para 4.2L porcentajeAceite * cantidad => 31.1 * 42 = 1306 g
 // Peso Aceite para 3.5L porcentajeAceite * cantidad => 31.1 * 35 = 1085 g
+// Peso Aceite para 2.8L porcentajeAceite * cantidad => 31.1 * 28 = 870 g
 int16_t pesoAceiteFregasuelos = 1085;
 
 // TIEMPOS 
-uint64_t tErrorBomba = 400000;
+uint64_t tErrorBomba = 300000;
 uint64_t tAgotado = 30000;
 uint64_t tUltimaVariacion;
 uint64_t tPasado = 0;
@@ -200,6 +204,7 @@ void Mezclas::mezclaMultiusos(int mezclas)
             // Pasamos a la etapa del vacio
             if(estado2 == 6)
             {
+              delay(4000);
               Pantallamezcla(13);
               mezclaVacio();
               if(idioma==0)
@@ -288,6 +293,7 @@ void Mezclas::mezclaMultiusos(int mezclas)
         // Pasamos a la etapa del vacio
         if(estado2 == 6)
         {
+          delay(4000);
           Pantallamezcla(13);
           mezclaVacio();
           finMezcla = true;
@@ -428,6 +434,7 @@ void Mezclas::mezclaFRIEGASUELOS(int mezclas)
             // Pasamos a la etapa del vacio
             if(estado2 == 6)
             {
+              delay(4000);
               Pantallamezcla(13);
               mezclaVacio();
               if(idioma==0)
@@ -523,6 +530,7 @@ void Mezclas::mezclaFRIEGASUELOS(int mezclas)
         // Pasamos a la etapa del vacio
         if(estado2 == 6)
         {
+          delay(4000);
           Pantallamezcla(13);
           mezclaVacio();
           finMezcla = true;
@@ -821,7 +829,8 @@ void Mezclas::Pantallamezcla(uint8_t pantallamezcla)
 void Mezclas::mezclaVacio()
 {
   Pantallamezcla(13);
-  int16_t elPesoMinimo = 20;
+  int16_t elPesoMinimo = 5;
+
   if (PesoActual() <= elPesoMinimo)
   {
     if(idioma==0)
@@ -877,20 +886,12 @@ void Mezclas::mezclaVacio()
         lcd.setCursor(3,0);
         lcd.print("POMP ERROR");
       }
-      delay(4000);
+      delay(2000);
       bombaVacio.off();
       return;
     }
-    /*temp1 = millis();
-    if(temp1 - tempSig1 >= 3000)
-    {
-      deteccionPulso();
-      tempSig1 = temp1;
-    }
-    lcd.clear();
-    delay(20);*/
     deteccionPulso();
-  }  
+  } 
   bombaVacio.off();
 }
 
@@ -923,78 +924,6 @@ void Mezclas::calcularVolumen()
 }
 */
 
-/*
-void Mezclas::echarLiquido(int16_t pesoPorechar)
-{
-  encenderBombaCorrespondiente();
-
-  tUltimaVariacion = millis();
-  pesoLiquido = PesoActual();
-  pesoRelative = 0;
-
-  EEPROM.get(PESO_RELATIVO_ADDRESS, pesoRelative);
-  Pantallamezcla(12);
-
-  unsigned long tiempoUltimaLectura = millis(); 
-  const unsigned long intervaloLectura = 2000;
-  const int16_t maxPesoEsperado = 50;
-
-  while(pesoRelative < pesoPorechar)
-  { 
-    deteccionPulso();
-    Pantallamezcla(12);
-    
-    unsigned long tiempoActual = millis();
-    
-    if (tiempoActual - tiempoUltimaLectura >= intervaloLectura)
-    {
-      if(PesoActual() - pesoRelative < maxPesoEsperado)
-      {
-        nuevoPesoActual = PesoActual(); 
-      }
-      else
-      {
-        nuevoPesoActual = pesoRelative;
-      }
-      
-      tiempoUltimaLectura = tiempoActual;  
-
-      if (abs(nuevoPesoActual - pesoLiquido) > 50) 
-      {
-        tUltimaVariacion = millis();  
-        pesoRelative += nuevoPesoActual - pesoLiquido;  
-        pesoLiquido = nuevoPesoActual; 
-        EEPROM.put(PESO_RELATIVO_ADDRESS, pesoRelative); 
-        tPasadoAgotado = millis() - tUltimaVariacion;
-      }
-    }
-
-    if (millis() - tUltimaVariacion > tAgotado) 
-    {
-      mostrarAgotado();
-      apagarBombas();
-
-      while (!botonPausa.pulsado())
-      {
-        delay(300);
-      }
-
-      encenderBombaCorrespondiente();
-      tUltimaVariacion = millis();
-    }
-
-    deteccionPulso();  
-
-  }
-
-  pesoLiquido = PesoActual();
-  EEPROM.put(PESO_ACEITE_ACTUAL_ADRESS, pesoLiquido);
-  EEPROM.put(PESO_RELATIVO_ADDRESS, 0);  
-  
-  apagarBombas();
-  delay(1000); 
-}
-*/
 void Mezclas::echarLiquido(int16_t pesoPorechar)
 {
   // Encender la bomba correspondiente
@@ -1020,13 +949,12 @@ void Mezclas::echarLiquido(int16_t pesoPorechar)
     else
     {
       temp = millis();
-      if(temp - tempSig >= 1500)
+      if(temp - tempSig >= 1000)
       {
         deteccionPulso();
         tempSig = temp;
       }
     }
-    deteccionPulso();
     if (abs(nuevoPesoActual - pesoLiquido) > 50) 
     {
       tUltimaVariacion = millis(); 
@@ -1035,7 +963,6 @@ void Mezclas::echarLiquido(int16_t pesoPorechar)
       EEPROM.put(PESO_RELATIVO_ADDRESS, pesoRelative);
       tPasadoAgotado = millis() -  tUltimaVariacion;
     }
-    deteccionPulso();
     // Verificar si no ha habido cambios significativos durante más de 30 segundos
     if (millis() - tUltimaVariacion > tAgotado) 
     {
@@ -1068,9 +995,8 @@ void Mezclas::echarLiquido(int16_t pesoPorechar)
   lcd.setCursor(0,1);
   lcd.print("PESO : ");
   lcd.setCursor(8,1);      
-  lcd.print(pesoLiquido);
+  lcd.print(pesoRelative);
   delay(2000);
-  
 }
 
 /*
@@ -1212,7 +1138,7 @@ void Mezclas::apagarBombas()
 {
   if(tipoMezcla == 0)
   {
-    switch (estado2)
+    switch(estado2)
     {
       case 1:
         bombaAceite.off();
@@ -1230,7 +1156,7 @@ void Mezclas::apagarBombas()
   }
   else
   {
-    switch (estado2)
+    switch(estado2)
     {
       case 1:
         bombaSouji.off();
@@ -1252,9 +1178,11 @@ void Mezclas::mostrarAgotado()
 {
   lcd.clear();
   delay(20);
-  switch(estado2)
+  if(tipoMezcla == 0)
   {
-    case 1:
+    switch(estado2)
+    {
+      case 1:
       if(idioma==0)
       {
         lcd.clear();
@@ -1274,7 +1202,7 @@ void Mezclas::mostrarAgotado()
         lcd.print("OIL TANK");
       }
       break;
-    case 2:
+      case 2:
       if(idioma==0)
       {
         lcd.clear();
@@ -1294,7 +1222,7 @@ void Mezclas::mostrarAgotado()
         lcd.print("TANK");
       }
       break;
-    case 4:
+      case 4:
       if(idioma==0)
       {
         lcd.clear();
@@ -1314,6 +1242,73 @@ void Mezclas::mostrarAgotado()
         lcd.print("TANK");
       }
       break;
+    }
+  }
+  else
+  {
+    switch(estado2)
+    {
+      case 1:
+        if(idioma==0)
+        {
+          lcd.clear();
+          delay(20);
+          lcd.setCursor(0,0);
+          lcd.print("LLENAR DEPOSITO");
+          lcd.setCursor(4,1);
+          lcd.print("DE SOUJI");
+        }
+        else
+        {
+          lcd.clear();
+          delay(20);
+          lcd.setCursor(3,0);
+          lcd.print("FILL SOUJI");
+          lcd.setCursor(6,1);
+          lcd.print("TANK");
+        }
+        break; 
+      case 2:
+        if(idioma==0)
+        {
+          lcd.clear();
+          delay(20);
+          lcd.setCursor(0,0);
+          lcd.print("LLENAR DEPOSITO");
+          lcd.setCursor(4,1);
+          lcd.print("DE AGUA");
+        }
+        else
+        {
+          lcd.clear();
+          delay(20);
+          lcd.setCursor(3,0);
+          lcd.print("FILL WATER");
+          lcd.setCursor(6,1);
+          lcd.print("TANK");
+        }
+        break;
+      case 4:
+        if(idioma==0)
+        {
+          lcd.clear();
+          delay(20);
+          lcd.setCursor(0,0);
+          lcd.print("LLENAR DEPOSITO");
+          lcd.setCursor(2,1);
+          lcd.print("ACEITE USADO");
+        }
+        else
+        {
+          lcd.clear();
+          delay(20);
+          lcd.setCursor(3,0);
+          lcd.print("FILL USED");
+          lcd.setCursor(4,1);
+          lcd.print("OIL TANK");
+        }
+        break;
+    }
   }
 }
 
