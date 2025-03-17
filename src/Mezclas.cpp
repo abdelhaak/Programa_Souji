@@ -66,7 +66,7 @@ int16_t pesoAguaFregasuelos = 878;
 int16_t pesoAceiteFregasuelos = 1085;
 
 // TIEMPOS 
-uint64_t tErrorBomba = 300000;
+uint64_t tErrorBomba = 400000;
 uint64_t tAgotado = 30000;
 uint64_t tUltimaVariacion;
 uint64_t tPasado = 0;
@@ -204,7 +204,6 @@ void Mezclas::mezclaMultiusos(int mezclas)
             // Pasamos a la etapa del vacio
             if(estado2 == 6)
             {
-              delay(4000);
               Pantallamezcla(13);
               mezclaVacio();
               if(idioma==0)
@@ -293,7 +292,6 @@ void Mezclas::mezclaMultiusos(int mezclas)
         // Pasamos a la etapa del vacio
         if(estado2 == 6)
         {
-          delay(4000);
           Pantallamezcla(13);
           mezclaVacio();
           finMezcla = true;
@@ -434,7 +432,6 @@ void Mezclas::mezclaFRIEGASUELOS(int mezclas)
             // Pasamos a la etapa del vacio
             if(estado2 == 6)
             {
-              delay(4000);
               Pantallamezcla(13);
               mezclaVacio();
               if(idioma==0)
@@ -530,7 +527,6 @@ void Mezclas::mezclaFRIEGASUELOS(int mezclas)
         // Pasamos a la etapa del vacio
         if(estado2 == 6)
         {
-          delay(4000);
           Pantallamezcla(13);
           mezclaVacio();
           finMezcla = true;
@@ -949,12 +945,13 @@ void Mezclas::echarLiquido(int16_t pesoPorechar)
     else
     {
       temp = millis();
-      if(temp - tempSig >= 1000)
+      if(temp - tempSig >= 3000)
       {
         deteccionPulso();
         tempSig = temp;
       }
     }
+    deteccionPulso();
     if (abs(nuevoPesoActual - pesoLiquido) > 50) 
     {
       tUltimaVariacion = millis(); 
@@ -963,6 +960,7 @@ void Mezclas::echarLiquido(int16_t pesoPorechar)
       EEPROM.put(PESO_RELATIVO_ADDRESS, pesoRelative);
       tPasadoAgotado = millis() -  tUltimaVariacion;
     }
+    deteccionPulso();
     // Verificar si no ha habido cambios significativos durante más de 30 segundos
     if (millis() - tUltimaVariacion > tAgotado) 
     {
@@ -984,11 +982,11 @@ void Mezclas::echarLiquido(int16_t pesoPorechar)
     deteccionPulso();
   }
 
+  apagarBombas();
+
   pesoLiquido = PesoActual();
   EEPROM.put(PESO_ACEITE_ACTUAL_ADRESS, pesoLiquido);
   EEPROM.put(PESO_RELATIVO_ADDRESS, 0);
-  
-  apagarBombas();
 
   lcd.clear();
   delay(20);
@@ -1138,7 +1136,7 @@ void Mezclas::apagarBombas()
 {
   if(tipoMezcla == 0)
   {
-    switch(estado2)
+    switch (estado2)
     {
       case 1:
         bombaAceite.off();
@@ -1156,7 +1154,7 @@ void Mezclas::apagarBombas()
   }
   else
   {
-    switch(estado2)
+    switch (estado2)
     {
       case 1:
         bombaSouji.off();
