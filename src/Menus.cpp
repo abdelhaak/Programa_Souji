@@ -1619,7 +1619,7 @@ void Menus::finalizarCalibracion()
   ultima_tara = balanza.get_offset();
   EEPROM.put(TARE_ADRESS, ultima_tara);
   EEPROM.put(PESO_ACEITE_ACTUAL_ADRESS, 0);
-  delay(100);
+  delay(1000);
 }
 
 void Menus::mostrarElPeso()

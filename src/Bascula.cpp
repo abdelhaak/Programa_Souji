@@ -22,23 +22,25 @@ void balanza_Setup()
     EEPROM.get(SCALE_ADDRESS, escala);
     balanza.set_scale(escala); 
     EEPROM.get(TARE_ADRESS, ultima_tara);
-    balanza.tare(ultima_tara);
-    delay(500); 
-    EEPROM.get(PESO_ADRESS, peso);
-    balanza.set_offset(balanza.get_offset() - (peso * balanza.get_scale()));
+    //balanza.tare(ultima_tara);
+    balanza.set_offset(ultima_tara);
+    //delay(500); 
+    //EEPROM.get(PESO_ADRESS, peso);
+    //balanza.set_offset(balanza.get_offset() - (peso * balanza.get_scale()));
 }
 
 int16_t PesoActual()
 {
+    delay(100);
     peso = balanza.get_units(10); // Obtener una sola lectura
-    if (peso < 0 || peso > 30000)
+    if (peso < 0 || peso > 20000)
     {
         peso = 0;
     }
-    ultima_tara = balanza.get_offset();
-    EEPROM.put(TARE_ADRESS, ultima_tara);
-    EEPROM.put(PESO_ADRESS, peso);
-    delay(10);
+    //ultima_tara = balanza.get_offset();
+    //EEPROM.put(TARE_ADRESS, ultima_tara);
+    //EEPROM.put(PESO_ADRESS, peso);
+    delay(100);
     return peso;  
 }
 
@@ -49,7 +51,7 @@ void calibracion()
     balanza.set_scale(); 
     //El peso actual es considerado zero.
     balanza.tare(20);
-    delay(1500); 
+    delay(2000); 
 }
     
 void finDeCalibracion()
@@ -60,6 +62,6 @@ void finDeCalibracion()
     escala = adc_lecture / PesoConocido; 
     EEPROM.put(SCALE_ADDRESS, escala);
     // Escribir en la EEPROM
-    delay(1500);
+    delay(2000);
 }
 

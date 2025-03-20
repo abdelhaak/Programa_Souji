@@ -26,19 +26,22 @@ int rpms200 = 200;
 // VALORES DE PESO PARA EL MULTIUSOS Y UNA CANTIDAD DE 2.7 L 
 // PARA TENER 5L DE VOLUMEN A LA HORA DE HECHAR
 
-// Peso Aceite porcentajeAceite * cantidad => 30 * 43 = 1260 g
+// Peso Aceite porcentajeAceite * cantidad => 30 * 40 = 1200 g
 // Peso Aceite porcentajeAceite * cantidad => 30 * 35 = 1050 g
 // Peso Aceite porcentajeAceite * cantidad => 30 * 28 = 840 g
+// Peso Aceite porcentajeAceite * cantidad => 30 * 34 = 1020 g
 int16_t pesoAceiteMultiusos = 1050;
 
-// Peso Souji porcentajeSouji * cantidad => 50 * 43 = 2150 g
+// Peso Souji porcentajeSouji * cantidad => 50 * 40 = 2150 g
 // Peso Souji porcentajeSouji * cantidad => 50 * 35 = 1750 g
 // Peso Souji porcentajeSouji * cantidad => 50 * 28 = 1400 g
+// Peso Souji porcentajeSouji * cantidad => 50 * 34 = 1700 g
 int16_t pesoSoujiMultiusos = 1750;
 
-// Peso Agua porcentajeAgua * cantidad => 20 * 42 = 840 g
+// Peso Agua porcentajeAgua * cantidad => 20 * 40 = 840 g
 // Peso Agua porcentajeAgua * cantidad => 20 * 35 = 700 g
 // Peso Agua porcentajeAgua * cantidad => 20 * 28 = 560 g
+// Peso Agua porcentajeAgua * cantidad => 20 * 34 = 680 g
 int16_t pesoAguaMultiusos = 700;
 
 // VALORES DE PESO PARA EL FREGASUELOS Y UNA CANTIDAD DE 3 L 
@@ -54,42 +57,43 @@ int16_t pesoSoujiFregasuelos = 1533;
 // Peso Agua para 3L porcentajeAgua * cantidad => 25.1 * 30 = 753 g
 // Peso Agua para 3L porcentajeAgua * cantidad => 25.1 * 40 = 1004 g
 // Peso Agua para 4.2L porcentajeAgua * cantidad => 25.1 * 42 = 1054 g
-// Peso Agua para 3.5L porcentajeAgua * cantidad => 25.1 * 35 = 878 g
+// Peso Agua para 3.5L porcentajeAgua * cantidad => 25.1 * 34 = 860 g
 // Peso Agua para 2.8L porcentajeAgua * cantidad => 25.1 * 28 = 702 g
-int16_t pesoAguaFregasuelos = 878;
+int16_t pesoAguaFregasuelos = 860;
 
 // Peso Aceite para 3L porcentajeAceite * cantidad => 31.1 * 30 = 933 g
 // Peso Aceite para 4L porcentajeAceite * cantidad => 31.1 * 40 = 1244 g
 // Peso Aceite para 4.2L porcentajeAceite * cantidad => 31.1 * 42 = 1306 g
-// Peso Aceite para 3.5L porcentajeAceite * cantidad => 31.1 * 35 = 1085 g
+// Peso Aceite para 3.5L porcentajeAceite * cantidad => 31.1 * 34 = 1088 g
 // Peso Aceite para 2.8L porcentajeAceite * cantidad => 31.1 * 28 = 870 g
-int16_t pesoAceiteFregasuelos = 1085;
+int16_t pesoAceiteFregasuelos = 1088;
 
 // TIEMPOS 
-uint64_t tErrorBomba = 400000;
-uint64_t tAgotado = 30000;
+uint64_t tErrorBomba = 600000;
+uint64_t tErrorVacio = 450000;
+uint64_t tAgotado = 60000;
 uint64_t tUltimaVariacion;
 uint64_t tPasado = 0;
 uint64_t tPasadoAgotado;
 int16_t nuevoPesoActual = 0;
 
-// 2 minutos => 120000 ms    ::   PARA LA PRIMERA MEZCLA DE MULTIUSOS
-uint64_t tMixMultiusos1 = 120000; 
-// 3 minutos => 180000 ms    ::   PARA LA SEGUNDA MEZCLA DE MULTIUSOS
-uint64_t tMixMultiusos2 = 180000;  
-// 2 minutos => 120000 ms    ::   PARA LA PRIMERA MEZCLA DE FREGASUELOS
-uint64_t tMixFregasuelos1 = 120000; 
-// 30 segundos => 30000 ms    ::   PARA LA PRIMERA MEZCLA DE DOSIFICACION FREGASUELOS
-uint64_t tMixFregasuelosDosif1 = 30000; 
-// 30 segundos => 30000 ms    ::   PARA LA SEGUNDA MEZCLA DE DOSIFICACION FREGASUELOS
-uint64_t tMixFregasuelosDosif2 = 30000;
-// 2 minutos => 120000 ms    ::   PARA LA TERCERA MEZCLA DE DOSIFICACION FREGASUELOS
-uint64_t tMixFregasuelosDosif3 = 120000;
-// 60 segundos => 60000 ms   ::   PARA LA ULTIMA MEZCLA DE FREGASUELOS
-uint64_t tMixFregasuelos2 = 60000; 
+// 2 minutos => 240000 ms    ::   PARA LA PRIMERA MEZCLA DE MULTIUSOS
+uint64_t tMixMultiusos1 = 240000; 
+// 3 minutos => 360000 ms    ::   PARA LA SEGUNDA MEZCLA DE MULTIUSOS
+uint64_t tMixMultiusos2 = 360000;  
+// 2 minutos => 240000 ms    ::   PARA LA PRIMERA MEZCLA DE FREGASUELOS
+uint64_t tMixFregasuelos1 = 240000; 
+// 30 segundos => 60000 ms    ::   PARA LA PRIMERA MEZCLA DE DOSIFICACION FREGASUELOS
+uint64_t tMixFregasuelosDosif1 = 60000; 
+// 30 segundos => 60000 ms    ::   PARA LA SEGUNDA MEZCLA DE DOSIFICACION FREGASUELOS
+uint64_t tMixFregasuelosDosif2 = 60000;
+// 2 minutos => 240000 ms    ::   PARA LA TERCERA MEZCLA DE DOSIFICACION FREGASUELOS
+uint64_t tMixFregasuelosDosif3 = 240000;
+// 60 segundos => 120000 ms   ::   PARA LA ULTIMA MEZCLA DE FREGASUELOS
+uint64_t tMixFregasuelos2 = 120000; 
 
 // 3 minutos => 180000 ms    ::   PARA EL VACIO POR AHORA 
-uint64_t tiempoVacio = 180000 ; // 180000
+uint64_t tiempoVacio = 360000 ; // 180000
 
 unsigned long temp = 0;
 unsigned long tempSig = 0;
@@ -184,7 +188,7 @@ void Mezclas::mezclaMultiusos(int mezclas)
           // echamos la cantidad adecuada de AGUA
           if(estado2 == 4)
             {
-              delay(15000);
+              delay(30000);
               Pantallamezcla(12);
               echarLiquido(pesoAguaMultiusos);
               estado2 = 5;
@@ -195,7 +199,7 @@ void Mezclas::mezclaMultiusos(int mezclas)
             {
               Pantallamezcla(12);
               motorMezclador.ajustarRpms(tMixMultiusos2, rpms1500);
-              delay(2000);
+              delay(4000);
               estado2 = 6;
               EEPROM.put(STATUS_2_ADRESS, estado2);
             }
@@ -266,7 +270,7 @@ void Mezclas::mezclaMultiusos(int mezclas)
         // echamos la cantidad adecuada de AGUA
         if(estado2 == 4)
         {
-          delay(15000);
+          delay(30000);
           Pantallamezcla(12);
           echarLiquido(pesoAguaMultiusos);
           estado2 = 5;
@@ -398,6 +402,7 @@ void Mezclas::mezclaFRIEGASUELOS(int mezclas)
             if(estado2 == 4)
             {
               Pantallamezcla(12);
+              delay(30000);
               echarLiquido(pesoAceiteFregasuelos);
               estado2 = 5;
               EEPROM.put(STATUS_2_ADRESS, estado2);
@@ -484,7 +489,7 @@ void Mezclas::mezclaFRIEGASUELOS(int mezclas)
         // echamos la cantidad adecuada del Aceite
         if(estado2 == 4)
         {
-          delay(15000);
+          delay(30000);
           Pantallamezcla(12);
           echarLiquido(pesoAceiteFregasuelos);
           estado2 = 5;
@@ -802,7 +807,7 @@ void Mezclas::Pantallamezcla(uint8_t pantallamezcla)
 void Mezclas::mezclaVacio()
 {
   Pantallamezcla(13);
-  int16_t elPesoMinimo = 5;
+  int16_t elPesoMinimo = 120;
 
   if (PesoActual() <= elPesoMinimo)
   {
@@ -841,21 +846,21 @@ void Mezclas::mezclaVacio()
       tempSig1 = temp1;
     }
     */
-    if (millis() - tiempoInicio > tErrorBomba)
+    if (millis() - tiempoInicio > tErrorVacio)
     {
       if(idioma==0)
       {
         lcd.clear();
         delay(20);
-        lcd.setCursor(1,0);
-        lcd.print("ERROR BOMBA");
+        lcd.setCursor(3,0);
+        lcd.print("VACIADO");
       }
       else
       {
         lcd.clear();
         delay(20);
         lcd.setCursor(3,0);
-        lcd.print("POMP ERROR");
+        lcd.print("EMPTY");
       }
       delay(2000);
       bombaVacio.off();
@@ -897,9 +902,8 @@ void Mezclas::calcularVolumen()
 
 void Mezclas::echarLiquido(int16_t pesoPorechar)
 {
-  // Encender la bomba correspondiente
   encenderBombaCorrespondiente();
-
+    
   tUltimaVariacion = millis();
   pesoLiquido = PesoActual();
   pesoRelative = 0;
@@ -908,61 +912,55 @@ void Mezclas::echarLiquido(int16_t pesoPorechar)
   Pantallamezcla(12);
 
   while(pesoRelative < pesoPorechar)
-  { 
+  {
     deteccionPulso();
     Pantallamezcla(12);
     nuevoPesoActual = PesoActual();
     
-    if(estado2 == 4)
+    temp = millis();
+    if(temp - tempSig >= 3000)
     {
-      delay(50);
-    }
-    else
-    {
-      temp = millis();
-      if(temp - tempSig >= 3000)
-      {
         deteccionPulso();
         tempSig = temp;
-      }
     }
+
     deteccionPulso();
     if (abs(nuevoPesoActual - pesoLiquido) > 50) 
-    {
-      tUltimaVariacion = millis(); 
+        {
+            tUltimaVariacion = millis(); 
       pesoRelative += nuevoPesoActual - pesoLiquido;
       pesoLiquido = nuevoPesoActual;
-      EEPROM.put(PESO_RELATIVO_ADDRESS, pesoRelative);
+            EEPROM.put(PESO_RELATIVO_ADDRESS, pesoRelative);
       tPasadoAgotado = millis() -  tUltimaVariacion;
-    }
+        }
     deteccionPulso();
     // Verificar si no ha habido cambios significativos durante más de 30 segundos
-    if (millis() - tUltimaVariacion > tAgotado) 
-    {
-      mostrarAgotado();
-      apagarBombas();
-
+        if (millis() - tUltimaVariacion > tAgotado) 
+        {
+            mostrarAgotado();
+            apagarBombas();
+            
       // Esperar hasta que el usuario presione el botón de inicio para continuar
-      while (!botonPausa.pulsado())
-      {
-        delay(300);
-      }
-
+            while (!botonPausa.pulsado())
+            {
+                delay(300);
+            }
+            
       // Reiniciar la bomba correspondiente
-      encenderBombaCorrespondiente();
+            encenderBombaCorrespondiente();
 
       // Reiniciar el tiempo de última variación
-      tUltimaVariacion = millis();
-    }
+            tUltimaVariacion = millis();
+        }
     deteccionPulso();
-  }
-
-  apagarBombas();
-
-  pesoLiquido = PesoActual();
-  EEPROM.put(PESO_ACEITE_ACTUAL_ADRESS, pesoLiquido);
-  EEPROM.put(PESO_RELATIVO_ADDRESS, 0);
-
+    }
+    
+    apagarBombas();
+    
+    pesoLiquido = PesoActual();
+    EEPROM.put(PESO_ACEITE_ACTUAL_ADRESS, pesoLiquido);
+    EEPROM.put(PESO_RELATIVO_ADDRESS, 0);
+/*
   lcd.clear();
   delay(20);
   lcd.setCursor(0,1);
@@ -970,6 +968,7 @@ void Mezclas::echarLiquido(int16_t pesoPorechar)
   lcd.setCursor(8,1);      
   lcd.print(pesoRelative);
   delay(2000);
+*/
 }
 
 /*
@@ -1073,13 +1072,13 @@ void Mezclas::encenderBombaCorrespondiente()
     switch (estado2)
     {
       case 1:
-        bombaAgua.on();
+        bombaAceite.on();
         break;
       case 2:
         bombaSouji.on();
         break;
       case 4:
-        bombaAceite.on();
+        bombaAgua.on();
         break;
       case 6:
         bombaVacio.on();
@@ -1094,10 +1093,10 @@ void Mezclas::encenderBombaCorrespondiente()
         bombaSouji.on();
         break;
       case 2:
-        bombaAceite.on();
+        bombaAgua.on();
         break;
       case 4:
-        bombaAgua.on();
+        bombaAceite.on();      
         break;
       case 6:
         bombaVacio.on();
@@ -1113,13 +1112,13 @@ void Mezclas::apagarBombas()
     switch (estado2)
     {
       case 1:
-        bombaAgua.off();
+        bombaAceite.off();    
         break;
       case 2:
         bombaSouji.off();
         break;
       case 4:
-        bombaAceite.off();
+        bombaAgua.off();
         break;
       case 6:
         bombaVacio.off();
@@ -1134,10 +1133,10 @@ void Mezclas::apagarBombas()
         bombaSouji.off();
         break;
       case 2:
-        bombaAceite.off();
+        bombaAgua.off();
         break;
       case 4:
-        bombaAgua.off();
+        bombaAceite.off();
         break;
       case 6:
         bombaVacio.off();
