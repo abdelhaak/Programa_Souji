@@ -85,7 +85,7 @@ int16_t pesoAceiteFregasuelos = 1175;
 
 // TIEMPOS 
 uint64_t tErrorBomba = 600000;
-uint64_t tErrorVacio = 450000;
+uint64_t tErrorVacio = 500000;
 uint64_t tAgotado = 60000;
 uint64_t tUltimaVariacion;
 uint64_t tPasado = 0;
@@ -93,22 +93,22 @@ uint64_t tPasadoAgotado;
 int16_t nuevoPesoActual = 0;
 
 // 2 minutos => 240000 ms    ::   PARA LA PRIMERA MEZCLA DE MULTIUSOS
-uint64_t tMixMultiusos1 = 120000; 
+uint64_t tMixMultiusos1 = 240000; 
 // 3 minutos => 360000 ms    ::   PARA LA SEGUNDA MEZCLA DE MULTIUSOS
-uint64_t tMixMultiusos2 = 180000;  
+uint64_t tMixMultiusos2 = 360000;  
 // 2 minutos => 240000 ms    ::   PARA LA PRIMERA MEZCLA DE FREGASUELOS
-uint64_t tMixFregasuelos1 = 120000; 
+uint64_t tMixFregasuelos1 = 240000; 
 // 30 segundos => 60000 ms    ::   PARA LA PRIMERA MEZCLA DE DOSIFICACION FREGASUELOS
-uint64_t tMixFregasuelosDosif1 = 30000; 
+uint64_t tMixFregasuelosDosif1 = 60000; 
 // 30 segundos => 60000 ms    ::   PARA LA SEGUNDA MEZCLA DE DOSIFICACION FREGASUELOS
-uint64_t tMixFregasuelosDosif2 = 30000;
+uint64_t tMixFregasuelosDosif2 = 60000;
 // 2 minutos => 240000 ms    ::   PARA LA TERCERA MEZCLA DE DOSIFICACION FREGASUELOS
-uint64_t tMixFregasuelosDosif3 = 120000;
+uint64_t tMixFregasuelosDosif3 = 240000;
 // 60 segundos => 120000 ms   ::   PARA LA ULTIMA MEZCLA DE FREGASUELOS
 uint64_t tMixFregasuelos2 = 60000; 
 
 // 3 minutos => 180000 ms    ::   PARA EL VACIO POR AHORA 
-uint64_t tiempoVacio = 180000 ; // 180000
+uint64_t tiempoVacio = 360000 ; // 180000
 
 unsigned long temp = 0;
 unsigned long tempSig = 0;
@@ -203,7 +203,7 @@ void Mezclas::mezclaMultiusos(int mezclas)
           // echamos la cantidad adecuada de AGUA
           if(estado2 == 4)
             {
-              delay(15000);
+              delay(30000);
               Pantallamezcla(12);
               echarLiquido(pesoAguaMultiusos);
               estado2 = 5;
@@ -285,7 +285,7 @@ void Mezclas::mezclaMultiusos(int mezclas)
         // echamos la cantidad adecuada de AGUA
         if(estado2 == 4)
         {
-          delay(15000);
+          delay(30000);
           Pantallamezcla(12);
           echarLiquido(pesoAguaMultiusos);
           estado2 = 5;
@@ -417,7 +417,7 @@ void Mezclas::mezclaFRIEGASUELOS(int mezclas)
             if(estado2 == 4)
             {
               Pantallamezcla(12);
-              delay(15000);
+              delay(30000);
               echarLiquido(pesoAceiteFregasuelos);
               estado2 = 5;
               EEPROM.put(STATUS_2_ADRESS, estado2);
@@ -428,13 +428,13 @@ void Mezclas::mezclaFRIEGASUELOS(int mezclas)
               Pantallamezcla(12);
               // Activamos el motor con los RPMs guardados y el tiempo adecuado
               motorMezclador.ajustarRpms(tMixFregasuelosDosif1,rpms1000);
-              delay(2000);
+              delay(4000);
               motorMezclador.ajustarRpms(tMixFregasuelosDosif2,rpms1500);
-              delay(2000);
+              delay(4000);
               motorMezclador.ajustarRpms(tMixFregasuelosDosif3,rpms2000);
-              delay(2000);
+              delay(4000);
               motorMezclador.ajustarRpms(tMixFregasuelos2,rpms200);
-              delay(2000);
+              delay(4000);
               estado2 = 6;
               EEPROM.put(STATUS_2_ADRESS, estado2);
             }
@@ -504,7 +504,7 @@ void Mezclas::mezclaFRIEGASUELOS(int mezclas)
         // echamos la cantidad adecuada del Aceite
         if(estado2 == 4)
         {
-          delay(15000);
+          delay(30000);
           Pantallamezcla(12);
           echarLiquido(pesoAceiteFregasuelos);
           estado2 = 5;
@@ -516,13 +516,13 @@ void Mezclas::mezclaFRIEGASUELOS(int mezclas)
           Pantallamezcla(12);
           // Activamos el motor con los RPMs guardados y el tiempo adecuado
           motorMezclador.ajustarRpms(tMixFregasuelosDosif1,rpms1000);
-          delay(2000);
+          delay(4000);
           motorMezclador.ajustarRpms(tMixFregasuelosDosif2,rpms1500);
-          delay(2000);
+          delay(4000);
           motorMezclador.ajustarRpms(tMixFregasuelosDosif3,rpms2000);
-          delay(2000);
+          delay(4000);
           motorMezclador.ajustarRpms(tMixFregasuelos2,rpms200);
-          delay(2000);
+          delay(4000);
           estado2 = 6;
           EEPROM.put(STATUS_2_ADRESS, estado2);
         }
@@ -933,7 +933,7 @@ void Mezclas::echarLiquido(int16_t pesoPorechar)
     Pantallamezcla(12);
         
     temp = millis();
-    if(temp - tempSig >= 3000)
+    if(temp - tempSig >= 4000)
     {
       deteccionPulso();
       tempSig = temp;
@@ -981,7 +981,7 @@ void Mezclas::echarLiquido(int16_t pesoPorechar)
   }
 
   apagarBombas();
-  delay(3000);
+  delay(6000);
   /*
   pesoLiquido = PesoActual();
   EEPROM.put(PESO_ACEITE_ACTUAL_ADRESS, pesoLiquido);
