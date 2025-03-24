@@ -20,53 +20,68 @@ int rpms500 = 500;
 int rpms1000 = 1000;
 int rpms1500 = 1500;
 int rpms2000 = 2000;
-int rpms200 = 200;
+int rpms200 = 350;
+
+/*
+Peso Aceite porcentajeAceite * cantidad => 30 * 40 = 1200 g
+Peso Aceite porcentajeAceite * cantidad => 30 * 35 = 1050 g
+Peso Aceite porcentajeAceite * cantidad => 30 * 30 = 900 g
+Peso Aceite porcentajeAceite * cantidad => 30 * 28 = 840 g
+Peso Aceite porcentajeAceite * cantidad => 30 * 34 = 1020 g
+Peso Aceite porcentajeAceite * cantidad => 30 * 32.5 = 975 g
+*/
+int16_t pesoAceiteMultiusos = 1125;
+
+/*
+Peso Souji porcentajeSouji * cantidad => 50 * 40 = 2150 g
+Peso Souji porcentajeSouji * cantidad => 50 * 35 = 1750 g
+Peso Souji porcentajeSouji * cantidad => 50 * 30 = 1500 g
+Peso Souji porcentajeSouji * cantidad => 50 * 28 = 1400 g
+Peso Souji porcentajeSouji * cantidad => 50 * 34 = 1700 g
+Peso Souji porcentajeSouji * cantidad => 50 * 32.5 = 1625 g
+*/
+int16_t pesoSoujiMultiusos = 1925;
+
+/*
+Peso Agua porcentajeAgua * cantidad => 20 * 40 = 840 g
+Peso Agua porcentajeAgua * cantidad => 20 * 35 = 700 g
+Peso Agua porcentajeAgua * cantidad => 20 * 30 = 600 g
+Peso Agua porcentajeAgua * cantidad => 20 * 28 = 560 g
+Peso Agua porcentajeAgua * cantidad => 20 * 34 = 680 g
+Peso Agua porcentajeAgua * cantidad => 20 * 32.5 = 650 g
+*/
+int16_t pesoAguaMultiusos = 770;
 
 
-// VALORES DE PESO PARA EL MULTIUSOS Y UNA CANTIDAD DE 2.7 L 
-// PARA TENER 5L DE VOLUMEN A LA HORA DE HECHAR
+/*
+Peso Souji   para 3l porcentajeSouji * cantidad => 43.8 * 30 = 1314 g
+Peso Souji   para 4l porcentajeSouji * cantidad => 43.8 * 40 = 1752 g
+Peso Souji   para 4.2l porcentajeSouji * cantidad => 43.8 * 42 = 1839 g
+Peso Souji   para 3.5l porcentajeSouji * cantidad => 43.8 * 35 = 1533 g
+Peso Souji   para 2.8l porcentajeSouji * cantidad => 43.8 * 28 = 1225 g
+Peso Souji   para 3.25l porcentajeSouji * cantidad => 43.8 * 32.5 = 1423 g
+*/
+int16_t pesoSoujiFregasuelos = 1600;  
 
-// Peso Aceite porcentajeAceite * cantidad => 30 * 40 = 1200 g
-// Peso Aceite porcentajeAceite * cantidad => 30 * 35 = 1050 g
-// Peso Aceite porcentajeAceite * cantidad => 30 * 28 = 840 g
-// Peso Aceite porcentajeAceite * cantidad => 30 * 34 = 1020 g
-int16_t pesoAceiteMultiusos = 1050;
+/*
+Peso Agua para 3L porcentajeAgua * cantidad => 25.1 * 30 = 753 g
+Peso Agua para 3L porcentajeAgua * cantidad => 25.1 * 40 = 1004 g
+Peso Agua para 4.2L porcentajeAgua * cantidad => 25.1 * 42 = 1054 g
+Peso Agua para 3.5L porcentajeAgua * cantidad => 25.1 * 34 = 860 g
+Peso Agua para 2.8L porcentajeAgua * cantidad => 25.1 * 28 = 702 g
+Peso Agua para 2.8L porcentajeAgua * cantidad => 25.1 * 32.5 = 815 g
+*/
+int16_t pesoAguaFregasuelos = 925;
 
-// Peso Souji porcentajeSouji * cantidad => 50 * 40 = 2150 g
-// Peso Souji porcentajeSouji * cantidad => 50 * 35 = 1750 g
-// Peso Souji porcentajeSouji * cantidad => 50 * 28 = 1400 g
-// Peso Souji porcentajeSouji * cantidad => 50 * 34 = 1700 g
-int16_t pesoSoujiMultiusos = 1750;
-
-// Peso Agua porcentajeAgua * cantidad => 20 * 40 = 840 g
-// Peso Agua porcentajeAgua * cantidad => 20 * 35 = 700 g
-// Peso Agua porcentajeAgua * cantidad => 20 * 28 = 560 g
-// Peso Agua porcentajeAgua * cantidad => 20 * 34 = 680 g
-int16_t pesoAguaMultiusos = 700;
-
-// VALORES DE PESO PARA EL FREGASUELOS Y UNA CANTIDAD DE 3 L 
-// PARA TENER 5L DE VOLUMEN A LA HORA DE HECHAR
-
-// Peso Souji   para 3l porcentajeSouji * cantidad => 43.8 * 30 = 1314 g
-// Peso Souji   para 4l porcentajeSouji * cantidad => 43.8 * 40 = 1752 g
-// Peso Souji   para 4.2l porcentajeSouji * cantidad => 43.8 * 42 = 1839 g
-// Peso Souji   para 3.5l porcentajeSouji * cantidad => 43.8 * 35 = 1533 g
-// Peso Souji   para 2.8l porcentajeSouji * cantidad => 43.8 * 28 = 1225 g
-int16_t pesoSoujiFregasuelos = 1533;  
-
-// Peso Agua para 3L porcentajeAgua * cantidad => 25.1 * 30 = 753 g
-// Peso Agua para 3L porcentajeAgua * cantidad => 25.1 * 40 = 1004 g
-// Peso Agua para 4.2L porcentajeAgua * cantidad => 25.1 * 42 = 1054 g
-// Peso Agua para 3.5L porcentajeAgua * cantidad => 25.1 * 34 = 860 g
-// Peso Agua para 2.8L porcentajeAgua * cantidad => 25.1 * 28 = 702 g
-int16_t pesoAguaFregasuelos = 860;
-
-// Peso Aceite para 3L porcentajeAceite * cantidad => 31.1 * 30 = 933 g
-// Peso Aceite para 4L porcentajeAceite * cantidad => 31.1 * 40 = 1244 g
-// Peso Aceite para 4.2L porcentajeAceite * cantidad => 31.1 * 42 = 1306 g
-// Peso Aceite para 3.5L porcentajeAceite * cantidad => 31.1 * 34 = 1088 g
-// Peso Aceite para 2.8L porcentajeAceite * cantidad => 31.1 * 28 = 870 g
-int16_t pesoAceiteFregasuelos = 1088;
+/*
+Peso Aceite para 3L porcentajeAceite * cantidad => 31.1 * 30 = 933 g
+Peso Aceite para 4L porcentajeAceite * cantidad => 31.1 * 40 = 1244 g
+Peso Aceite para 4.2L porcentajeAceite * cantidad => 31.1 * 42 = 1306 g
+Peso Aceite para 3.5L porcentajeAceite * cantidad => 31.1 * 34 = 1088 g
+Peso Aceite para 2.8L porcentajeAceite * cantidad => 31.1 * 28 = 870 g
+Peso Aceite para 2.8L porcentajeAceite * cantidad => 31.1 * 32.5 = 1010 g
+*/
+int16_t pesoAceiteFregasuelos = 1175;
 
 // TIEMPOS 
 uint64_t tErrorBomba = 600000;
@@ -78,22 +93,22 @@ uint64_t tPasadoAgotado;
 int16_t nuevoPesoActual = 0;
 
 // 2 minutos => 240000 ms    ::   PARA LA PRIMERA MEZCLA DE MULTIUSOS
-uint64_t tMixMultiusos1 = 240000; 
+uint64_t tMixMultiusos1 = 120000; 
 // 3 minutos => 360000 ms    ::   PARA LA SEGUNDA MEZCLA DE MULTIUSOS
-uint64_t tMixMultiusos2 = 360000;  
+uint64_t tMixMultiusos2 = 180000;  
 // 2 minutos => 240000 ms    ::   PARA LA PRIMERA MEZCLA DE FREGASUELOS
-uint64_t tMixFregasuelos1 = 240000; 
+uint64_t tMixFregasuelos1 = 120000; 
 // 30 segundos => 60000 ms    ::   PARA LA PRIMERA MEZCLA DE DOSIFICACION FREGASUELOS
-uint64_t tMixFregasuelosDosif1 = 60000; 
+uint64_t tMixFregasuelosDosif1 = 30000; 
 // 30 segundos => 60000 ms    ::   PARA LA SEGUNDA MEZCLA DE DOSIFICACION FREGASUELOS
-uint64_t tMixFregasuelosDosif2 = 60000;
+uint64_t tMixFregasuelosDosif2 = 30000;
 // 2 minutos => 240000 ms    ::   PARA LA TERCERA MEZCLA DE DOSIFICACION FREGASUELOS
-uint64_t tMixFregasuelosDosif3 = 240000;
+uint64_t tMixFregasuelosDosif3 = 120000;
 // 60 segundos => 120000 ms   ::   PARA LA ULTIMA MEZCLA DE FREGASUELOS
-uint64_t tMixFregasuelos2 = 120000; 
+uint64_t tMixFregasuelos2 = 60000; 
 
 // 3 minutos => 180000 ms    ::   PARA EL VACIO POR AHORA 
-uint64_t tiempoVacio = 360000 ; // 180000
+uint64_t tiempoVacio = 180000 ; // 180000
 
 unsigned long temp = 0;
 unsigned long tempSig = 0;
@@ -188,7 +203,7 @@ void Mezclas::mezclaMultiusos(int mezclas)
           // echamos la cantidad adecuada de AGUA
           if(estado2 == 4)
             {
-              delay(30000);
+              delay(15000);
               Pantallamezcla(12);
               echarLiquido(pesoAguaMultiusos);
               estado2 = 5;
@@ -270,7 +285,7 @@ void Mezclas::mezclaMultiusos(int mezclas)
         // echamos la cantidad adecuada de AGUA
         if(estado2 == 4)
         {
-          delay(30000);
+          delay(15000);
           Pantallamezcla(12);
           echarLiquido(pesoAguaMultiusos);
           estado2 = 5;
@@ -402,7 +417,7 @@ void Mezclas::mezclaFRIEGASUELOS(int mezclas)
             if(estado2 == 4)
             {
               Pantallamezcla(12);
-              delay(30000);
+              delay(15000);
               echarLiquido(pesoAceiteFregasuelos);
               estado2 = 5;
               EEPROM.put(STATUS_2_ADRESS, estado2);
@@ -489,7 +504,7 @@ void Mezclas::mezclaFRIEGASUELOS(int mezclas)
         // echamos la cantidad adecuada del Aceite
         if(estado2 == 4)
         {
-          delay(30000);
+          delay(15000);
           Pantallamezcla(12);
           echarLiquido(pesoAceiteFregasuelos);
           estado2 = 5;
@@ -807,7 +822,7 @@ void Mezclas::Pantallamezcla(uint8_t pantallamezcla)
 void Mezclas::mezclaVacio()
 {
   Pantallamezcla(13);
-  int16_t elPesoMinimo = 120;
+  int16_t elPesoMinimo = 50;
 
   if (PesoActual() <= elPesoMinimo)
   {
@@ -868,6 +883,7 @@ void Mezclas::mezclaVacio()
     }
     deteccionPulso();
   } 
+  delay(20000);
   bombaVacio.off();
 }
 
@@ -908,67 +924,69 @@ void Mezclas::echarLiquido(int16_t pesoPorechar)
   pesoLiquido = PesoActual();
   pesoRelative = 0;
 
-  EEPROM.get(PESO_RELATIVO_ADDRESS, pesoRelative);
+  //EEPROM.get(PESO_RELATIVO_ADDRESS, pesoRelative);
   Pantallamezcla(12);
 
-  while(pesoRelative < pesoPorechar)
+  while (pesoRelative < pesoPorechar)
   {
     deteccionPulso();
     Pantallamezcla(12);
-    nuevoPesoActual = PesoActual();
-    
+        
     temp = millis();
     if(temp - tempSig >= 3000)
     {
-        deteccionPulso();
-        tempSig = temp;
+      deteccionPulso();
+      tempSig = temp;
     }
 
-    deteccionPulso();
-    if (abs(nuevoPesoActual - pesoLiquido) > 50) 
-        {
-            tUltimaVariacion = millis(); 
+    // Leer varias veces para filtrar ruido electrónico
+    int16_t peso1 = PesoActual();
+    int16_t peso2 = PesoActual();
+    int16_t peso3 = PesoActual();
+
+    int16_t nuevoPesoActual;
+
+    if (abs(peso2 - peso1) <= 250 && abs(peso3 - peso2) <= 250)
+    {
+       nuevoPesoActual = (peso1 + peso2 + peso3) / 3;  
+    }
+    else
+    {
+      // Mantener último peso válido
+      nuevoPesoActual = pesoLiquido; 
+    }  
+
+    if(abs(nuevoPesoActual - pesoLiquido) > 30) 
+    {
+      tUltimaVariacion = millis(); 
       pesoRelative += nuevoPesoActual - pesoLiquido;
       pesoLiquido = nuevoPesoActual;
-            EEPROM.put(PESO_RELATIVO_ADDRESS, pesoRelative);
-      tPasadoAgotado = millis() -  tUltimaVariacion;
-        }
-    deteccionPulso();
-    // Verificar si no ha habido cambios significativos durante más de 30 segundos
-        if (millis() - tUltimaVariacion > tAgotado) 
-        {
-            mostrarAgotado();
-            apagarBombas();
-            
-      // Esperar hasta que el usuario presione el botón de inicio para continuar
-            while (!botonPausa.pulsado())
-            {
-                delay(300);
-            }
-            
-      // Reiniciar la bomba correspondiente
-            encenderBombaCorrespondiente();
-
-      // Reiniciar el tiempo de última variación
-            tUltimaVariacion = millis();
-        }
-    deteccionPulso();
+      //EEPROM.put(PESO_RELATIVO_ADDRESS, pesoRelative);
     }
-    
-    apagarBombas();
-    
-    pesoLiquido = PesoActual();
-    EEPROM.put(PESO_ACEITE_ACTUAL_ADRESS, pesoLiquido);
-    EEPROM.put(PESO_RELATIVO_ADDRESS, 0);
-/*
-  lcd.clear();
-  delay(20);
-  lcd.setCursor(0,1);
-  lcd.print("PESO : ");
-  lcd.setCursor(8,1);      
-  lcd.print(pesoRelative);
-  delay(2000);
-*/
+        
+    // Verificar si el sistema se ha detenido por agotado
+    if (millis() - tUltimaVariacion > tAgotado) 
+    {
+      mostrarAgotado();
+      apagarBombas();
+          
+      while (!botonPausa.pulsado())
+      {
+        delay(300);
+      }      
+      encenderBombaCorrespondiente();
+      tUltimaVariacion = millis();
+    }
+  
+  }
+
+  apagarBombas();
+  delay(3000);
+  /*
+  pesoLiquido = PesoActual();
+  EEPROM.put(PESO_ACEITE_ACTUAL_ADRESS, pesoLiquido);
+  EEPROM.put(PESO_RELATIVO_ADDRESS, 0);
+  */
 }
 
 /*
